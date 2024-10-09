@@ -2,8 +2,8 @@
 항해 플러스 백엔드 3주차+ 콘서트 예약 시스템 구현
 
 # 주요 링크
-- [STEP-5](https://github.com/orgs/hpp-backend-15/pull/1)
-- [STEP-6](https://github.com/orgs/hpp-backend-15/pull/2)
+- [STEP-5](https://github.com/hpp-backend-15/java-concert-joonhyeokyang/pull/5)
+- [STEP-6](https://github.com/hpp-backend-15/java-concert-joonhyeokyang/pull/6)
 - [마일스톤](https://github.com/orgs/hpp-backend-15/projects/2)
 - [시나리오 요구사항 분석 - 시퀀스 다이어그램](https://github.com/hpp-backend-15/java-concert-joonhyeokyang/blob/main/docs/sequecne/)
 - [API 명세](https://github.com/hpp-backend-15/java-concert-joonhyeokyang/issues/3)
