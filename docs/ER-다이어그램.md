@@ -28,7 +28,7 @@ erDiagram
     }
     
     QUEUE{
-        int id pk
+        int id PK
         string sessionId
         string status
         date expireAt
@@ -56,7 +56,7 @@ erDiagram
 
     RESERVATION {
         int id PK
-        string status (WAIT_FOR_PAYMENT, CONFIRM_PAYMENT)
+        string status
         int user_id
         int seats_id
         int performance_date_id
@@ -76,4 +76,5 @@ erDiagram
     PAYMENT ||--o{ RESERVATION: "for"
     RESERVATION ||--|| SEAT: "holds"
     PERFORMANCE_DATE ||--o{ RESERVATION: "reserves"
+    
 ```
