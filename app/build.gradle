@@ -90,8 +90,9 @@ task openApiYmlGenerate(type: GenerateTask) {
         delete outputDir + "/" + "swagger"
     }
 }
+tasks.processResources.dependsOn tasks.openApiYmlGenerate
 tasks.openApiGenerate.dependsOn tasks.openApiValidate
 tasks.openApiYmlGenerate.dependsOn tasks.openApiGenerate
-tasks.compileJava.dependsOn tasks.openApiGenerate, tasks.openApiYmlGenerate
+tasks.compileJava.dependsOn tasks.openApiGenerate, tasks.openApiYmlGenerate, tasks.openApiValidate
 sourceSets.main.java.srcDir "${openApiGenerate.outputDir.get()}/${openApiGenerate.configOptions['sourceFolder'].get()}"
 sourceSets.main.resources.srcDir "${openApiGenerate.outputDir.get()}/src/main/resources"
