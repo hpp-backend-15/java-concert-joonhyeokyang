@@ -1,0 +1,25 @@
+plugins {
+    id 'java-library'
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+
+group = 'com.joonhyeok'
+version = '0.0.1-SNAPSHOT'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
+
+
+dependencies {
+
+    implementation "org.openapitools:openapi-generator:7.9.0"
+
+}

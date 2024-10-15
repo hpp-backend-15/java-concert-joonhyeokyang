@@ -1,0 +1,25 @@
+{
+
+  "library": "spring-boot",
+  "interfaceOnly" : true,
+  "basePackage" : "com.joonhyeok.openapi",
+  "configPackage" : "example.api.config",
+  "modelPackage": "com.joonhyeok.openapi.models",
+  "apiPackage": "com.joonhyeok.openapi.apis",
+  "invokerPackage": "com.joonhyeok.openapi.apis",
+  "useTags" : true,
+  "skipDefaultInterface" : true,
+  "dateLibrary": "java8",
+  "useBeanValidation" : true,
+  "serializableModel" : true,
+  "implicitHeaders" : false,
+  "swaggerDocketConfig": false,
+  "hideGenerationTimestamp": true,
+
+  "useSpringfox": false,
+  "reactive": false,
+  "openApiNullable" : false
+
+
+
+}
