@@ -33,12 +33,12 @@ public class Seat {
     @Version
     private Integer version;
 
-    public boolean isSeatReservable() {
+    public boolean isReservable() {
         return AVAILABLE == status;
     }
 
     public void reserveSeat() {
-        if (!isSeatReservable()) {
+        if (!isReservable()) {
             throw new IllegalStateException("이미 선택된 좌석입니다.");
         }
         this.status = PENDING;
