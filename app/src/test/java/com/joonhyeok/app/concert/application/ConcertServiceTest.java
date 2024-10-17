@@ -4,6 +4,7 @@ import com.joonhyeok.app.concert.application.ConcertService;
 import com.joonhyeok.app.concert.application.dto.AvailablePerformanceDatesQuery;
 import com.joonhyeok.app.concert.application.dto.PerformanceDatesQueryResult;
 import com.joonhyeok.app.concert.infra.ConcertMemoryRepository;
+import com.joonhyeok.app.concert.infra.SeatMemoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ public class ConcertServiceTest {
 
     @BeforeEach
     void setUp() {
-        concertRepository = new ConcertMemoryRepository();
+        concertRepository = new ConcertMemoryRepository(new SeatMemoryRepository());
         concertService = new ConcertService(concertRepository);
     }
 
