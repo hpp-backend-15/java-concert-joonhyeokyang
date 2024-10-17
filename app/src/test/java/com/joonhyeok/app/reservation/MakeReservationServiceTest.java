@@ -1,13 +1,13 @@
-package com.joonhyeok.app.reservation.application;
+package com.joonhyeok.app.reservation;
 
+import com.joonhyeok.app.concert.ConcertMemoryRepository;
+import com.joonhyeok.app.concert.SeatMemoryRepository;
 import com.joonhyeok.app.concert.domain.*;
-import com.joonhyeok.app.concert.infra.ConcertMemoryRepository;
-import com.joonhyeok.app.concert.infra.SeatMemoryRepository;
+import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
-import com.joonhyeok.app.reservation.infra.ReservationMemoryRepository;
 import com.joonhyeok.app.user.User;
 import com.joonhyeok.app.user.UserMemoryRepository;
 import com.joonhyeok.app.user.UserRepository;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static com.joonhyeok.app.concert.domain.ConcertTestHelper.*;
+import static com.joonhyeok.app.concert.ConcertTestHelper.*;
 import static com.joonhyeok.app.reservation.domain.ReservationStatus.RESERVED;
 
 public class MakeReservationServiceTest {

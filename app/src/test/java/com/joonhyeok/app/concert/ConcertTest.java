@@ -1,12 +1,14 @@
-package com.joonhyeok.app.concert.domain;
+package com.joonhyeok.app.concert;
 
+import com.joonhyeok.app.concert.domain.Concert;
+import com.joonhyeok.app.concert.domain.PerformanceDate;
+import com.joonhyeok.app.concert.domain.Seat;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import static com.joonhyeok.app.concert.domain.ConcertTestHelper.*;
+import static com.joonhyeok.app.concert.ConcertTestHelper.*;
 
 public class ConcertTest {
 

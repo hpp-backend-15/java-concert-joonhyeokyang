@@ -3,7 +3,6 @@ package com.joonhyeok.app.concert.application.dto;
 import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.Seat;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public record SeatsQueryResult(

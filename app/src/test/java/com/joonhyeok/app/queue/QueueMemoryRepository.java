@@ -1,4 +1,4 @@
-package com.joonhyeok.app.queue.infra;
+package com.joonhyeok.app.queue;
 
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;

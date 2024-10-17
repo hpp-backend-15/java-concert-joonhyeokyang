@@ -1,6 +1,6 @@
-package com.joonhyeok.app.queue.appication;
+package com.joonhyeok.app.queue;
 
-import com.joonhyeok.app.queue.infra.QueueMemoryRepository;
+import com.joonhyeok.app.queue.appication.QueueService;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.appication.dto.EnqueueCommand;

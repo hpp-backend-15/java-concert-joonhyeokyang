@@ -1,4 +1,9 @@
-package com.joonhyeok.app.concert.domain;
+package com.joonhyeok.app.concert;
+
+import com.joonhyeok.app.concert.domain.Concert;
+import com.joonhyeok.app.concert.domain.PerformanceDate;
+import com.joonhyeok.app.concert.domain.Seat;
+import com.joonhyeok.app.concert.domain.SeatStatus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

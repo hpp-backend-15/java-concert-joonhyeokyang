@@ -1,6 +1,5 @@
 package com.joonhyeok.app.reservation.application;
 
-import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
 import com.joonhyeok.app.concert.domain.Seat;
 import com.joonhyeok.app.concert.domain.SeatRepository;

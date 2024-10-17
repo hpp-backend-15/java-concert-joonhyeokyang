@@ -1,4 +1,4 @@
-package com.joonhyeok.app.concert.infra;
+package com.joonhyeok.app.concert;
 
 import com.joonhyeok.app.concert.domain.Seat;
 import com.joonhyeok.app.concert.domain.SeatRepository;

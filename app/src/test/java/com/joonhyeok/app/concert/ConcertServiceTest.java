@@ -1,16 +1,16 @@
-package com.joonhyeok.app.concert.domain;
+package com.joonhyeok.app.concert;
 
 import com.joonhyeok.app.concert.application.ConcertService;
 import com.joonhyeok.app.concert.application.dto.AvailablePerformanceDatesQuery;
 import com.joonhyeok.app.concert.application.dto.PerformanceDatesQueryResult;
-import com.joonhyeok.app.concert.infra.ConcertMemoryRepository;
-import com.joonhyeok.app.concert.infra.SeatMemoryRepository;
+import com.joonhyeok.app.concert.domain.Concert;
+import com.joonhyeok.app.concert.domain.ConcertRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.joonhyeok.app.concert.domain.ConcertTestHelper.*;
+import static com.joonhyeok.app.concert.ConcertTestHelper.*;
 
 public class ConcertServiceTest {
     ConcertService concertService;

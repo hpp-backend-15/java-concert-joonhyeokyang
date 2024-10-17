@@ -1,4 +1,4 @@
-package com.joonhyeok.app.reservation.infra;
+package com.joonhyeok.app.reservation;
 
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;

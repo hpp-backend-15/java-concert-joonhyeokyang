@@ -1,5 +1,6 @@
-package com.joonhyeok.app.queue.domain;
+package com.joonhyeok.app.queue;
 
+import com.joonhyeok.app.queue.domain.Queue;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
