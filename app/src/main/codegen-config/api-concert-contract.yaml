@@ -59,9 +59,6 @@ paths:
                   positionInQueue:
                     type: integer
                     description: 현재 대기열에서의 위치
-                  estimatedWaitTime:
-                    type: string
-                    format: duration
         '400':
           description: 헤더 Wait-Token 없음
         '404':
@@ -79,14 +76,6 @@ paths:
           headers:
             Wait-Token:
               description: 대기열 토큰 정보
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  timeLeftToJoin:
-                    type: string
-                    format: time
         '409':
           description: 이미 등록된 대기자입니다
 
@@ -220,7 +209,7 @@ paths:
                 seatId:
                   type: array
                   description: 좌석 ID
-                  example: [789, 123]
+                  example: [ 789, 123 ]
                 userId:
                   type: integer
                   description: 예약을 요청하는 유저 ID
