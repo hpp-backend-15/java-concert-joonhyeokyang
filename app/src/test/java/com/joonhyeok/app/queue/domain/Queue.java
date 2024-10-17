@@ -1,5 +1,6 @@
 package com.joonhyeok.app.queue.domain;
 
+import com.joonhyeok.app.common.Constants;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import java.time.LocalDateTime;
 
 import static com.joonhyeok.app.queue.domain.QueueStatus.*;
 import static jakarta.persistence.EnumType.STRING;
+import static java.lang.Math.ceil;
+import static java.lang.Math.max;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -59,5 +62,15 @@ public class Queue {
         queue.sessionId = sessionId;
         queue.status = WAIT;
         return queue;
+    }
+
+    public Long getPosition(Long lastActivatePosition) {
+        return id - lastActivatePosition;
+    }
+
+    public LocalDateTime getEstimateWaitTime(Long lastActivatePosition) {
+        long unitOfWaiting = getPosition(lastActivatePosition) + 1 / Constants.SCHEDULER_ACTIVATE_QUANTITY_IN_PERIODS;
+        long totalWaitingSeconds = (long) ceil(unitOfWaiting) * Constants.SCHEDULER_ACTIVATE_PERIOD_IN_SECONDS;
+        return LocalDateTime.now().plusSeconds(totalWaitingSeconds);
     }
 }

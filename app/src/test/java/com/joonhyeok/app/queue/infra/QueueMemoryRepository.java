@@ -11,7 +11,7 @@ import java.util.Optional;
 import static com.joonhyeok.app.queue.domain.QueueStatus.ACTIVE;
 import static org.apache.commons.lang3.math.NumberUtils.max;
 
-public class MemoryQueueRepository implements QueueRepository {
+public class QueueMemoryRepository implements QueueRepository {
     private HashMap<Long, Queue> map = new HashMap<>();
     private Long id = 0L;
 

@@ -1,6 +1,4 @@
-package com.joonhyeok.app.queue.domain.service;
-
-import com.joonhyeok.app.queue.domain.Queue;
+package com.joonhyeok.app.queue.appication.dto;
 
 public record EnqueueCommand(
         String sessionId
