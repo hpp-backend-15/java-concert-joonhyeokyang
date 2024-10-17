@@ -198,14 +198,10 @@ paths:
             schema:
               type: object
               properties:
-                concertId:
-                  type: integer
-                  description: 콘서트 ID
-                  example: 123
                 seatId:
-                  type: array
+                  type: string
                   description: 좌석 ID
-                  example: [ 789, 123 ]
+                  example: 789
                 userId:
                   type: integer
                   description: 예약을 요청하는 유저 ID
