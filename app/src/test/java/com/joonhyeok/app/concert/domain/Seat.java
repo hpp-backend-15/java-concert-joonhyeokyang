@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static com.joonhyeok.app.concert.domain.SeatStatus.AVAILABLE;
+import static com.joonhyeok.app.concert.domain.SeatStatus.PENDING;
 import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -30,4 +32,15 @@ public class Seat {
 
     @Version
     private Integer version;
+
+    public boolean isSeatReservable() {
+        return AVAILABLE == status;
+    }
+
+    public void reserveSeat() {
+        if (!isSeatReservable()) {
+            throw new IllegalStateException("이미 선택된 좌석입니다.");
+        }
+        this.status = PENDING;
+    }
 }
