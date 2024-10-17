@@ -31,7 +31,7 @@ paths:
     get:
       tags:
         - queue
-      summary: 대기열에 등록된 세션 정보를 가져온다
+      summary: 대기열에 등록된 고유 ID 정보를 가져온다
       operationId: getRegisteredQueue
       parameters:
         - name: Wait-Token
@@ -42,10 +42,10 @@ paths:
             type: string
       responses:
         '200':
-          description: 대기열에 등록된 세션 정보 반환
+          description: 대기열에 등록된 고유 ID 정보 반환
           headers:
             Wait-Token:
-              description: 세션의 대기열 토큰 정보
+              description: 고유 ID의 대기열 토큰 정보
               schema:
                 type: string
           content:
@@ -55,20 +55,20 @@ paths:
                 properties:
                   sessionId:
                     type: string
-                    description: 대기열에 등록된 세션의 고유 ID
+                    description: 대기열에 등록된 고유 ID
                   positionInQueue:
                     type: integer
                     description: 현재 대기열에서의 위치
         '400':
           description: 헤더 Wait-Token 없음
         '404':
-          description: 대기열에 등록된 세션을 찾을 수 없음
+          description: 대기열에 등록된 고유 ID를 찾을 수 없음
 
     post:
       tags:
         - queue
       summary: 대기열에 등록한다.
-      description: 대기열에 등록한다. 기 존재하는 대기열이 있다면, 예외를 반환한다. 세션 ID로 대기열을 확인한다.
+      description: 대기열에 등록한다. 기 존재하는 대기열이 있다면, 예외를 반환한다. 고유 ID로 대기열을 확인한다.
       operationId: registerQueue
       responses:
         '201':
@@ -86,7 +86,7 @@ paths:
         - concert
       summary: 콘서트 예약 가능 일자 확인
       description: 해당 콘서트의 모든 예약 가능한 일자를 조회한다
-      operationId: findConcertPerformaceDates
+      operationId: findConcertPerformanceDates
       parameters:
         - name: Wait-Token
           in: header
@@ -108,30 +108,20 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  availablePerformanceDates:
-                    type: array
-                    description: 예약 가능한 공연일자 목록
-                    items:
-                      $ref: '#/components/schemas/PerformanceDate'
-                  unavailablePerformanceDates:
-                    type: array
-                    description: 예약 불가능한 공연일자 목록
-                    items:
-                      $ref: '#/components/schemas/PerformanceDate'
+                $ref: '#/components/schemas/FindConcertPerformanceDatesResponse'
         '301':
           description: 301 Redirect /queue (ACTIVE하지 않은 토큰을 갖는 유저)
         '400':
           description: Invalid ConcertId value
         '404':
           description: No Such Conecrt
-  /concerts/{concertId}/performanceDates/{performaceDateId}/seats:
+  /concerts/{concertId}/performanceDates/{performanceDateId}/seats:
     get:
       tags:
         - concert
       summary: 콘서트 예약 가능한 일자의 예악 가능한 좌석 확인
       description: 해당 콘서트 일자의 모든 예약 가능한 좌석을 반환한다.
-      operationId: findConcertPerformaceDatesSeats
+      operationId: findConcertPerformanceDatesSeats
       parameters:
         - name: Wait-Token
           in: header
@@ -146,7 +136,7 @@ paths:
           schema:
             type: string
             example: 1
-        - name: performaceDateId
+        - name: performanceDateId
           in: path
           description: 콘서트 공연일
           required: true
@@ -159,18 +149,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  availableSeats:
-                    type: array
-                    description: 예약 가능한 좌석 목록
-                    items:
-                      $ref: '#/components/schemas/Seat'
-                  unavailableSeats:
-                    type: array
-                    description: 예약 불가능한 좌석 목록
-                    items:
-                      $ref: '#/components/schemas/Seat'
+                $ref: '#/components/schemas/FindConcertAvailableSeatsResponse'
         '301':
           description: 301 Redirect /queue (ACTIVE하지 않은 토큰을 갖는 유저)
         '400':
@@ -463,6 +442,7 @@ components:
             - AVAILABLE
             - PENDING
             - UNAVAILABLE
+
     PerformanceDate:
       type: object
       properties:
@@ -471,6 +451,34 @@ components:
           example: 1
         date:
           type: string
+
+    FindConcertAvailableSeatsResponse:
+      type: object
+      properties:
+        availableSeats:
+          type: array
+          description: 예약 가능한 좌석 목록
+          items:
+            $ref: '#/components/schemas/Seat'
+        unavailableSeats:
+          type: array
+          description: 예약 불가능한 좌석 목록
+          items:
+            $ref: '#/components/schemas/Seat'
+
+    FindConcertPerformanceDatesResponse:
+      type: object
+      properties:
+        availablePerformanceDates:
+          type: array
+          description: 예약 가능한 공연일자 목록
+          items:
+            $ref: '#/components/schemas/PerformanceDate'
+        unavailablePerformanceDates:
+          type: array
+          description: 예약 불가능한 공연일자 목록
+          items:
+            $ref: '#/components/schemas/PerformanceDate'
 
     User:
       type: object
@@ -518,6 +526,7 @@ components:
       type: apiKey
       name: api_key
       in: header
+
   headers:
     Wait-Token:
       description: 대기열에 등록된 토큰 정보
