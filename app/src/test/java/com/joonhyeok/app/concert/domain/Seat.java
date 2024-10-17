@@ -27,4 +27,7 @@ public class Seat {
     private SeatStatus status;
 
     LocalDateTime lastReservedAt;
+
+    @Version
+    private Integer version;
 }
