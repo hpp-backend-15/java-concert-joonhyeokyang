@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,7 +28,7 @@ public class QueueService {
             throw new EntityExistsException("이미 대기중인 대기자입니다. waitId = " + queue.getWaitId());
         });
 
-        Queue queue = Queue.create(waitId);
+        Queue queue = Queue.create(UUID.randomUUID().toString());
         Queue savedQueue = queueRepository.save(queue);
         return new EnqueueResult(savedQueue.getId());
     }

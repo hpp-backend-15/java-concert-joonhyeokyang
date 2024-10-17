@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static com.joonhyeok.app.queue.domain.QueueStatus.*;
 import static jakarta.persistence.EnumType.STRING;

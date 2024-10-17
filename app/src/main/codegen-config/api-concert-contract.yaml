@@ -51,7 +51,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref :
+                type: object
+                $ref: '#/components/schemas/QueueResponse'
         '400':
           description: 헤더 Wait-Token 없음
         '404':
