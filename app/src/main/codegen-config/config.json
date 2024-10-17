@@ -15,7 +15,8 @@
   "implicitHeaders" : false,
   "swaggerDocketConfig": false,
   "hideGenerationTimestamp": true,
-
+  "useJakartaEe" : true,
+  "useSpringBoot3" : true,
   "useSpringfox": false,
   "reactive": false,
   "openApiNullable" : false
