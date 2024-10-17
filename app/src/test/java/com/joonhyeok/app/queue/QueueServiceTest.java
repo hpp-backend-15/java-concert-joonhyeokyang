@@ -35,7 +35,7 @@ public class QueueServiceTest {
         //given
 
         //when
-        EnqueueResult result = queueService.enqueue(EnqueueCommand.from("sessionId"));
+        EnqueueResult result = queueService.enqueue(EnqueueCommand.from("waitId"));
 
         //then1
         Optional<Queue> optionalQueue = queueRepository.findById(result.id());
@@ -50,49 +50,49 @@ public class QueueServiceTest {
     @Test
     void Queue_이미대기하는_대기요청은_실패한다() throws Exception {
         //given
-        queueService.enqueue(EnqueueCommand.from("sessionId1"));
+        queueService.enqueue(EnqueueCommand.from("waitId1"));
 
         //when
 
         //then
-        assertThatThrownBy(() -> queueService.enqueue(EnqueueCommand.from("sessionId1")))
+        assertThatThrownBy(() -> queueService.enqueue(EnqueueCommand.from("waitId1")))
                 .isInstanceOf(EntityExistsException.class);
     }
 
     @Test
     void Queue_이미대기하는_요청을_쿼리하면_찾을수있어야한다() throws Exception {
         //given
-        queueService.enqueue(EnqueueCommand.from("sessionId"));
+        queueService.enqueue(EnqueueCommand.from("waitId"));
 
         //when
-        QueueQueryResult result = queueService.query(QueueQuery.from("sessionId"));
+        QueueQueryResult result = queueService.query(QueueQuery.from("waitId"));
 
         //then
-        assertThat(result.sessionId()).isEqualTo("sessionId");
+        assertThat(result.waitId()).isEqualTo("waitId");
     }
 
     @Test
     void Queue_대기하지않는다면_쿼리가_실패해야한다() throws Exception {
         //given
-        queueService.enqueue(EnqueueCommand.from("sessionId"));
+        queueService.enqueue(EnqueueCommand.from("waitId"));
 
         //when
         //then
-        assertThatThrownBy(() -> queueService.query(QueueQuery.from("differentSessionId")))
+        assertThatThrownBy(() -> queueService.query(QueueQuery.from("differentWaitId")))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
     void Queue_만료된큐라면_쿼리가_실패해야한다() {
         //given
-        queueService.enqueue(EnqueueCommand.from("sessionId"));
-        Queue queue = queueRepository.findBySessionId("sessionId").orElseThrow();
+        queueService.enqueue(EnqueueCommand.from("waitId"));
+        Queue queue = queueRepository.findByWaitId("waitId").orElseThrow();
         queue.activate(LocalDateTime.now().minusDays(1));
         queue.expire();
 
         //when
         //then
-        assertThatThrownBy(() -> queueService.query(QueueQuery.from("sessionId")))
+        assertThatThrownBy(() -> queueService.query(QueueQuery.from("waitId")))
                 .isInstanceOf(IllegalStateException.class);
 
     }
@@ -101,15 +101,15 @@ public class QueueServiceTest {
     void 앞에10명이대기하고있고_새로활성화되려면_내순번은11번째다() throws Exception {
         //given
         for (int i = 0; i < 10; i++) {
-            queueService.enqueue(EnqueueCommand.from("sessionId" + i));
+            queueService.enqueue(EnqueueCommand.from("waitId" + i));
         }
-        queueService.enqueue(EnqueueCommand.from("sessionId"));
+        queueService.enqueue(EnqueueCommand.from("waitId"));
 
         //when
-        QueueQueryResult myTurn = queueService.query(QueueQuery.from("sessionId"));
+        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
 
         //then
-        assertThat(myTurn.sessionId()).isEqualTo("sessionId");
+        assertThat(myTurn.waitId()).isEqualTo("waitId");
         assertThat(myTurn.position()).isEqualTo(11);
     }
 
@@ -117,17 +117,17 @@ public class QueueServiceTest {
     void 앞에10명이활성중이고_새로활성화되려면_내순번은1번째다() throws Exception {
         //given
         for (int i = 0; i < 10; i++) {
-            queueService.enqueue(EnqueueCommand.from("sessionId" + i));
-            Queue queue = queueRepository.findBySessionId("sessionId"+i).get();
+            queueService.enqueue(EnqueueCommand.from("waitId" + i));
+            Queue queue = queueRepository.findByWaitId("waitId"+i).get();
             queue.activate(LocalDateTime.now());
         }
-        queueService.enqueue(EnqueueCommand.from("sessionId"));
+        queueService.enqueue(EnqueueCommand.from("waitId"));
 
         //when
-        QueueQueryResult myTurn = queueService.query(QueueQuery.from("sessionId"));
+        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
 
         //then
-        assertThat(myTurn.sessionId()).isEqualTo("sessionId");
+        assertThat(myTurn.waitId()).isEqualTo("waitId");
         assertThat(myTurn.position()).isEqualTo(1);
 
     }
@@ -136,15 +136,15 @@ public class QueueServiceTest {
 //    void 앞에10명이대기하고있고_새로활성화되려면_최대20초는기다려야하고_내순번은11번째다() throws Exception {
 //        //given
 //        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from("sessionId" + i));
+//            queueService.enqueue(EnqueueCommand.from("waitId" + i));
 //        }
-//        queueService.enqueue(EnqueueCommand.from("sessionId"));
+//        queueService.enqueue(EnqueueCommand.from("waitId"));
 //
 //        //when
-//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("sessionId"));
+//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
 //
 //        //then
-//        assertThat(myTurn.sessionId()).isEqualTo("sessionId");
+//        assertThat(myTurn.waitId()).isEqualTo("waitId");
 //        assertThat(myTurn.position()).isEqualTo(10);
 //        assertThat(myTurn.estimatedWaitTime()).isAfterOrEqualTo(LocalDateTime.now().plusSeconds(2 * Constants.SCHEDULER_ACTIVATE_PERIOD_IN_SECONDS - 1));
 //
@@ -154,17 +154,17 @@ public class QueueServiceTest {
 //    void 앞에10명이활성중이고_새로활성화되려면_최대10초는기다려야하고_내순번은1번째다() throws Exception {
 //        //given
 //        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from("sessionId" + i));
-//            Queue queue = queueRepository.findBySessionId("sessionId"+i).get();
+//            queueService.enqueue(EnqueueCommand.from("waitId" + i));
+//            Queue queue = queueRepository.findByWaitId("waitId"+i).get();
 //            queue.activate(LocalDateTime.now());
 //        }
-//        queueService.enqueue(EnqueueCommand.from("sessionId"));
+//        queueService.enqueue(EnqueueCommand.from("waitId"));
 //
 //        //when
-//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("sessionId"));
+//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
 //
 //        //then
-//        assertThat(myTurn.sessionId()).isEqualTo("sessionId");
+//        assertThat(myTurn.waitId()).isEqualTo("waitId");
 //        assertThat(myTurn.position()).isEqualTo(1);
 //        assertThat(myTurn.estimatedWaitTime()).isAfterOrEqualTo(LocalDateTime.now().plusSeconds(1 * Constants.SCHEDULER_ACTIVATE_PERIOD_IN_SECONDS - 1));
 //

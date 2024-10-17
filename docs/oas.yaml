@@ -32,7 +32,7 @@ paths:
       tags:
         - queue
       summary: 대기열에 등록한다.
-      description: 대기열에 등록한다. 기 존재하는 대기열이 있다면, 해당 토큰을 반환한다. 쿠키에 JSESSIONID를 삽입한다. 이후 해당 세션 ID로 대기열을 확인한다.
+      description: 대기열에 등록한다. 기 존재하는 대기열이 있다면, 해당 토큰을 반환한다.이후 해당 wait ID로 대기열을 확인한다.
       operationId: registerQueue
       responses:
         '201':

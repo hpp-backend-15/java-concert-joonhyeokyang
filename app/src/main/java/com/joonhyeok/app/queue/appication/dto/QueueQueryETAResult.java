@@ -5,14 +5,14 @@ import com.joonhyeok.app.queue.domain.Queue;
 import java.time.LocalDateTime;
 
 public record QueueQueryETAResult(
-        String sessionId,
+        String waitId,
         Long position,
         LocalDateTime estimatedWaitTime
 ) {
 
     public static QueueQueryETAResult of(Queue queue, Long lastActivatedId) {
         return new QueueQueryETAResult(
-                queue.getSessionId(),
+                queue.getWaitId(),
                 queue.getPosition(lastActivatedId),
                 queue.getEstimateWaitTime(lastActivatedId));
     }

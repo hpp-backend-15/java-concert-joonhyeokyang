@@ -15,7 +15,7 @@ public class QueueTest {
     void Queue_대기자_활성화하여_입장하는_경우() throws Exception {
         //given
         LocalDateTime now = LocalDateTime.now();
-        Queue queue = new Queue(0L, "sessionId", WAIT, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(0L, "waitId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
         queue.activate(now);
@@ -29,7 +29,7 @@ public class QueueTest {
     @Test
     void Queue_이미_만료된_토큰을_활성화하는경우_예외() throws Exception {
         //given
-        Queue queue = new Queue(0L, "sessionId", EXPIRED, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(0L, "waitId", EXPIRED, LocalDateTime.now(), null, null, null);
 
         //when
         //then
@@ -41,7 +41,7 @@ public class QueueTest {
     @Test
     void Queue_만료기능_만료가_불가능한시간에_만료시키는경우() throws Exception {
         //given
-        Queue queue = new Queue(0L, "sessionId", WAIT, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(0L, "waitId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
         queue.activate(LocalDateTime.now().minusMinutes(9));
@@ -55,7 +55,7 @@ public class QueueTest {
     @Test
     void Queue_만료기능_만료가_가능한시간에_만료시키는경우() throws Exception {
         //given
-        Queue queue = new Queue(0L, "sessionId", WAIT, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(0L, "waitId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
         queue.activate(LocalDateTime.now().minusMinutes(11));

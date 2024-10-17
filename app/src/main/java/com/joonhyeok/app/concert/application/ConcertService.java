@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ConcertService {
+public class
+ConcertService {
     private final ConcertRepository concertRepository;
 
     public PerformanceDatesQueryResult queryPerformanceDates(AvailablePerformanceDatesQuery query) {

@@ -20,13 +20,13 @@ public class QueueService {
 
     @Transactional
     public EnqueueResult enqueue(EnqueueCommand command) {
-        String sessionId = command.sessionId();
+        String waitId = command.waitId();
 
-        queueRepository.findBySessionId(sessionId).ifPresent(queue -> {
-            throw new EntityExistsException("이미 대기중인 세션입니다. sessionId = " + queue.getSessionId());
+        queueRepository.findByWaitId(waitId).ifPresent(queue -> {
+            throw new EntityExistsException("이미 대기중인 대기자입니다. waitId = " + queue.getWaitId());
         });
 
-        Queue queue = Queue.create(sessionId);
+        Queue queue = Queue.create(waitId);
         Queue savedQueue = queueRepository.save(queue);
         return new EnqueueResult(savedQueue.getId());
     }
@@ -41,12 +41,12 @@ public class QueueService {
      * @return
      */
     public QueueQueryResult query(QueueQuery query) {
-        String sessionId = query.sessionId();
-        Queue queue = queueRepository.findBySessionId(sessionId).orElseThrow(() ->
-                new EntityNotFoundException("존재하지 않는 대기자입니다. sessionId = " + sessionId));
+        String waitId = query.waitId();
+        Queue queue = queueRepository.findByWaitId(waitId).orElseThrow(() ->
+                new EntityNotFoundException("존재하지 않는 대기자입니다. waitId = " + waitId));
 
         if (queue.isExpired()) {
-            throw new IllegalStateException("이미 만료된 대기자입니다. sessionId = " + sessionId);
+            throw new IllegalStateException("이미 만료된 대기자입니다. waitId = " + waitId);
         }
 
         Long lastActivatedIdx = queueRepository.findMaxPositionOfActivated().orElse(-1L);

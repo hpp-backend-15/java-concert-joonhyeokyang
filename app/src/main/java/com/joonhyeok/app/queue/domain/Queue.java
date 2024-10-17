@@ -25,8 +25,8 @@ public class Queue {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "session_id", nullable = false)
-    private String sessionId;
+    @Column(name = "wait_id", nullable = false)
+    private String waitId;
 
     @Enumerated(STRING)
     private QueueStatus status;
@@ -61,9 +61,9 @@ public class Queue {
         this.status = EXPIRED;
     }
 
-    public static Queue create(String sessionId) {
+    public static Queue create(String waitId) {
         Queue queue = new Queue();
-        queue.sessionId = sessionId;
+        queue.waitId = waitId;
         queue.status = WAIT;
         return queue;
     }

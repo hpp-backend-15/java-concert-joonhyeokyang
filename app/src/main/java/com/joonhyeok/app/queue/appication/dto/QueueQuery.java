@@ -1,9 +1,9 @@
 package com.joonhyeok.app.queue.appication.dto;
 
 public record QueueQuery(
-        String sessionId
+        String waitId
 ) {
-    public static QueueQuery from(String sessionId) {
-        return new QueueQuery(sessionId);
+    public static QueueQuery from(String waitId) {
+        return new QueueQuery(waitId);
     }
 }

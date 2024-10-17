@@ -4,17 +4,19 @@ import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
 import com.joonhyeok.app.concert.domain.PerformanceDate;
 import com.joonhyeok.app.concert.domain.SeatRepository;
-import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 public class ConcertMemoryRepository implements ConcertRepository {
     private final SeatRepository seatRepository;
     private HashMap<Long, Concert> map = new HashMap<>();
     private Long id = 0L;
+
+    public ConcertMemoryRepository(SeatRepository seatRepository) {
+        this.seatRepository = seatRepository;
+    }
 
     public Optional<Concert> findById(Long id) {
         return Optional.ofNullable(map.get(id));
