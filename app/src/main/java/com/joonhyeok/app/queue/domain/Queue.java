@@ -44,6 +44,10 @@ public class Queue {
         return status == EXPIRED;
     }
 
+    public boolean isActive() {
+        return status == ACTIVE;
+    }
+
     public void activate(LocalDateTime enteredAt, LocalDateTime expireAt) {
         if (status != WAIT) {
             throw new IllegalStateException("cannot change queue status to ACTIVATE, current status is " + status);
