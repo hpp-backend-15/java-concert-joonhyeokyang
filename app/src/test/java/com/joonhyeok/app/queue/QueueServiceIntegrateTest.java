@@ -1,16 +1,20 @@
 package com.joonhyeok.app.queue;
 
 import com.joonhyeok.app.queue.appication.QueueService;
-import com.joonhyeok.app.queue.domain.Queue;
-import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.appication.dto.EnqueueCommand;
 import com.joonhyeok.app.queue.appication.dto.EnqueueResult;
 import com.joonhyeok.app.queue.appication.dto.QueueQuery;
 import com.joonhyeok.app.queue.appication.dto.QueueQueryResult;
+import com.joonhyeok.app.queue.domain.Queue;
+import com.joonhyeok.app.queue.domain.QueueRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -18,17 +22,19 @@ import java.util.Optional;
 import static com.joonhyeok.app.queue.domain.QueueStatus.WAIT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
-public class QueueServiceTest {
+@SpringBootTest
+@ActiveProfiles("test")
+@TestPropertySource(locations = "classpath:application-test.yaml")
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+public class QueueServiceIntegrateTest {
 
+    @Autowired
     QueueService queueService;
-    QueueRepository queueRepository;
 
-    @BeforeEach
-    void setUp() {
-        queueRepository = new QueueMemoryRepository();
-        queueService = new QueueService(queueRepository);
-    }
+    @Autowired
+    QueueRepository queueRepository;
 
     @Test
     void Queue_대기열_등록하는_경우_성공한다() throws Exception {
@@ -91,6 +97,7 @@ public class QueueServiceTest {
         Queue queue = queueRepository.findByUserId("userId").orElseThrow();
         queue.activate(LocalDateTime.now().minusDays(1), LocalDateTime.now().minusHours(23));
         queue.expire();
+        queueRepository.save(queue);
 
         //when
         //then
@@ -120,11 +127,12 @@ public class QueueServiceTest {
         //given
         for (int i = 0; i < 10; i++) {
             queueService.enqueue(EnqueueCommand.from("userId" + i));
-            Queue queue = queueRepository.findByUserId("userId"+i).get();
+            Queue queue = queueRepository.findByUserId("userId" + i).get();
             queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(10));
+            queueRepository.save(queue);
         }
-        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
 
+        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
         //when
         String waitId = queueRepository.findById(queueId).orElseThrow().getWaitId();
         QueueQueryResult myTurn = queueService.query(QueueQuery.from(waitId));

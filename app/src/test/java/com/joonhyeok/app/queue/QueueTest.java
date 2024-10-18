@@ -60,7 +60,7 @@ public class QueueTest {
     void Queue_만료기능_만료가_가능한시간에_만료시키는경우() throws Exception {
         //given
         String waitId = UUID.randomUUID().toString();
-        Queue queue = new Queue(0L, waitId,"userId", WAIT, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(null, waitId,"userId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
         queue.activate(LocalDateTime.now().minusMinutes(11), LocalDateTime.now().minusMinutes(1));

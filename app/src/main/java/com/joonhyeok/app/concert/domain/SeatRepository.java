@@ -6,5 +6,5 @@ public interface SeatRepository {
     Optional<Seat> findById(Long id);
     Seat save(Seat seat);
 
-    Optional<Seat> findByIdWithLock(Long seatId);
+    Optional<Seat> findWithLockById(Long seatId);
 }

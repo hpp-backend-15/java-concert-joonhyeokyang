@@ -11,6 +11,6 @@ public interface QueueJpaRepository extends QueueRepository, Repository<Queue, L
     @Override
     @Query("select max(q.id) " +
             "from Queue q " +
-            "where q.status = 'ACTIVATE'")
+            "where q.status = 'ACTIVE'")
     Optional<Long> findMaxPositionOfActivated();
 }

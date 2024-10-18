@@ -12,7 +12,7 @@ import java.util.Optional;
 public class ConcertMemoryRepository implements ConcertRepository {
     private final SeatRepository seatRepository;
     private HashMap<Long, Concert> map = new HashMap<>();
-    private Long id = 0L;
+    private Long id = 1L;
 
     public ConcertMemoryRepository(SeatRepository seatRepository) {
         this.seatRepository = seatRepository;
@@ -34,16 +34,4 @@ public class ConcertMemoryRepository implements ConcertRepository {
         return newConcert;
     }
 
-    @Override
-    public Optional<Concert> findAvailableConcertById(Long id) {
-        Concert value = map.get(id);
-        List<PerformanceDate> performanceDateList = value.getPerformanceDateList();
-        boolean availability = performanceDateList.stream()
-                .anyMatch(PerformanceDate::checkAvailableSeat);
-        if (!availability) {
-            return Optional.empty();
-        } else {
-            return Optional.ofNullable(value);
-        }
-    }
 }

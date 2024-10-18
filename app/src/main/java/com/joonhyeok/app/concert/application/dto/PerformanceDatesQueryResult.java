@@ -2,6 +2,7 @@ package com.joonhyeok.app.concert.application.dto;
 
 import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.PerformanceDate;
+import com.joonhyeok.openapi.models.PerformanceDateResponse;
 
 import java.util.List;
 
@@ -11,5 +12,6 @@ public record PerformanceDatesQueryResult(
 ) {
     public PerformanceDatesQueryResult(Concert concert) {
         this(concert.getAvailablePerformanceDates(), concert.getUnAvailablePerformanceDates());
+
     }
 }
