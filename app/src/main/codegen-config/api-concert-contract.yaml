@@ -64,13 +64,17 @@ paths:
       summary: 대기열에 등록한다.
       description: 대기열에 등록한다. 기 존재하는 대기열이 있다면, 예외를 반환한다. 등록된 User ID로 대기열을 확인한다.
       operationId: registerQueue
-      parameters:
-        - name: userId
-          description: 대기하려는 유저 Id
-          required: true
-          schema:
-            type: long
-            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: 대기하려는 유저 Id
+                  required: true
+                  type: long
+                  example: 1
       responses:
         '201':
           description: 대기열 등록 완료
