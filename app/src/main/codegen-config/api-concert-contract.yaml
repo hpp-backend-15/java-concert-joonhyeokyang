@@ -67,7 +67,6 @@ paths:
               properties:
                 userId:
                   description: 대기하려는 유저 Id
-                  required: true
                   type: long
                   example: 1
       responses:
@@ -193,12 +192,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  reservationId:
-                    type: long
-                    description: 생성된 예약 ID
-                    example: 101
+                $ref: '#/components/schemas/ReservationResponse'
         '400':
           description: 잘못된 요청
           content:
@@ -401,21 +395,24 @@ paths:
                     example: "서버에서 오류가 발생했습니다."
 components:
   schemas:
-    Reservation:
+    ReservationResponse:
       type: object
       properties:
-        concertId:
-          type: long
-          description: 콘서트 ID
-        performanceDateId:
-          type: long
-          description: 공연 날짜 ID
         seatId:
           type: long
           description: 좌석 ID
+          example: 1
         userId:
           type: long
           description: 유저 ID
+          example: 1
+        performanceDate:
+          type: string
+          example: "2018-01-01"
+          format: date
+        reservationId:
+          type: string
+          description: 예약 ID
     Concert:
       type: object
       description: 콘서트 관련 정보

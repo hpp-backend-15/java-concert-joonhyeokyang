@@ -37,6 +37,7 @@ public class MakeReservationService {
                 new EntityNotFoundException("해당 유저는 존재하지 않습니다. userId = " + userId)
         );
 
+        // TODO in new Reservation() -> Events.raise(new SeatReservationEvent)
         lockedSeat.reserveSeat();
         Reservation reservation = new Reservation(ReservationStatus.RESERVED, lockedSeat.getId(), user.getId());
         Reservation saved = reservationRepository.save(reservation);
