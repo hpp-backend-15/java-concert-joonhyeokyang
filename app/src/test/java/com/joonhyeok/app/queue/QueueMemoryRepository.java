@@ -5,8 +5,7 @@ import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.domain.QueueStatus;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 import static com.joonhyeok.app.queue.domain.QueueStatus.ACTIVE;
 import static org.apache.commons.lang3.math.NumberUtils.max;
@@ -30,10 +29,10 @@ public class QueueMemoryRepository implements QueueRepository {
         }
         if (hasActivated) {
             return Optional.of(lastActivateIdx);
-        }
-        else return Optional.empty();
+        } else return Optional.empty();
 
     }
+
     @Override
     public Optional<Queue> findByWaitId(String waitId) {
         for (Queue value : map.values()) {
@@ -65,4 +64,40 @@ public class QueueMemoryRepository implements QueueRepository {
         return newQueue;
     }
 
+    @Override
+    public Long countByQueueStatus(QueueStatus queueStatus) {
+        Long count = 0L;
+        for (Queue value : map.values()) {
+            if (value.getStatus() == queueStatus) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public List<Queue> findByQueueStatusAndLimit(QueueStatus queueStatus, Long limit) {
+        List<Queue> candidates = new ArrayList<>();
+        for (Queue value : map.values()) {
+            if (value.getStatus() == queueStatus) {
+                candidates.add(value);
+            }
+        }
+        candidates.sort(Comparator.comparingLong(Queue::getId));
+
+        return candidates.subList(0, Math.toIntExact(limit));
+    }
+
+    @Override
+    public List<Queue> findByQueueStatusAndExpireAtAfter(QueueStatus queueStatus, LocalDateTime expireAt) {
+        List<Queue> candidates = new ArrayList<>();
+        for (Queue value : map.values()) {
+            if (value.getStatus() == queueStatus && value.getExpireAt().isAfter(expireAt)) {
+                candidates.add(value);
+            }
+        }
+        candidates.sort(Comparator.comparingLong(Queue::getId));
+
+        return candidates;
+    }
 }

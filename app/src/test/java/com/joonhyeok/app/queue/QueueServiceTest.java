@@ -89,7 +89,7 @@ public class QueueServiceTest {
         //given
         queueService.enqueue(EnqueueCommand.from("userId"));
         Queue queue = queueRepository.findByUserId("userId").orElseThrow();
-        queue.activate(LocalDateTime.now().minusDays(1));
+        queue.activate(LocalDateTime.now().minusDays(1), LocalDateTime.now().minusHours(23));
         queue.expire();
 
         //when
@@ -121,7 +121,7 @@ public class QueueServiceTest {
         for (int i = 0; i < 10; i++) {
             queueService.enqueue(EnqueueCommand.from("userId" + i));
             Queue queue = queueRepository.findByUserId("userId"+i).get();
-            queue.activate(LocalDateTime.now());
+            queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(10));
         }
         Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
 

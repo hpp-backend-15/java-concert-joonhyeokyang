@@ -20,7 +20,7 @@ public class QueueTest {
         Queue queue = new Queue(0L, waitId, "userId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
-        queue.activate(now);
+        queue.activate(now, now.plusMinutes(10));
 
         //then
         assertThat(queue.getStatus()).isEqualTo(ACTIVE);
@@ -36,7 +36,7 @@ public class QueueTest {
 
         //when
         //then
-        assertThatThrownBy(() -> queue.activate(LocalDateTime.now()))
+        assertThatThrownBy(() -> queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(10)))
                 .isInstanceOf(IllegalStateException.class);
 
     }
@@ -48,7 +48,7 @@ public class QueueTest {
         Queue queue = new Queue(0L, waitId,"userId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
-        queue.activate(LocalDateTime.now().minusMinutes(9));
+        queue.activate(LocalDateTime.now().minusMinutes(9), LocalDateTime.now().plusMinutes(1));
 
         //then
         assertThatThrownBy(queue::expire)
@@ -63,7 +63,7 @@ public class QueueTest {
         Queue queue = new Queue(0L, waitId,"userId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
-        queue.activate(LocalDateTime.now().minusMinutes(11));
+        queue.activate(LocalDateTime.now().minusMinutes(11), LocalDateTime.now().minusMinutes(1));
         queue.expire();
 
         //then

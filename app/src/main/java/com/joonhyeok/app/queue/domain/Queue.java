@@ -44,13 +44,13 @@ public class Queue {
         return status == EXPIRED;
     }
 
-    public void activate(LocalDateTime enteredAt) {
+    public void activate(LocalDateTime enteredAt, LocalDateTime expireAt) {
         if (status != WAIT) {
             throw new IllegalStateException("cannot change queue status to ACTIVATE, current status is " + status);
         }
         this.status = ACTIVE;
         this.enteredAt = enteredAt;
-        this.expireAt = enteredAt.plusMinutes(10);
+        this.expireAt = expireAt;
     }
 
     public void expire() {
