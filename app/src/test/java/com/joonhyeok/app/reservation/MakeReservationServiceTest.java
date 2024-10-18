@@ -59,7 +59,6 @@ public class MakeReservationServiceTest {
         Assertions.assertThat(seat).isNotNull();
         Assertions.assertThat(seat.getStatus()).isEqualTo(SeatStatus.PENDING);
     }
-    // 유저가 없는 경우
 
     @Test
     void 유저가없다면_예약할수없다() throws Exception {
