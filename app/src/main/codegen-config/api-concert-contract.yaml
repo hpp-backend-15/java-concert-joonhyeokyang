@@ -67,7 +67,7 @@ paths:
               properties:
                 userId:
                   description: 대기하려는 유저 Id
-                  type: number
+                  type: integer
                   format: int64
                   example: 1
       responses:
@@ -101,7 +101,8 @@ paths:
           description: 콘서트 Id
           required: true
           schema:
-            type: int64
+            type: integer
+            format: int64
             example: 1
       responses:
         '200':
@@ -136,7 +137,7 @@ paths:
           description: 콘서트 Id
           required: true
           schema:
-            type: number
+            type: integer
             format: int64
             example: 1
         - name: performanceDateId
@@ -144,7 +145,7 @@ paths:
           description: 콘서트 공연일
           required: true
           schema:
-            type: number
+            type: integer
             format: int64
             example: 1
       responses:
@@ -186,7 +187,8 @@ paths:
                   description: 좌석 ID
                   example: 789
                 userId:
-                  type: int64
+                  type: integer
+                  foramt: int64
                   description: 예약을 요청하는 유저 ID
                   example: 1
       responses:
@@ -240,7 +242,7 @@ paths:
               type: object
               properties:
                 amount:
-                  type: number
+                  type: integer
                   description: 충전할 금액
                   example: 10000
       responses:
@@ -252,7 +254,7 @@ paths:
                 type: object
                 properties:
                   chargedAmount:
-                    type: number
+                    type: integer
                     description: 충전된 금액
                     example: 10000
                   timestamp:
@@ -261,7 +263,7 @@ paths:
                     description: 충전 완료 시간
                     example: "2024-10-10T12:34:56Z"
                   balance:
-                    type: number
+                    type: integer
                     description: 충전 후 잔액
                     example: 50000
         '409':
@@ -308,7 +310,7 @@ paths:
                 type: object
                 properties:
                   balance:
-                    type: number
+                    type: integer
                     description: 사용자 계좌 잔액
                     example: 50000
         '404':
@@ -347,11 +349,13 @@ paths:
               type: object
               properties:
                 userId:
-                  type: int64
+                  type: integer
+                  format: int64
                   description: "유저 식별자"
                   example: 123
                 reservationId:
-                  type: int64
+                  type: integer
+                  format: int64
                   description: "예약 식별자"
                   example: 456
       responses:
@@ -363,7 +367,8 @@ paths:
                 type: object
                 properties:
                   reservationId:
-                    type: int64
+                    type: integer
+                    format: int64
                     description: "예약 식별자"
                     example: 456
         '400':
@@ -402,11 +407,13 @@ components:
       type: object
       properties:
         seatId:
-          type: int64
+          type: integer
+          format: int64
           description: 좌석 ID
           example: 1
         userId:
-          type: int64
+          type: integer
+          format: int64
           description: 유저 ID
           example: 1
         performanceDate:
@@ -421,7 +428,8 @@ components:
       description: 콘서트 관련 정보
       properties:
         id:
-          type: int64
+          type: integer
+          format: int64
           description: 공연 Id
           example: 1
         performer:
@@ -434,7 +442,8 @@ components:
       description: 콘서트 좌석 정보
       properties:
         id:
-          type: int64
+          type: integer
+          format: int64
           description: 좌석 Id
           example: 1
         status:
@@ -452,11 +461,11 @@ components:
           type: string
           description: 대기열에 등록된 고유 ID
         positionInQueue:
-          type: number
+          type: integer
           format: int64
           description: 현재 대기열에서의 위치
         userId:
-          type: number
+          type: integer
           format: int64
           description: 대기하는 유저 ID
 
@@ -464,7 +473,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           format: int64
           example: 1
         date:
@@ -503,7 +512,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           format: int64
           example: 10
       xml:
@@ -512,7 +521,7 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: integer
           format: int64
         name:
           type: string
@@ -523,7 +532,7 @@ components:
       type: object
       properties:
         code:
-          type: number
+          type: integer
           format: int64
         type:
           type: string
