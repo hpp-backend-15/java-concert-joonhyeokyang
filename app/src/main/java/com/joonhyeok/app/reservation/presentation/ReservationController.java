@@ -12,6 +12,6 @@ public class ReservationController implements ReservationApi {
             String waitToken,
             ReservationsPostRequest reservationsPostRequest
     ) {
-        return null;
+        return ResponseEntity.ok(new ReservationResponse());
     }
 }
