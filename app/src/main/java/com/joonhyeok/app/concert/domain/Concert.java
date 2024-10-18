@@ -40,11 +40,17 @@ public class Concert {
     }
 
     /**
-     * 해당공연일의 모든 예약 불가능한 좌석을 가져온다
+     * 해당공연일의 모든 예약 가능한 좌석을 가져온다
+     *
      * @param dateId
      * @return
      */
     public List<Seat> getAvailableSeatByPerformanceDate(Long dateId) {
+        boolean hasPerformanceDate = performanceDateList.stream()
+                .anyMatch(performanceDate -> performanceDate.getId().equals(dateId));
+        if (!hasPerformanceDate) {
+            throw new EntityNotFoundException("해당 performanceDate에 공연일자가 없습니다. performanceId = " + dateId);
+        }
         return performanceDateList.stream()
                 .filter(performanceDate -> performanceDate.getId().equals(dateId))
                 .flatMap(performanceDate ->
@@ -55,10 +61,16 @@ public class Concert {
 
     /**
      * 해당공연일의 모든 예약 불가능한 좌석을 가져온다
+     *
      * @param dateId
      * @return
      */
     public List<Seat> getUnavailableSeatByPerformanceDate(Long dateId) {
+        boolean hasPerformanceDate = performanceDateList.stream()
+                .anyMatch(performanceDate -> performanceDate.getId().equals(dateId));
+        if (!hasPerformanceDate) {
+            throw new EntityNotFoundException("해당 performanceDate에 공연일자가 없습니다. performanceId = " + dateId);
+        }
         return performanceDateList.stream()
                 .filter(performanceDate -> performanceDate.getId().equals(dateId))
                 .flatMap(performanceDate ->

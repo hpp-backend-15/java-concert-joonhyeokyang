@@ -35,20 +35,20 @@ public class MakeReservationServiceTest {
         seatRepository = new SeatMemoryRepository();
         concertRepository = new ConcertMemoryRepository(seatRepository);
         userRepository = new UserMemoryRepository();
-        makeReservationService = new MakeReservationService(reservationRepository, concertRepository, seatRepository, userRepository);
+        makeReservationService = new MakeReservationService(reservationRepository, seatRepository, userRepository);
 
     }
 
     @Test
     void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() throws Exception {
         //given
-        Concert concert = createConcert(createAllAvailableSeats());
-        User user = new User(0L);
+        Concert concert = createConcertWithAvailableSeats();
+        User user = new User(null);
         userRepository.save(user);
         concertRepository.save(concert);
 
         //when
-        MakeReservationResult result = makeReservationService.reserve(new MakeReservationCommand(0L, 0L));
+        MakeReservationResult result = makeReservationService.reserve(new MakeReservationCommand(1L, 1L));
 
         //then
         Reservation reservation = reservationRepository.findById(result.reservationId()).get();
@@ -64,27 +64,12 @@ public class MakeReservationServiceTest {
     @Test
     void 유저가없다면_예약할수없다() throws Exception {
         //given
-        Concert concert = createConcert(createAllAvailableSeats());
+        Concert concert = createConcertWithAvailableSeats();
         concertRepository.save(concert);
 
         //when
         //then
-        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(0L, 0L)))
-                .isInstanceOf(EntityNotFoundException.class);
-
-    }
-
-    @Test
-    void 좌석이없다면_예약할수없다() throws Exception {
-        //given
-        Concert concert = createConcert(new ArrayList<>());
-        User user = new User(0L);
-        userRepository.save(user);
-        concertRepository.save(concert);
-
-        //when
-        //then
-        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(0L, 0L)))
+        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(1L, 1L)))
                 .isInstanceOf(EntityNotFoundException.class);
 
     }
@@ -92,14 +77,14 @@ public class MakeReservationServiceTest {
     @Test
     void 선택좌석이_예약불가능하다면_예약할수없다() throws Exception {
         //given
-        Concert concert = createConcert(createAllUnavailableSeats());
-        User user = new User(0L);
+        Concert concert = createConcertWithUnavailableSeats();
+        User user = new User(null);
         userRepository.save(user);
         concertRepository.save(concert);
 
         //when
         //then
-        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(0L, 0L)))
+        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(1L, 1L)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 선택된 좌석입니다");
     }

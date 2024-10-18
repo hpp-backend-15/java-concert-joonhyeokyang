@@ -43,7 +43,7 @@ public class QueueServiceTest {
 
         //then2
         Queue registeredQueue = optionalQueue.get();
-        assertThat(registeredQueue.getId()).isEqualTo(0L);
+        assertThat(registeredQueue.getId()).isEqualTo(1L);
         assertThat(registeredQueue.getStatus()).isEqualTo(WAIT);
     }
 

@@ -1,0 +1,19 @@
+spring:
+  datasource :
+    url: jdbc:postgresql://localhost:5432/hhplus
+#    driverClassName: org.h2.Driver
+    username: postgres
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        default_schema: concert-test
+        #    database-platform: org.hibernate.dialect.H2Dialect
+
+#logging:
+#  level:
+#    org.hibernate.orm.jdbc.bind: trace

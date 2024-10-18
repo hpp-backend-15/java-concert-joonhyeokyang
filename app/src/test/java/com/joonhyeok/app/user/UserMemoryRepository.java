@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public class UserMemoryRepository implements UserRepository {
     private HashMap<Long, User> map = new HashMap<>();
-    private Long id = 0L;
+    private Long id = 1L;
 
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(map.get(id));

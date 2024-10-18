@@ -51,7 +51,7 @@ public class QueueService {
             throw new IllegalStateException("이미 만료된 대기자입니다. waitId = " + waitId);
         }
 
-        Long lastActivatedIdx = queueRepository.findMaxPositionOfActivated().orElse(-1L);
+        Long lastActivatedIdx = queueRepository.findMaxPositionOfActivated().orElse(0L);
 
         return QueueQueryResult.of(queue, lastActivatedIdx);
     }

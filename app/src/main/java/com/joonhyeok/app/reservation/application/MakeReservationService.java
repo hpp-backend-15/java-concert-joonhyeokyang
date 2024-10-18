@@ -28,7 +28,7 @@ public class MakeReservationService {
         Long seatId = command.seatId();
         Long userId = command.userId();
 
-        Seat lockedSeat = seatRepository.findByIdWithLock(seatId).orElseThrow(() ->
+        Seat lockedSeat = seatRepository.findWithLockById(seatId).orElseThrow(() ->
                 new EntityNotFoundException("해당 좌석은 존재하지 않습니다. seatId = " + seatId)
         );
 

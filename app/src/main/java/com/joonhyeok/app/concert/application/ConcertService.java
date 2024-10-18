@@ -14,13 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class
-ConcertService {
+public class ConcertService {
     private final ConcertRepository concertRepository;
 
     public PerformanceDatesQueryResult queryPerformanceDates(AvailablePerformanceDatesQuery query) {
         Long concertId = query.concertId();
-        Concert concert = concertRepository.findAvailableConcertById(concertId)
+        Concert concert = concertRepository.findById(concertId)
                 .orElseThrow(EntityNotFoundException::new);
         return new PerformanceDatesQueryResult(concert);
     }
@@ -28,7 +27,7 @@ ConcertService {
     public SeatsQueryResult querySeatsByDate(AvailableSeatsByDateQuery query) {
         Long concertId = query.concertId();
         Long performanceDateId = query.performanceDateId();
-        Concert concert = concertRepository.findAvailableConcertById(concertId)
+        Concert concert = concertRepository.findById(concertId)
                 .orElseThrow(EntityNotFoundException::new);
         return new SeatsQueryResult(concert, performanceDateId);
     }

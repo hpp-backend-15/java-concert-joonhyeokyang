@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class SeatMemoryRepository implements SeatRepository {
     private HashMap<Long, Seat> map = new HashMap<>();
-    private Long id = 0L;
+    private Long id = 1L;
 
     public Optional<Seat> findById(Long id) {
         return Optional.ofNullable(map.get(id));
@@ -22,7 +22,7 @@ public class SeatMemoryRepository implements SeatRepository {
     }
 
     @Override
-    public Optional<Seat> findByIdWithLock(Long seatId) {
+    public Optional<Seat> findWithLockById(Long seatId) {
         return findById(seatId);
     }
 }

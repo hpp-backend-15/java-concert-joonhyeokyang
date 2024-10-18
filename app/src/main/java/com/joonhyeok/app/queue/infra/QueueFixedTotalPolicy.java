@@ -4,7 +4,7 @@ import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueuePolicy;
 import com.joonhyeok.app.queue.domain.QueueRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,16 +25,16 @@ public class QueueFixedTotalPolicy implements QueuePolicy {
     @Transactional
     @Override
     public void activate() {
-        Long activateCount = queueRepository.countByQueueStatus(ACTIVE);
-        Long limit = max(0L, FIXED_TOTAL - activateCount);
-        List<Queue> candidates = queueRepository.findByQueueStatusAndLimit(WAIT, limit);
+        Long activateCount = queueRepository.countByStatus(ACTIVE);
+        int limit = (int) max(0L, FIXED_TOTAL - activateCount);
+        List<Queue> candidates = queueRepository.findByStatus(WAIT, Limit.of(limit));
         candidates.forEach(queue -> queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(ACTIVATE_WILL_EXPIRE_IN_MINUTES)));
     }
 
     @Transactional
     @Override
     public void expire() {
-        List<Queue> candidates = queueRepository.findByQueueStatusAndExpireAtAfter(ACTIVE, LocalDateTime.now());
+        List<Queue> candidates = queueRepository.findByStatusAndExpireAtAfter(ACTIVE, LocalDateTime.now());
         candidates.forEach(Queue::expire);
     }
 }
