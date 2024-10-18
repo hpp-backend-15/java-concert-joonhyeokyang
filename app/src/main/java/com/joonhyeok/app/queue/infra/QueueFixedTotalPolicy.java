@@ -19,7 +19,7 @@ import static java.lang.Math.max;
 @RequiredArgsConstructor
 public class QueueFixedTotalPolicy implements QueuePolicy {
     private final Long FIXED_TOTAL = 5L;
-    private final Long ACTIVATE_WILL_EXPIRE_IN_MINUTES = 10L;
+    private final Long ACTIVE_WILL_EXPIRE_IN_MINUTES = 10L;
     private final QueueRepository queueRepository;
 
     @Transactional
@@ -28,7 +28,7 @@ public class QueueFixedTotalPolicy implements QueuePolicy {
         Long activateCount = queueRepository.countByStatus(ACTIVE);
         int limit = (int) max(0L, FIXED_TOTAL - activateCount);
         List<Queue> candidates = queueRepository.findByStatus(WAIT, Limit.of(limit));
-        candidates.forEach(queue -> queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(ACTIVATE_WILL_EXPIRE_IN_MINUTES)));
+        candidates.forEach(queue -> queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(ACTIVE_WILL_EXPIRE_IN_MINUTES)));
     }
 
     @Transactional

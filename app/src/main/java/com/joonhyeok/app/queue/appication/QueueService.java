@@ -36,7 +36,7 @@ public class QueueService {
     /**
      * 정책
      * WAIT -> 정상 반환
-     * ACTIVATE -> 정상 반환 (앞선 대기줄 0명, 0초 대기)
+     * ACTIVE -> 정상 반환 (앞선 대기줄 0명, 0초 대기)
      * EXPIRE -> 예외 반환
      *
      * @param query
