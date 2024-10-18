@@ -70,6 +70,7 @@ public class ConcertControllerIntegrateTest {
         Assertions.assertThat(findConcertPerformanceDatesResponse.getAvailablePerformanceDates().size()).isEqualTo(3);
     }
 
+
     @Test
     void 대기중_토큰으로_예약가능일자를_조회하면_실패한다() throws Exception {
         //given
@@ -84,6 +85,23 @@ public class ConcertControllerIntegrateTest {
                         get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
                                 .header("Wait-Token", "waitId"))
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void 대기중_토큰으로_기다린뒤_예약가능일자를_조회하면_성공한다() throws Exception {
+        //given
+        Concert concert = createConcertWithAvailableSeats();
+        Concert saved = concertRepository.save(concert);
+        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        queueRepository.save(queue);
+
+        Thread.sleep(1500);
+        //when
+        //then
+        mvc.perform(
+                        get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
+                                .header("Wait-Token", "waitId"))
+                .andExpect(status().isOk());
     }
 
     @Test
