@@ -1,10 +1,10 @@
 package com.joonhyeok.app.queue.appication.dto;
 
 public record EnqueueCommand(
-        String waitId
+        String userId
 ) {
-    public static EnqueueCommand from(String waitId) {
-        return new EnqueueCommand(waitId);
+    public static EnqueueCommand from(String userId) {
+        return new EnqueueCommand(userId);
     }
 
 }

@@ -4,6 +4,7 @@ import com.joonhyeok.app.queue.domain.Queue;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static com.joonhyeok.app.queue.domain.QueueStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +16,8 @@ public class QueueTest {
     void Queue_대기자_활성화하여_입장하는_경우() throws Exception {
         //given
         LocalDateTime now = LocalDateTime.now();
-        Queue queue = new Queue(0L, "waitId", WAIT, LocalDateTime.now(), null, null, null);
+        String waitId = UUID.randomUUID().toString();
+        Queue queue = new Queue(0L, waitId, "userId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
         queue.activate(now);
@@ -29,7 +31,8 @@ public class QueueTest {
     @Test
     void Queue_이미_만료된_토큰을_활성화하는경우_예외() throws Exception {
         //given
-        Queue queue = new Queue(0L, "waitId", EXPIRED, LocalDateTime.now(), null, null, null);
+        String waitId = UUID.randomUUID().toString();
+        Queue queue = new Queue(0L, waitId, "userId", EXPIRED, LocalDateTime.now(), null, null, null);
 
         //when
         //then
@@ -41,7 +44,8 @@ public class QueueTest {
     @Test
     void Queue_만료기능_만료가_불가능한시간에_만료시키는경우() throws Exception {
         //given
-        Queue queue = new Queue(0L, "waitId", WAIT, LocalDateTime.now(), null, null, null);
+        String waitId = UUID.randomUUID().toString();
+        Queue queue = new Queue(0L, waitId,"userId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
         queue.activate(LocalDateTime.now().minusMinutes(9));
@@ -55,7 +59,8 @@ public class QueueTest {
     @Test
     void Queue_만료기능_만료가_가능한시간에_만료시키는경우() throws Exception {
         //given
-        Queue queue = new Queue(0L, "waitId", WAIT, LocalDateTime.now(), null, null, null);
+        String waitId = UUID.randomUUID().toString();
+        Queue queue = new Queue(0L, waitId,"userId", WAIT, LocalDateTime.now(), null, null, null);
 
         //when
         queue.activate(LocalDateTime.now().minusMinutes(11));

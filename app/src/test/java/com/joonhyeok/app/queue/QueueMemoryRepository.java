@@ -34,11 +34,19 @@ public class QueueMemoryRepository implements QueueRepository {
         else return Optional.empty();
 
     }
-
     @Override
     public Optional<Queue> findByWaitId(String waitId) {
         for (Queue value : map.values()) {
             if (value.getWaitId().equals(waitId))
+                return Optional.of(value);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Queue> findByUserId(String userId) {
+        for (Queue value : map.values()) {
+            if (value.getUserId().equals(userId))
                 return Optional.of(value);
         }
         return Optional.empty();
@@ -51,7 +59,7 @@ public class QueueMemoryRepository implements QueueRepository {
 
     @Override
     public Queue save(Queue queue) {
-        Queue newQueue = new Queue(id, queue.getWaitId(), QueueStatus.WAIT, LocalDateTime.now(), null, null, null);
+        Queue newQueue = new Queue(id, queue.getWaitId(), queue.getUserId(), QueueStatus.WAIT, LocalDateTime.now(), null, null, null);
         map.put(newQueue.getId(), newQueue);
         id = id + 1;
         return newQueue;

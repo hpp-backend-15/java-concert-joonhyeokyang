@@ -35,7 +35,7 @@ public class QueueServiceTest {
         //given
 
         //when
-        EnqueueResult result = queueService.enqueue(EnqueueCommand.from("waitId"));
+        EnqueueResult result = queueService.enqueue(EnqueueCommand.from("userId"));
 
         //then1
         Optional<Queue> optionalQueue = queueRepository.findById(result.id());
@@ -62,19 +62,21 @@ public class QueueServiceTest {
     @Test
     void Queue_이미대기하는_요청을_쿼리하면_찾을수있어야한다() throws Exception {
         //given
-        queueService.enqueue(EnqueueCommand.from("waitId"));
+        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
 
         //when
-        QueueQueryResult result = queueService.query(QueueQuery.from("waitId"));
+        String waitId = queueRepository.findById(queueId).orElseThrow().getWaitId();
+
+        QueueQueryResult result = queueService.query(QueueQuery.from(waitId));
 
         //then
-        assertThat(result.waitId()).isEqualTo("waitId");
+        assertThat(result.waitId()).isEqualTo(waitId);
     }
 
     @Test
     void Queue_대기하지않는다면_쿼리가_실패해야한다() throws Exception {
         //given
-        queueService.enqueue(EnqueueCommand.from("waitId"));
+        queueService.enqueue(EnqueueCommand.from("userId"));
 
         //when
         //then
@@ -85,14 +87,14 @@ public class QueueServiceTest {
     @Test
     void Queue_만료된큐라면_쿼리가_실패해야한다() {
         //given
-        queueService.enqueue(EnqueueCommand.from("waitId"));
-        Queue queue = queueRepository.findByWaitId("waitId").orElseThrow();
+        queueService.enqueue(EnqueueCommand.from("userId"));
+        Queue queue = queueRepository.findByUserId("userId").orElseThrow();
         queue.activate(LocalDateTime.now().minusDays(1));
         queue.expire();
 
         //when
         //then
-        assertThatThrownBy(() -> queueService.query(QueueQuery.from("waitId")))
+        assertThatThrownBy(() -> queueService.query(QueueQuery.from(queue.getWaitId())))
                 .isInstanceOf(IllegalStateException.class);
 
     }
@@ -101,15 +103,15 @@ public class QueueServiceTest {
     void 앞에10명이대기하고있고_새로활성화되려면_내순번은11번째다() throws Exception {
         //given
         for (int i = 0; i < 10; i++) {
-            queueService.enqueue(EnqueueCommand.from("waitId" + i));
+            queueService.enqueue(EnqueueCommand.from("userId" + i));
         }
-        queueService.enqueue(EnqueueCommand.from("waitId"));
+        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
 
         //when
-        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
+        String waitId = queueRepository.findById(queueId).orElseThrow().getWaitId();
+        QueueQueryResult myTurn = queueService.query(QueueQuery.from(waitId));
 
         //then
-        assertThat(myTurn.waitId()).isEqualTo("waitId");
         assertThat(myTurn.position()).isEqualTo(11);
     }
 
@@ -117,17 +119,17 @@ public class QueueServiceTest {
     void 앞에10명이활성중이고_새로활성화되려면_내순번은1번째다() throws Exception {
         //given
         for (int i = 0; i < 10; i++) {
-            queueService.enqueue(EnqueueCommand.from("waitId" + i));
-            Queue queue = queueRepository.findByWaitId("waitId"+i).get();
+            queueService.enqueue(EnqueueCommand.from("userId" + i));
+            Queue queue = queueRepository.findByUserId("userId"+i).get();
             queue.activate(LocalDateTime.now());
         }
-        queueService.enqueue(EnqueueCommand.from("waitId"));
+        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
 
         //when
-        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
+        String waitId = queueRepository.findById(queueId).orElseThrow().getWaitId();
+        QueueQueryResult myTurn = queueService.query(QueueQuery.from(waitId));
 
         //then
-        assertThat(myTurn.waitId()).isEqualTo("waitId");
         assertThat(myTurn.position()).isEqualTo(1);
 
     }
@@ -136,15 +138,15 @@ public class QueueServiceTest {
 //    void 앞에10명이대기하고있고_새로활성화되려면_최대20초는기다려야하고_내순번은11번째다() throws Exception {
 //        //given
 //        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from("waitId" + i));
+//            queueService.enqueue(EnqueueCommand.from("userId" + i));
 //        }
-//        queueService.enqueue(EnqueueCommand.from("waitId"));
+//        queueService.enqueue(EnqueueCommand.from("userId"));
 //
 //        //when
-//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
+//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("userId"));
 //
 //        //then
-//        assertThat(myTurn.waitId()).isEqualTo("waitId");
+//        assertThat(myTurn.userId()).isEqualTo("userId");
 //        assertThat(myTurn.position()).isEqualTo(10);
 //        assertThat(myTurn.estimatedWaitTime()).isAfterOrEqualTo(LocalDateTime.now().plusSeconds(2 * Constants.SCHEDULER_ACTIVATE_PERIOD_IN_SECONDS - 1));
 //
@@ -154,17 +156,17 @@ public class QueueServiceTest {
 //    void 앞에10명이활성중이고_새로활성화되려면_최대10초는기다려야하고_내순번은1번째다() throws Exception {
 //        //given
 //        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from("waitId" + i));
-//            Queue queue = queueRepository.findByWaitId("waitId"+i).get();
+//            queueService.enqueue(EnqueueCommand.from("userId" + i));
+//            Queue queue = queueRepository.findByWaitId("userId"+i).get();
 //            queue.activate(LocalDateTime.now());
 //        }
-//        queueService.enqueue(EnqueueCommand.from("waitId"));
+//        queueService.enqueue(EnqueueCommand.from("userId"));
 //
 //        //when
-//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("waitId"));
+//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("userId"));
 //
 //        //then
-//        assertThat(myTurn.waitId()).isEqualTo("waitId");
+//        assertThat(myTurn.userId()).isEqualTo("userId");
 //        assertThat(myTurn.position()).isEqualTo(1);
 //        assertThat(myTurn.estimatedWaitTime()).isAfterOrEqualTo(LocalDateTime.now().plusSeconds(1 * Constants.SCHEDULER_ACTIVATE_PERIOD_IN_SECONDS - 1));
 //

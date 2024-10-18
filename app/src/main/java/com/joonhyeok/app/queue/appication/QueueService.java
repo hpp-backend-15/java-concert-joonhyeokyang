@@ -22,13 +22,13 @@ public class QueueService {
 
     @Transactional
     public EnqueueResult enqueue(EnqueueCommand command) {
-        String waitId = command.waitId();
+        String userId = command.userId();
 
-        queueRepository.findByWaitId(waitId).ifPresent(queue -> {
-            throw new EntityExistsException("이미 대기중인 대기자입니다. waitId = " + queue.getWaitId());
+        queueRepository.findByUserId(userId).ifPresent(queue -> {
+            throw new EntityExistsException("이미 대기중인 대기자입니다. userId = " + queue.getWaitId());
         });
 
-        Queue queue = Queue.create(UUID.randomUUID().toString());
+        Queue queue = Queue.create(userId);
         Queue savedQueue = queueRepository.save(queue);
         return new EnqueueResult(savedQueue.getId());
     }

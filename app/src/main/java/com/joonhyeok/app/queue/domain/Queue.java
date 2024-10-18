@@ -13,7 +13,6 @@ import java.util.UUID;
 import static com.joonhyeok.app.queue.domain.QueueStatus.*;
 import static jakarta.persistence.EnumType.STRING;
 import static java.lang.Math.ceil;
-import static java.lang.Math.max;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -26,8 +25,11 @@ public class Queue {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "wait_id", nullable = false)
+    @Column(name = "queues_wait_id", nullable = false)
     private String waitId;
+
+    @Column(name = "queues_user_id", nullable = false)
+    private String userId;
 
     @Enumerated(STRING)
     private QueueStatus status;
@@ -41,6 +43,7 @@ public class Queue {
     public boolean isExpired() {
         return status == EXPIRED;
     }
+
     public void activate(LocalDateTime enteredAt) {
         if (status != WAIT) {
             throw new IllegalStateException("cannot change queue status to ACTIVATE, current status is " + status);
@@ -62,9 +65,10 @@ public class Queue {
         this.status = EXPIRED;
     }
 
-    public static Queue create(String waitId) {
+    public static Queue create(String userId) {
         Queue queue = new Queue();
-        queue.waitId = waitId;
+        queue.waitId = UUID.randomUUID().toString();
+        queue.userId = userId;
         queue.status = WAIT;
         return queue;
     }
