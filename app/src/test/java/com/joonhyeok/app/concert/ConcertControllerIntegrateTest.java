@@ -1,0 +1,79 @@
+package com.joonhyeok.app.concert;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.joonhyeok.app.concert.domain.Concert;
+import com.joonhyeok.app.concert.domain.ConcertRepository;
+import com.joonhyeok.app.concert.presentation.ConcertController;
+import com.joonhyeok.app.queue.domain.Queue;
+import com.joonhyeok.app.queue.domain.QueueRepository;
+import com.joonhyeok.app.queue.domain.QueueStatus;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDateTime;
+
+import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+@TestPropertySource(locations = "classpath:application-test.yaml")
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+public class ConcertControllerIntegrateTest {
+    @Autowired
+    private ConcertController concertController;
+
+    @Autowired
+    private ConcertRepository concertRepository;
+
+    @Autowired
+    private QueueRepository queueRepository;
+    @Autowired
+    MockMvc mvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    private static final String BASE_URL = "/concert";
+
+    @Test
+    void 적절한_토큰으로_예약가능일자를_조회성공한다() throws Exception {
+        //given
+        Concert concert = createConcertWithAvailableSeats();
+        Concert saved = concertRepository.save(concert);
+        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.ACTIVE, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        queueRepository.save(queue);
+
+        //when
+        //then
+        mvc.perform(
+                        get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
+                                .header("Wait-Token", "waitId"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void 기다리는_토큰으로_예약가능일자를_조회하면_실패한다() throws Exception {
+        //given
+        Concert concert = createConcertWithAvailableSeats();
+        Concert saved = concertRepository.save(concert);
+        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        queueRepository.save(queue);
+
+        //when
+        //then
+        mvc.perform(
+                        get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
+                                .header("Wait-Token", "waitId"))
+                .andExpect(status().is4xxClientError());
+    }
+}
