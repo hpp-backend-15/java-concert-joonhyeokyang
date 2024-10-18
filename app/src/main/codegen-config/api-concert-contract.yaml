@@ -43,11 +43,6 @@ paths:
       responses:
         '200':
           description: 대기열에 등록된 고유 ID 정보 반환
-          headers:
-            Wait-Token:
-              description: 고유 ID의 대기열 토큰 정보
-              schema:
-                type: string
           content:
             application/json:
               schema:
@@ -459,6 +454,9 @@ components:
         positionInQueue:
           type: long
           description: 현재 대기열에서의 위치
+        userId:
+          type: long
+          description: 대기하는 유저 ID
 
     PerformanceDateResponse:
       type: object
