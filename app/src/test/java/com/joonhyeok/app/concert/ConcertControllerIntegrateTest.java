@@ -7,6 +7,8 @@ import com.joonhyeok.app.concert.presentation.ConcertController;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.domain.QueueStatus;
+import com.joonhyeok.openapi.models.FindConcertPerformanceDatesResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 
@@ -54,15 +57,21 @@ public class ConcertControllerIntegrateTest {
         queueRepository.save(queue);
 
         //when
+        ResultActions resultActions = mvc.perform(
+                get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
+                        .header("Wait-Token", "waitId")
+        );
+
         //then
-        mvc.perform(
-                        get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
-                                .header("Wait-Token", "waitId"))
-                .andExpect(status().isOk());
+        resultActions.andExpect(status().isOk());
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        FindConcertPerformanceDatesResponse findConcertPerformanceDatesResponse =
+                objectMapper.readValue(responseBody, FindConcertPerformanceDatesResponse.class);
+        Assertions.assertThat(findConcertPerformanceDatesResponse.getAvailablePerformanceDates().size()).isEqualTo(3);
     }
 
     @Test
-    void 기다리는_토큰으로_예약가능일자를_조회하면_실패한다() throws Exception {
+    void 대기중_토큰으로_예약가능일자를_조회하면_실패한다() throws Exception {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
@@ -74,6 +83,37 @@ public class ConcertControllerIntegrateTest {
         mvc.perform(
                         get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
                                 .header("Wait-Token", "waitId"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void 만료된_토큰으로_예약가능일자를_조회하면_실패한다() throws Exception {
+        //given
+        Concert concert = createConcertWithAvailableSeats();
+        Concert saved = concertRepository.save(concert);
+        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        queueRepository.save(queue);
+
+        //when
+        //then
+        mvc.perform(
+                        get(BASE_URL + "/{concertId}/performanceDates", saved.getId())
+                                .header("Wait-Token", "waitId"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void 토큰없이_예약가능일자를_조회하면_실패한다() throws Exception {
+        //given
+        Concert concert = createConcertWithAvailableSeats();
+        Concert saved = concertRepository.save(concert);
+        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        queueRepository.save(queue);
+
+        //when
+        //then
+        mvc.perform(
+                        get(BASE_URL + "/{concertId}/performanceDates", saved.getId()))
                 .andExpect(status().is4xxClientError());
     }
 }
