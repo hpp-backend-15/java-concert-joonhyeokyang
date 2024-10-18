@@ -183,12 +183,13 @@ paths:
               type: object
               properties:
                 seatId:
-                  type: string
+                  type: integer
+                  format: int64
                   description: 좌석 ID
                   example: 789
                 userId:
                   type: integer
-                  foramt: int64
+                  format: int64
                   description: 예약을 요청하는 유저 ID
                   example: 1
       responses:
@@ -406,22 +407,23 @@ components:
     ReservationResponse:
       type: object
       properties:
-        seatId:
-          type: integer
-          format: int64
-          description: 좌석 ID
-          example: 1
-        userId:
-          type: integer
-          format: int64
-          description: 유저 ID
-          example: 1
-        performanceDate:
-          type: string
-          example: "2018-01-01"
-          format: date
+#        seatId:
+#          type: integer
+#          format: int64
+#          description: 좌석 ID
+#          example: 1
+#        userId:
+#          type: integer
+#          format: int64
+#          description: 유저 ID
+#          example: 1
+#        performanceDate:
+#          type: string
+#          example: "2018-01-01"
+#          format: date
         reservationId:
-          type: string
+          type: integer
+          format: int64
           description: 예약 ID
     Concert:
       type: object
