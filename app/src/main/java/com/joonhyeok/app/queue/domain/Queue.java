@@ -44,9 +44,13 @@ public class Queue {
         return status == EXPIRED;
     }
 
+    public boolean isActive() {
+        return status == ACTIVE;
+    }
+
     public void activate(LocalDateTime enteredAt, LocalDateTime expireAt) {
         if (status != WAIT) {
-            throw new IllegalStateException("cannot change queue status to ACTIVATE, current status is " + status);
+            throw new IllegalStateException("cannot change queue status to ACTIVE, current status is " + status);
         }
         this.status = ACTIVE;
         this.enteredAt = enteredAt;
@@ -78,8 +82,8 @@ public class Queue {
     }
 
     public LocalDateTime getEstimateWaitTime(Long lastActivatePosition) {
-        long unitOfWaiting = getPosition(lastActivatePosition) + 1 / Constants.SCHEDULER_ACTIVATE_QUANTITY_IN_PERIODS;
-        long totalWaitingSeconds = (long) ceil(unitOfWaiting) * Constants.SCHEDULER_ACTIVATE_PERIOD_IN_SECONDS;
+        long unitOfWaiting = getPosition(lastActivatePosition) + 1 / Constants.SCHEDULER_ACTIVE_QUANTITY_IN_PERIODS;
+        long totalWaitingSeconds = (long) ceil(unitOfWaiting) * Constants.SCHEDULER_ACTIVE_PERIOD_IN_SECONDS;
         return LocalDateTime.now().plusSeconds(totalWaitingSeconds);
     }
 }

@@ -1,7 +1,5 @@
 package com.joonhyeok.app.reservation;
 
-import com.joonhyeok.app.concert.ConcertMemoryRepository;
-import com.joonhyeok.app.concert.SeatMemoryRepository;
 import com.joonhyeok.app.concert.domain.*;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
@@ -9,35 +7,41 @@ import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.user.User;
-import com.joonhyeok.app.user.UserMemoryRepository;
 import com.joonhyeok.app.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.ArrayList;
-
-import static com.joonhyeok.app.concert.ConcertTestHelper.*;
+import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
+import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithUnavailableSeats;
 import static com.joonhyeok.app.reservation.domain.ReservationStatus.RESERVED;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
-public class MakeReservationServiceTest {
+@SpringBootTest
+@ActiveProfiles("test")
+@TestPropertySource(locations = "classpath:application-test.yaml")
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+public class MakeReservationServiceIntegrateTest {
+
+    @Autowired
     ConcertRepository concertRepository;
+
+    @Autowired
     ReservationRepository reservationRepository;
+
+    @Autowired
     SeatRepository seatRepository;
+
+    @Autowired
     UserRepository userRepository;
 
+    @Autowired
     MakeReservationService makeReservationService;
-
-    @BeforeEach
-    void setUp() {
-        reservationRepository = new ReservationMemoryRepository();
-        seatRepository = new SeatMemoryRepository();
-        concertRepository = new ConcertMemoryRepository(seatRepository);
-        userRepository = new UserMemoryRepository();
-        makeReservationService = new MakeReservationService(reservationRepository, seatRepository, userRepository);
-
-    }
 
     @Test
     void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() throws Exception {

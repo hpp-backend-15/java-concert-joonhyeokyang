@@ -3,6 +3,7 @@ package com.joonhyeok.app.queue;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.domain.QueueStatus;
+import org.springframework.data.domain.Limit;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -12,7 +13,7 @@ import static org.apache.commons.lang3.math.NumberUtils.max;
 
 public class QueueMemoryRepository implements QueueRepository {
     private HashMap<Long, Queue> map = new HashMap<>();
-    private Long id = 0L;
+    private Long id = 1L;
 
     @Override
     public Optional<Long> findMaxPositionOfActivated() {
@@ -65,7 +66,7 @@ public class QueueMemoryRepository implements QueueRepository {
     }
 
     @Override
-    public Long countByQueueStatus(QueueStatus queueStatus) {
+    public Long countByStatus(QueueStatus queueStatus) {
         Long count = 0L;
         for (Queue value : map.values()) {
             if (value.getStatus() == queueStatus) {
@@ -76,7 +77,7 @@ public class QueueMemoryRepository implements QueueRepository {
     }
 
     @Override
-    public List<Queue> findByQueueStatusAndLimit(QueueStatus queueStatus, Long limit) {
+    public List<Queue> findByStatus(QueueStatus queueStatus, Limit limit) {
         List<Queue> candidates = new ArrayList<>();
         for (Queue value : map.values()) {
             if (value.getStatus() == queueStatus) {
@@ -85,11 +86,11 @@ public class QueueMemoryRepository implements QueueRepository {
         }
         candidates.sort(Comparator.comparingLong(Queue::getId));
 
-        return candidates.subList(0, Math.toIntExact(limit));
+        return candidates.subList(0, limit.max());
     }
 
     @Override
-    public List<Queue> findByQueueStatusAndExpireAtAfter(QueueStatus queueStatus, LocalDateTime expireAt) {
+    public List<Queue> findByStatusAndExpireAtAfter(QueueStatus queueStatus, LocalDateTime expireAt) {
         List<Queue> candidates = new ArrayList<>();
         for (Queue value : map.values()) {
             if (value.getStatus() == queueStatus && value.getExpireAt().isAfter(expireAt)) {

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class ReservationMemoryRepository implements ReservationRepository {
     private HashMap<Long, Reservation> map = new HashMap<>();
-    private Long id = 0L;
+    private Long id = 1L;
 
     public Optional<Reservation> findById(Long id) {
         return Optional.ofNullable(map.get(id));

@@ -36,7 +36,7 @@ public class QueueService {
     /**
      * 정책
      * WAIT -> 정상 반환
-     * ACTIVATE -> 정상 반환 (앞선 대기줄 0명, 0초 대기)
+     * ACTIVE -> 정상 반환 (앞선 대기줄 0명, 0초 대기)
      * EXPIRE -> 예외 반환
      *
      * @param query
@@ -51,7 +51,7 @@ public class QueueService {
             throw new IllegalStateException("이미 만료된 대기자입니다. waitId = " + waitId);
         }
 
-        Long lastActivatedIdx = queueRepository.findMaxPositionOfActivated().orElse(-1L);
+        Long lastActivatedIdx = queueRepository.findMaxPositionOfActivated().orElse(0L);
 
         return QueueQueryResult.of(queue, lastActivatedIdx);
     }

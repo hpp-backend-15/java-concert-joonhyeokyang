@@ -1,5 +1,7 @@
 package com.joonhyeok.app.queue.domain;
 
+import org.springframework.data.domain.Limit;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +18,8 @@ public interface QueueRepository {
 
     Queue save(Queue queue);
 
-    Long countByQueueStatus(QueueStatus queueStatus);
+    Long countByStatus(QueueStatus queueStatus);
 
-    List<Queue> findByQueueStatusAndLimit(QueueStatus queueStatus, Long limit);
-    List<Queue> findByQueueStatusAndExpireAtAfter(QueueStatus queueStatus, LocalDateTime expireAt);
+    List<Queue> findByStatus(QueueStatus queueStatus, Limit limit);
+    List<Queue> findByStatusAndExpireAtAfter(QueueStatus queueStatus, LocalDateTime expireAt);
 }
