@@ -1,12 +1,12 @@
 package com.joonhyeok.app.queue;
 
 import com.joonhyeok.app.queue.appication.QueueService;
-import com.joonhyeok.app.queue.domain.Queue;
-import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.appication.dto.EnqueueCommand;
 import com.joonhyeok.app.queue.appication.dto.EnqueueResult;
 import com.joonhyeok.app.queue.appication.dto.QueueQuery;
 import com.joonhyeok.app.queue.appication.dto.QueueQueryResult;
+import com.joonhyeok.app.queue.domain.Queue;
+import com.joonhyeok.app.queue.domain.QueueRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;

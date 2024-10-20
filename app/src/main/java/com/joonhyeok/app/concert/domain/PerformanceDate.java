@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.joonhyeok.app.concert.domain.SeatStatus.*;
+import static com.joonhyeok.app.concert.domain.SeatStatus.AVAILABLE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity

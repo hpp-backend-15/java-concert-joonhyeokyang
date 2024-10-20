@@ -5,7 +5,6 @@ import com.joonhyeok.app.concert.domain.ConcertRepository;
 import com.joonhyeok.app.concert.domain.SeatRepository;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
-import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.user.User;
 import com.joonhyeok.app.user.UserRepository;

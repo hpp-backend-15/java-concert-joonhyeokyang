@@ -6,7 +6,6 @@ import com.joonhyeok.app.concert.application.dto.AvailablePerformanceDatesQuery;
 import com.joonhyeok.app.concert.application.dto.AvailableSeatsByDateQuery;
 import com.joonhyeok.app.concert.application.dto.PerformanceDatesQueryResult;
 import com.joonhyeok.app.concert.application.dto.SeatsQueryResult;
-import com.joonhyeok.app.reservation.infra.ReservationJpaRepository;
 import com.joonhyeok.openapi.apis.ConcertApi;
 import com.joonhyeok.openapi.models.FindConcertAvailableSeatsResponse;
 import com.joonhyeok.openapi.models.FindConcertPerformanceDatesResponse;

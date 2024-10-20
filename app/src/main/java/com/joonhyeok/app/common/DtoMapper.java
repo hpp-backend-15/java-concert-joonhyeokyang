@@ -1,9 +1,5 @@
 package com.joonhyeok.app.common;
 
-import com.joonhyeok.openapi.models.SeatResponse;
-import jakarta.validation.Valid;
-
-import java.util.Collection;
 import java.util.List;
 
 public interface DtoMapper<P, S> {

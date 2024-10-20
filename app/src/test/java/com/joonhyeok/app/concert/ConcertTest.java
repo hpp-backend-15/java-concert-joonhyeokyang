@@ -11,8 +11,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.joonhyeok.app.concert.ConcertTestHelper.*;
-
 public class ConcertTest {
 
     @Test
