@@ -13,7 +13,7 @@ public class UserMemoryRepository implements UserRepository {
     }
 
     public User save(User user) {
-        User newUser = new User(id);
+        User newUser = new User(id, user.getAccount(), user.getVersion());
         map.put(id, newUser);
         id = id + 1;
         return newUser;

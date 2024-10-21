@@ -4,6 +4,7 @@ import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
+import com.joonhyeok.app.user.Account;
 import com.joonhyeok.app.user.User;
 import com.joonhyeok.app.user.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -59,7 +61,7 @@ public class MakeReservationServiceConcurrentTest {
     void 한_유저가_한_좌석을_동시에_300번_예약시도한다_그러나_예약한사람은_오직한명이다() throws Exception {
         //given
         Concert concert = createConcertWithAvailableSeats();
-        User user = new User(null);
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         userRepository.save(user);
         concertRepository.save(concert);
 
@@ -96,7 +98,7 @@ public class MakeReservationServiceConcurrentTest {
         concertRepository.save(concert);
 
         for (int i = 0; i < 300; i++) {
-            User user = new User(null);
+            User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
             userRepository.save(user);
         }
 
@@ -133,7 +135,7 @@ public class MakeReservationServiceConcurrentTest {
         concertRepository.save(concert);
 
         for (int i = 0; i < 300; i++) {
-            User user = new User(null);
+            User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
             userRepository.save(user);
         }
 

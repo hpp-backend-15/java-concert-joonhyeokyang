@@ -6,6 +6,7 @@ import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
+import com.joonhyeok.app.user.Account;
 import com.joonhyeok.app.user.User;
 import com.joonhyeok.app.user.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -18,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.time.LocalDateTime;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithUnavailableSeats;
@@ -53,7 +56,7 @@ public class MakeReservationServiceIntegrateTest {
     void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() throws Exception {
         //given
         Concert concert = createConcertWithAvailableSeats();
-        User user = new User(null);
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         User save = userRepository.save(user);
         System.out.println("save.getId() = " + save.getId());
 
@@ -89,7 +92,7 @@ public class MakeReservationServiceIntegrateTest {
     void 선택좌석이_예약불가능하다면_예약할수없다() throws Exception {
         //given
         Concert concert = createConcertWithUnavailableSeats();
-        User user = new User(null);
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         User save = userRepository.save(user);
         Concert saved = concertRepository.save(concert);
 
