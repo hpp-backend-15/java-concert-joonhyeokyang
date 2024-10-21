@@ -16,6 +16,7 @@ import static java.lang.Math.ceil;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
+@Table(name = "queues")
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Getter

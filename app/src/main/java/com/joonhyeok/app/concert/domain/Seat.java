@@ -34,7 +34,7 @@ public class Seat {
     private Integer version;
 
     public boolean isReservable() {
-        return AVAILABLE == status;
+        return this.status == AVAILABLE;
     }
 
     public void reserveSeat() {

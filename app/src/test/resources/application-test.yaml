@@ -13,7 +13,15 @@ spring:
       hibernate:
         default_schema: concert-test
         #    database-platform: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
+zonky:
+  test:
+    database:
+      postgres:
+        client:
+          properties:
+            currentSchema: concert-test
 #logging:
 #  level:
 #    org.hibernate.orm.jdbc.bind: trace
