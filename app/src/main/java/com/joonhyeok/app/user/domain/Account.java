@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user;
+package com.joonhyeok.app.user.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

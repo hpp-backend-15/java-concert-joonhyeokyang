@@ -1,12 +1,20 @@
 package com.joonhyeok.app.user;
 
 
+import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.UserRepository;
+
 import java.util.HashMap;
 import java.util.Optional;
 
 public class UserMemoryRepository implements UserRepository {
     private HashMap<Long, User> map = new HashMap<>();
     private Long id = 1L;
+
+    @Override
+    public Optional<User> findWithLockById(Long id) {
+        return findById(id);
+    }
 
     public Optional<User> findById(Long id) {
         return Optional.ofNullable(map.get(id));

@@ -4,9 +4,9 @@ import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
-import com.joonhyeok.app.user.Account;
-import com.joonhyeok.app.user.User;
-import com.joonhyeok.app.user.UserRepository;
+import com.joonhyeok.app.user.domain.Account;
+import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,6 @@ import org.springframework.test.context.jdbc.Sql;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
 import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @SpringBootTest
 @ActiveProfiles("test")

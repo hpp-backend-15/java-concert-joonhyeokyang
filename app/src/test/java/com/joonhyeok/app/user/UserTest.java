@@ -1,5 +1,7 @@
 package com.joonhyeok.app.user;
 
+import com.joonhyeok.app.user.domain.Account;
+import com.joonhyeok.app.user.domain.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +14,10 @@ public class UserTest {
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
 
         //when
-        user.chargePoint(1000L);
+        Account account = user.chargePoint(1000L);
 
         //then
-        Assertions.assertThat(user.getAccount().getBalance()).isEqualTo(1000L);
+        Assertions.assertThat(account.getBalance()).isEqualTo(1000L);
 
     }
 
@@ -37,10 +39,10 @@ public class UserTest {
         User user = new User(null, new Account(10000L, LocalDateTime.now()), 0);
 
         //when
-        user.usePoint(1000L);
+        Account account = user.usePoint(1000L);
 
         //then
-        Assertions.assertThat(user.getAccount().getBalance()).isEqualTo(9000L);
+        Assertions.assertThat(account.getBalance()).isEqualTo(9000L);
 
     }
 

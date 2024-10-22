@@ -6,13 +6,12 @@ import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
-import com.joonhyeok.app.user.Account;
-import com.joonhyeok.app.user.User;
-import com.joonhyeok.app.user.UserRepository;
+import com.joonhyeok.app.user.domain.Account;
+import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +24,6 @@ import java.time.LocalDateTime;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithUnavailableSeats;
 import static com.joonhyeok.app.reservation.domain.ReservationStatus.RESERVED;
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
 import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 
 

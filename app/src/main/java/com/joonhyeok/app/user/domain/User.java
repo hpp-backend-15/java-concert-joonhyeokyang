@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user;
+package com.joonhyeok.app.user.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,11 +29,13 @@ public class User {
     @Version
     private int version;
 
-    public void chargePoint(long amount) {
+    public Account chargePoint(long amount) {
         this.account.deposit(amount);
+        return this.account;
     }
 
-    public void usePoint(long amount) {
+    public Account usePoint(long amount) {
         this.account.withdraw(amount);
+        return this.account;
     }
 }
