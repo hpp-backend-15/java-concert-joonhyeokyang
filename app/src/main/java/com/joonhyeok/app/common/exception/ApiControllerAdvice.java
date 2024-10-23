@@ -15,7 +15,7 @@ class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
 
         if (e instanceof EntityNotFoundException) {
-            return ResponseEntity.status(NOT_FOUND).body(new ErrorResponse(NOT_FOUND.value(), e.getMessage()));
+            return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
         }
 
         if (e instanceof EntityExistsException) {
