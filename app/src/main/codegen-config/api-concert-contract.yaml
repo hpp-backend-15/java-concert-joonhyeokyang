@@ -78,6 +78,8 @@ paths:
               description: 대기열 토큰 정보
               schema:
                 type: string
+        '400':
+          description: 존재하지 않는 유저입니다.
         '409':
           description: 이미 대기 등록된 유저입니다.
 
@@ -466,6 +468,9 @@ components:
           type: integer
           format: int64
           description: 대기하는 유저 ID
+        status:
+          type: string
+          description: 토큰의 상태(대기중, 활성, 만료)
 
     PerformanceDateResponse:
       type: object
