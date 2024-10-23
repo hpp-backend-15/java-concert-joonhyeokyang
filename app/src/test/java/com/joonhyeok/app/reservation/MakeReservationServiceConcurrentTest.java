@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,10 +23,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.springframework.test.context.jdbc.Sql;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
@@ -33,7 +32,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Sql("/ddl-test.sql")
 @AutoConfigureEmbeddedDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MakeReservationServiceConcurrentTest {
+class MakeReservationServiceConcurrentTest {
 
     @Autowired
     ConcertRepository concertRepository;
@@ -68,7 +67,6 @@ public class MakeReservationServiceConcurrentTest {
         AtomicInteger fail = new AtomicInteger(0);
         //when
         for (int i = 0; i < numberOfThreads; i++) {
-            int finalI = i;
             executorService.submit(() -> {
                 try {
                     //when

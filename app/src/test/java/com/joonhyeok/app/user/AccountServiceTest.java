@@ -1,9 +1,9 @@
 package com.joonhyeok.app.user;
 
 
+import com.joonhyeok.app.user.application.AccountService;
 import com.joonhyeok.app.user.application.dto.AccountBalanceQuery;
 import com.joonhyeok.app.user.application.dto.AccountBalanceQueryResult;
-import com.joonhyeok.app.user.application.AccountService;
 import com.joonhyeok.app.user.application.dto.AccountChargeCommand;
 import com.joonhyeok.app.user.domain.Account;
 import com.joonhyeok.app.user.domain.User;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-public class AccountServiceTest {
+class AccountServiceTest {
     private AccountService accountService;
     private UserRepository userRepository;
 
@@ -26,7 +26,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    void 유저가_돈을_충전하는경우_성공한다() throws Exception {
+    void 유저가_돈을_충전하는경우_성공한다() {
         //given
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         userRepository.save(user);
@@ -40,32 +40,36 @@ public class AccountServiceTest {
     }
 
     @Test
-    void 유저가_음수의돈을충전하는경우_실패한다() throws Exception {
+    void 유저가_음수의돈을충전하는경우_실패한다() {
         //given
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         userRepository.save(user);
 
         //when
+        AccountChargeCommand command = new AccountChargeCommand(1L, -1000L);
+
         //then
-        Assertions.assertThatThrownBy(() -> accountService.charge(new AccountChargeCommand(1L, -1000L)))
+        Assertions.assertThatThrownBy(() -> accountService.charge(command))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
 
     @Test
-    void 충전하려는_유저가_없는경우_실패한다() throws Exception {
+    void 충전하려는_유저가_없는경우_실패한다() {
         //given
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         userRepository.save(user);
 
         //when
+        AccountChargeCommand command = new AccountChargeCommand(-1L, 1000L);
+
         //then
-        Assertions.assertThatThrownBy(() -> accountService.charge(new AccountChargeCommand(-1L, 1000L)))
+        Assertions.assertThatThrownBy(() -> accountService.charge(command))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
-    void 유저의_잔고를_조회할수_있다() throws Exception {
+    void 유저의_잔고를_조회할수_있다() {
         //given
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         userRepository.save(user);
@@ -74,18 +78,19 @@ public class AccountServiceTest {
         AccountBalanceQueryResult result = accountService.query(new AccountBalanceQuery(1L));
 
         //then
-        Assertions.assertThat(result.balance()).isEqualTo(0L);
+        Assertions.assertThat(result.balance()).isZero();
     }
 
     @Test
-    void 조회하려는_유저가_없는경우_잔고를_조회할수없다() throws Exception {
+    void 조회하려는_유저가_없는경우_잔고를_조회할수없다() {
         //given
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         userRepository.save(user);
 
         //when
+        AccountBalanceQuery query = new AccountBalanceQuery(-1L);
         //then
-        Assertions.assertThatThrownBy(()-> accountService.query(new AccountBalanceQuery(-1L)))
+        Assertions.assertThatThrownBy(() -> accountService.query(query))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 }
