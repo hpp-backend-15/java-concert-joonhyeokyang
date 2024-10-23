@@ -2,9 +2,10 @@ package com.joonhyeok.app.reservation;
 
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
+import com.joonhyeok.app.reservation.domain.ReservationStatus;
 
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReservationMemoryRepository implements ReservationRepository {
     private HashMap<Long, Reservation> map = new HashMap<>();
@@ -19,5 +20,10 @@ public class ReservationMemoryRepository implements ReservationRepository {
         map.put(id, newReservation);
         id = id + 1;
         return newReservation;
+    }
+
+    @Override
+    public List<Reservation> findAllByStatus(ReservationStatus status) {
+        return map.values().stream().filter(reservation -> reservation.getStatus().equals(status)).toList();
     }
 }

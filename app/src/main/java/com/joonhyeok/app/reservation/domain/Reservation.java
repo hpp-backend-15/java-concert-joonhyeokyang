@@ -41,6 +41,10 @@ public class Reservation {
         setCreatedAt(LocalDateTime.now());
     }
 
+    public void invalidate() {
+        this.status = ReservationStatus.CANCELLED;
+    }
+
     private void setStatus(ReservationStatus status) {
         if (status == null) {
             throw new IllegalArgumentException("status가 없습니다");
