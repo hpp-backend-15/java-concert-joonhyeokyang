@@ -25,6 +25,7 @@ import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvail
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithUnavailableSeats;
 import static com.joonhyeok.app.reservation.domain.ReservationStatus.RESERVED;
 import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 @SpringBootTest
@@ -32,7 +33,7 @@ import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_
 @Sql("/ddl-test.sql")
 @AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MakeReservationServiceIntegrateTest {
+class MakeReservationServiceIntegrateTest {
 
     @Autowired
     ConcertRepository concertRepository;
@@ -51,14 +52,14 @@ public class MakeReservationServiceIntegrateTest {
 
 
     @Test
-    void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() throws Exception {
+    void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() {
         //given
         Concert concert = createConcertWithAvailableSeats();
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         User save = userRepository.save(user);
         System.out.println("save.getId() = " + save.getId());
 
-        Concert saved = concertRepository.save(concert);
+        concertRepository.save(concert);
 
         //when
         MakeReservationResult result = makeReservationService.reserve(new MakeReservationCommand(1L, 1L));
@@ -74,31 +75,35 @@ public class MakeReservationServiceIntegrateTest {
     }
 
     @Test
-    void 유저가없다면_예약할수없다() throws Exception {
+    void 유저가없다면_예약할수없다() {
         //given
         Concert concert = createConcertWithAvailableSeats();
-        Concert saved = concertRepository.save(concert);
+        concertRepository.save(concert);
 
         //when
+        MakeReservationCommand command = new MakeReservationCommand(1L, 1L);
+
         //then
-        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(1L, 1L)))
-                .isInstanceOf(EntityNotFoundException.class);
+        assertThatThrownBy(() -> makeReservationService.reserve(command))
+                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(RuntimeException.class);
 
     }
 
     @Test
-    void 선택좌석이_예약불가능하다면_예약할수없다() throws Exception {
+    void 선택좌석이_예약불가능하다면_예약할수없다() {
         //given
         Concert concert = createConcertWithUnavailableSeats();
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         User save = userRepository.save(user);
-        Concert saved = concertRepository.save(concert);
+        concertRepository.save(concert);
 
         System.out.println("save.getId() = " + save.getId());
 
         //when
+        MakeReservationCommand command = new MakeReservationCommand(1L, 1L);
         //then
-        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(1L, 1L)))
+        assertThatThrownBy(() -> makeReservationService.reserve(command))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 선택된 좌석입니다");
     }
