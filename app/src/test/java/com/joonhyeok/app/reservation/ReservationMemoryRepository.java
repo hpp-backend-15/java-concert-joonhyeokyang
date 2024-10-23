@@ -4,6 +4,7 @@ import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.reservation.domain.ReservationStatus;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,10 @@ public class ReservationMemoryRepository implements ReservationRepository {
     }
 
     @Override
-    public List<Reservation> findAllByStatus(ReservationStatus status) {
-        return map.values().stream().filter(reservation -> reservation.getStatus().equals(status)).toList();
+    public List<Reservation> findAllByStatusAndCreatedAtAfter(ReservationStatus status, LocalDateTime createdAt) {
+        return map.values().stream()
+                .filter(reservation -> reservation.getStatus().equals(status))
+                .filter(reservation -> reservation.getCreatedAt().isAfter(createdAt))
+                .toList();
     }
 }
