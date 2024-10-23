@@ -15,7 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConcertServiceTest {
+class ConcertServiceTest {
     ConcertService concertService;
     ConcertRepository concertRepository;
 
@@ -27,7 +27,7 @@ public class ConcertServiceTest {
 
 
     @Test
-    void 예약가능한일자를_조회할수있다() throws Exception {
+    void 예약가능한일자를_조회할수있다() {
         //given
         Concert concert = createConcertWithAvailableSeats();
         concertRepository.save(concert);
@@ -41,7 +41,7 @@ public class ConcertServiceTest {
     }
 
     @Test
-    void 예약_불가능한일자를_조회할수없다() throws Exception {
+    void 예약_불가능한일자를_조회할수없다() {
         //given
         Concert concert = createConcertWithUnavailableSeats();
         concertRepository.save(concert);
@@ -51,13 +51,13 @@ public class ConcertServiceTest {
         PerformanceDatesQueryResult performanceDatesQueryResult = concertService.queryPerformanceDates(datesQuery);
 
         //then
-        Assertions.assertThat(performanceDatesQueryResult.availableDates().size()).isEqualTo(0);
-        Assertions.assertThat(performanceDatesQueryResult.unavailableDates().size()).isEqualTo(3);
+        Assertions.assertThat(performanceDatesQueryResult.availableDates()).isEmpty();
+        Assertions.assertThat(performanceDatesQueryResult.unavailableDates()).hasSize(3);
 
     }
 
     @Test
-    void 예약가능한_좌석을_조회할수있다() throws Exception {
+    void 예약가능한_좌석을_조회할수있다() {
         //given
         Concert concert = createConcertWithAvailableSeats();
         concertRepository.save(concert);
@@ -68,11 +68,11 @@ public class ConcertServiceTest {
 
         //then
         Assertions.assertThat(seatsQueryResult.availableSeats()).hasSize(50);
-        Assertions.assertThat(seatsQueryResult.unavailableSeats()).hasSize(0);
+        Assertions.assertThat(seatsQueryResult.unavailableSeats()).isEmpty();
     }
 
     @Test
-    void 예약불가능한_좌석을_조회할수없다() throws Exception {
+    void 예약불가능한_좌석을_조회할수없다() {
         //given
         Concert concert = createConcertWithUnavailableSeats();
         concertRepository.save(concert);
@@ -82,12 +82,12 @@ public class ConcertServiceTest {
         SeatsQueryResult seatsQueryResult = concertService.querySeatsByDate(query);
 
         //then
-        Assertions.assertThat(seatsQueryResult.availableSeats()).hasSize(0);
+        Assertions.assertThat(seatsQueryResult.availableSeats()).isEmpty();
         Assertions.assertThat(seatsQueryResult.unavailableSeats()).hasSize(50);
     }
 
     @Test
-    void 예약불가능한_콘서트Id의_좌석을_조회할수없다() throws Exception {
+    void 예약불가능한_콘서트Id의_좌석을_조회할수없다() {
         //given
         Concert concert = createConcertWithAvailableSeats();
         concertRepository.save(concert);
@@ -100,7 +100,7 @@ public class ConcertServiceTest {
     }
 
     @Test
-    void 예약불가능한_peformanceDateId의_좌석을_조회할수없다() throws Exception {
+    void 예약불가능한_peformanceDateId의_좌석을_조회할수없다() {
         //given
         Concert concert = createConcertWithAvailableSeats();
         concertRepository.save(concert);
@@ -133,7 +133,7 @@ public class ConcertServiceTest {
     private static List<Seat> createAllAvailableSeats() {
         List<Seat> seats = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            Seat seat = new Seat((long) i, SeatStatus.AVAILABLE, null, 0);
+            Seat seat = new Seat((long) i, SeatStatus.AVAILABLE, null, 0L, 0);
             seats.add(seat);
         }
         return seats;
@@ -142,7 +142,7 @@ public class ConcertServiceTest {
     private static List<Seat> createAllUnavailableSeats() {
         List<Seat> seats = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            Seat seat = new Seat((long) i, SeatStatus.UNAVAILABLE, null, 0);
+            Seat seat = new Seat((long) i, SeatStatus.UNAVAILABLE, null, 0L, 0);
             seats.add(seat);
         }
         return seats;

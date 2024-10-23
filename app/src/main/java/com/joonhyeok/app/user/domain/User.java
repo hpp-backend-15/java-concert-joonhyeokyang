@@ -37,4 +37,10 @@ public class User {
         this.account.withdraw(amount);
         return this.account;
     }
+
+    public boolean isSufficientBalance(long amount) {
+        return this.account.getBalance() >= amount;
+    }
+
+
 }

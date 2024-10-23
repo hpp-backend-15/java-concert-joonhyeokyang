@@ -154,6 +154,7 @@ CREATE TABLE "concert-test".seat (
                                      last_reserved_at timestamp(6) without time zone,
                                      performance_dates_id bigint,
                                      seats_id bigint NOT NULL,
+                                     seats_price bigint,
                                      seats_status character varying(255),
                                      CONSTRAINT seat_seats_status_check CHECK (((seats_status)::text = ANY ((ARRAY['AVAILABLE'::character varying, 'PENDING'::character varying, 'UNAVAILABLE'::character varying])::text[])))
 );

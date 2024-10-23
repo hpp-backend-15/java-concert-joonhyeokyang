@@ -15,7 +15,7 @@ public class SeatMemoryRepository implements SeatRepository {
     }
 
     public Seat save(Seat seat) {
-        Seat newSeat = new Seat(id, seat.getStatus(), seat.getLastReservedAt(), seat.getVersion());
+        Seat newSeat = new Seat(id, seat.getStatus(), seat.getLastReservedAt(), seat.getPrice(), seat.getVersion());
         map.put(id, newSeat);
         id = id + 1;
         return newSeat;

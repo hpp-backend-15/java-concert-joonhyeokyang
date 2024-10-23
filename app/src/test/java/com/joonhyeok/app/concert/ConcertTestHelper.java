@@ -38,7 +38,7 @@ public class ConcertTestHelper {
     public static List<Seat> createAllAvailableSeats() {
         List<Seat> seats = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            Seat seat = new Seat(null, SeatStatus.AVAILABLE, null, 0);
+            Seat seat = new Seat(null, SeatStatus.AVAILABLE, null, 0L, 0);
             seats.add(seat);
         }
         return seats;
@@ -47,7 +47,7 @@ public class ConcertTestHelper {
     public static List<Seat> createAllUnavailableSeats() {
         List<Seat> seats = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
-            Seat seat = new Seat(null, SeatStatus.UNAVAILABLE, null, 0);
+            Seat seat = new Seat(null, SeatStatus.UNAVAILABLE, null, 0L, 0);
             seats.add(seat);
         }
         return seats;

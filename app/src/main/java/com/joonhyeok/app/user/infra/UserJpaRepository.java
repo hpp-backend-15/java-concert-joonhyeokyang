@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user;
+package com.joonhyeok.app.user.infra;
 
 import com.joonhyeok.app.user.domain.User;
 import com.joonhyeok.app.user.domain.UserRepository;

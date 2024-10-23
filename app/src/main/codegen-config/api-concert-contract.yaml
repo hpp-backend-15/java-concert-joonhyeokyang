@@ -1,4 +1,5 @@
 openapi: 3.1.0
+
 info:
   title: 콘서트 예약 시스템 - OpenAPI 3.1
   description: |-
@@ -176,6 +177,7 @@ paths:
             type: string
       summary: 좌석 예약 요청
       description: 콘서트, 공연 날짜, 좌석에 대한 좌석 예약을 요청합니다.
+      operationId: makeReservation
       requestBody:
         description: 예약할 콘서트, 공연 날짜, 좌석 정보
         required: true
@@ -229,6 +231,7 @@ paths:
         - account
       summary: 잔액 충전 요청
       description: 사용자 식별자와 금액을 받아 잔액을 충전합니다.
+      operationId: chargeUserPoint
       parameters:
         - name: userId
           in: path
@@ -242,29 +245,15 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                amount:
-                  type: integer
-                  description: 충전할 금액
-                  example: 10000
+              $ref: '#/components/schemas/ChargeUserPointRequest'
+
       responses:
         '200':
           description: 충전 성공
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  timestamp:
-                    type: string
-                    format: date-time
-                    description: 충전 완료 시간
-                    example: "2024-10-10T12:34:56Z"
-                  balance:
-                    type: integer
-                    description: 충전 후 잔액
-                    example: 50000
+                $ref: '#/components/schemas/ChargeUserPointResponse'
         '409':
           description: 충전 실패 (낙관적 잠금 충돌 등)
           content:
@@ -293,6 +282,7 @@ paths:
         - account
       summary: 잔액 조회 요청
       description: 사용자 식별자를 받아 해당 사용자의 잔액을 조회합니다.
+      operationId: findUserPoint
       parameters:
         - name: userId
           in: path
@@ -306,12 +296,8 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  balance:
-                    type: integer
-                    description: 사용자 계좌 잔액
-                    example: 50000
+                $ref: '#/components/schemas/UserPointResponse'
+
         '404':
           description: 사용자를 찾을 수 없음
           content:
@@ -334,42 +320,38 @@ paths:
                     type: string
                     description: 잘못된 요청에 대한 설명
                     example: "Invalid input data."
-  /pay:
+  /users/{userId}/reservations/{reservationId}/pay:
     post:
       tags:
         - pay
       summary: "결제 요청"
-      description: "사용자가 예약 결제를 시도합니다."
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                userId:
-                  type: integer
-                  format: int64
-                  description: "유저 식별자"
-                  example: 123
-                reservationId:
-                  type: integer
-                  format: int64
-                  description: "예약 식별자"
-                  example: 456
+      description: "사용자가 예약 좌석의 결제를 시도합니다."
+      operationId: payUserReservation
+      parameters:
+        - name: userId
+          in: path
+          description: 유저 Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: reservationId
+          in: path
+          description: 공연예약 Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
       responses:
         '200':
           description: "결제 성공"
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  reservationId:
-                    type: integer
-                    format: int64
-                    description: "예약 식별자"
-                    example: 456
+                $ref: '#/components/schemas/PayResponse'
+
         '400':
           description: "잘못된 요청 - 예약 정보가 없거나 만료됨"
           content:
@@ -402,23 +384,57 @@ paths:
                     example: "서버에서 오류가 발생했습니다."
 components:
   schemas:
+    PayResponse:
+      type: object
+      properties:
+        reservationId:
+          type: integer
+          format: int64
+          description: "예약 식별자"
+          example: 456
+    UserPointResponse:
+      type: object
+      properties:
+        balance:
+          type: integer
+          description: 사용자 계좌 잔액
+          example: 50000
+    ChargeUserPointRequest:
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: 충전할 금액
+          example: 10000
+    ChargeUserPointResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: 충전 완료 시간
+          example: "2024-10-10T12:34:56Z"
+        balance:
+          type: integer
+          description: 충전 후 잔액
+          example: 50000
     ReservationResponse:
       type: object
       properties:
-#        seatId:
-#          type: integer
-#          format: int64
-#          description: 좌석 ID
-#          example: 1
-#        userId:
-#          type: integer
-#          format: int64
-#          description: 유저 ID
-#          example: 1
-#        performanceDate:
-#          type: string
-#          example: "2018-01-01"
-#          format: date
+        #        seatId:
+        #          type: integer
+        #          format: int64
+        #          description: 좌석 ID
+        #          example: 1
+        #        userId:
+        #          type: integer
+        #          format: int64
+        #          description: 유저 ID
+        #          example: 1
+        #        performanceDate:
+        #          type: string
+        #          example: "2018-01-01"
+        #          format: date
         reservationId:
           type: integer
           format: int64

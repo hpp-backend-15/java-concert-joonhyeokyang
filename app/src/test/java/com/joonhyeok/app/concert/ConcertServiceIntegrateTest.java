@@ -36,6 +36,8 @@ class ConcertServiceIntegrateTest {
     @Test
     void 예약가능한일자를_조회할수있다() {
         //given
+        Concert concert = createConcertWithAvailableSeats();
+        concertRepository.save(concert);
         AvailablePerformanceDatesQuery datesQuery = new AvailablePerformanceDatesQuery(1L);
 
         //when

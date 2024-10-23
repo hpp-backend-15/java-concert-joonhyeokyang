@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static com.joonhyeok.app.concert.domain.SeatStatus.AVAILABLE;
-import static com.joonhyeok.app.concert.domain.SeatStatus.PENDING;
+import static com.joonhyeok.app.concert.domain.SeatStatus.*;
 import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -30,6 +29,9 @@ public class Seat {
 
     LocalDateTime lastReservedAt;
 
+    @Column(name = "seats_price")
+    Long price;
+
     @Version
     private Integer version;
 
@@ -37,10 +39,21 @@ public class Seat {
         return this.status == AVAILABLE;
     }
 
+    public boolean isPayable() {
+        return this.status == PENDING;
+    }
+
     public void reserveSeat() {
         if (!isReservable()) {
             throw new IllegalStateException("이미 선택된 좌석입니다.");
         }
         this.status = PENDING;
+    }
+
+    public void confirmPay() {
+        if (!isPayable()) {
+            throw new IllegalStateException("결제할 수 없는 좌석입니다");
+        }
+        this.status = UNAVAILABLE;
     }
 }
