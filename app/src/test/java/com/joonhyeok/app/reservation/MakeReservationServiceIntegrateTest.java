@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @ActiveProfiles("test")
 @Sql("/ddl-test.sql")
-@AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
+@AutoConfigureEmbeddedDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MakeReservationServiceIntegrateTest {
 

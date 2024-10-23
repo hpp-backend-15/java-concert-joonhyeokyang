@@ -22,8 +22,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDateTime;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,7 +52,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.ACTIVE, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.ACTIVE, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
         queueRepository.save(queue);
 
         //when
@@ -77,7 +75,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
         queueRepository.save(queue);
 
         //when
@@ -93,7 +91,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
         queueRepository.save(queue);
 
         Thread.sleep(1500);
@@ -110,7 +108,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
         queueRepository.save(queue);
 
         //when
@@ -126,7 +124,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", "userId", QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
         queueRepository.save(queue);
 
         //when

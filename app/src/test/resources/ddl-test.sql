@@ -91,7 +91,7 @@ CREATE TABLE "concert-test".queues (
                                        id bigint NOT NULL,
                                        issue_at timestamp(6) without time zone,
                                        last_requested_at timestamp(6) without time zone,
-                                       queues_user_id character varying(255) NOT NULL,
+                                       queues_user_id bigint NOT NULL,
                                        queues_wait_id character varying(255) NOT NULL,
                                        status character varying(255),
                                        CONSTRAINT queues_status_check CHECK (((status)::text = ANY ((ARRAY['WAIT'::character varying, 'ACTIVE'::character varying, 'EXPIRED'::character varying])::text[])))
@@ -176,24 +176,24 @@ CREATE SEQUENCE "concert-test".seat_seq
 ALTER SEQUENCE "concert-test".seat_seq OWNER TO postgres;
 
 --
--- Name: user; Type: TABLE; Schema: concert-test; Owner: postgres
+-- Name: users; Type: TABLE; Schema: concert-test; Owner: postgres
 --
 
-CREATE TABLE "concert-test"."user" (
-                                       version integer NOT NULL,
-                                       users_account_balance bigint,
-                                       users_account_modified_at timestamp(6) without time zone,
-                                       users_id bigint NOT NULL
+CREATE TABLE "concert-test".users (
+                                      version integer NOT NULL,
+                                      users_account_balance bigint,
+                                      users_account_modified_at timestamp(6) without time zone,
+                                      users_id bigint NOT NULL
 );
 
 
-ALTER TABLE "concert-test"."user" OWNER TO postgres;
+ALTER TABLE "concert-test".users OWNER TO postgres;
 
 --
--- Name: user_seq; Type: SEQUENCE; Schema: concert-test; Owner: postgres
+-- Name: users_seq; Type: SEQUENCE; Schema: concert-test; Owner: postgres
 --
 
-CREATE SEQUENCE "concert-test".user_seq
+CREATE SEQUENCE "concert-test".users_seq
     START WITH 1
     INCREMENT BY 50
     NO MINVALUE
@@ -201,7 +201,7 @@ CREATE SEQUENCE "concert-test".user_seq
     CACHE 1;
 
 
-ALTER SEQUENCE "concert-test".user_seq OWNER TO postgres;
+ALTER SEQUENCE "concert-test".users_seq OWNER TO postgres;
 
 --
 -- Data for Name: concert; Type: TABLE DATA; Schema: concert-test; Owner: postgres
@@ -234,7 +234,7 @@ ALTER SEQUENCE "concert-test".user_seq OWNER TO postgres;
 
 
 --
--- Data for Name: user; Type: TABLE DATA; Schema: concert-test; Owner: postgres
+-- Data for Name: users; Type: TABLE DATA; Schema: concert-test; Owner: postgres
 --
 
 
@@ -275,10 +275,10 @@ SELECT pg_catalog.setval('"concert-test".seat_seq', 1, false);
 
 
 --
--- Name: user_seq; Type: SEQUENCE SET; Schema: concert-test; Owner: postgres
+-- Name: users_seq; Type: SEQUENCE SET; Schema: concert-test; Owner: postgres
 --
 
-SELECT pg_catalog.setval('"concert-test".user_seq', 1, false);
+SELECT pg_catalog.setval('"concert-test".users_seq', 1, false);
 
 
 --
@@ -322,11 +322,11 @@ ALTER TABLE ONLY "concert-test".seat
 
 
 --
--- Name: user user_pkey; Type: CONSTRAINT; Schema: concert-test; Owner: postgres
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: concert-test; Owner: postgres
 --
 
-ALTER TABLE ONLY "concert-test"."user"
-    ADD CONSTRAINT user_pkey PRIMARY KEY (users_id);
+ALTER TABLE ONLY "concert-test".users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (users_id);
 
 
 --
