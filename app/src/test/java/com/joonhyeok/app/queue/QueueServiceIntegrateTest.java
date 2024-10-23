@@ -28,7 +28,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.yaml")
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
-public class QueueServiceIntegrateTest {
+class QueueServiceIntegrateTest {
 
     @Autowired
     QueueService queueService;
@@ -37,15 +37,15 @@ public class QueueServiceIntegrateTest {
     QueueRepository queueRepository;
 
     @Test
-    void Queue_대기열_등록하는_경우_성공한다() throws Exception {
+    void Queue_대기열_등록하는_경우_성공한다() {
         //given
 
         //when
-        EnqueueResult result = queueService.enqueue(EnqueueCommand.from("userId"));
+        EnqueueResult result = queueService.enqueue(EnqueueCommand.from(1L));
 
         //then1
-        Optional<Queue> optionalQueue = queueRepository.findById(result.id());
-        assertThat(optionalQueue.isPresent()).isTrue();
+        Optional<Queue> optionalQueue = queueRepository.findById(result.userId());
+        assertThat(optionalQueue).isPresent();
 
         //then2
         Queue registeredQueue = optionalQueue.get();
@@ -54,21 +54,22 @@ public class QueueServiceIntegrateTest {
     }
 
     @Test
-    void Queue_이미대기하는_대기요청은_실패한다() throws Exception {
+    void Queue_이미대기하는_대기요청은_실패한다() {
         //given
-        queueService.enqueue(EnqueueCommand.from("waitId1"));
+        queueService.enqueue(EnqueueCommand.from(1L));
 
         //when
+        EnqueueCommand dupCommand = EnqueueCommand.from(1L);
 
         //then
-        assertThatThrownBy(() -> queueService.enqueue(EnqueueCommand.from("waitId1")))
+        assertThatThrownBy(() -> queueService.enqueue(dupCommand))
                 .isInstanceOf(EntityExistsException.class);
     }
 
     @Test
-    void Queue_이미대기하는_요청을_쿼리하면_찾을수있어야한다() throws Exception {
+    void Queue_이미대기하는_요청을_쿼리하면_찾을수있어야한다() {
         //given
-        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
+        Long queueId = queueService.enqueue(EnqueueCommand.from(1L)).userId();
 
         //when
         String waitId = queueRepository.findById(queueId).orElseThrow().getWaitId();
@@ -80,39 +81,42 @@ public class QueueServiceIntegrateTest {
     }
 
     @Test
-    void Queue_대기하지않는다면_쿼리가_실패해야한다() throws Exception {
+    void Queue_대기하지않는다면_쿼리가_실패해야한다() {
         //given
-        queueService.enqueue(EnqueueCommand.from("userId"));
+        queueService.enqueue(EnqueueCommand.from(1L));
 
         //when
+        QueueQuery failQuery = QueueQuery.from("differentWaitId");
         //then
-        assertThatThrownBy(() -> queueService.query(QueueQuery.from("differentWaitId")))
+        assertThatThrownBy(() -> queueService.query(failQuery))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
     @Test
     void Queue_만료된큐라면_쿼리가_실패해야한다() {
         //given
-        queueService.enqueue(EnqueueCommand.from("userId"));
-        Queue queue = queueRepository.findByUserId("userId").orElseThrow();
+        queueService.enqueue(EnqueueCommand.from(1L));
+        Queue queue = queueRepository.findByUserId(1L).orElseThrow();
         queue.activate(LocalDateTime.now().minusDays(1), LocalDateTime.now().minusHours(23));
         queue.expire();
         queueRepository.save(queue);
 
         //when
+        QueueQuery failQuery = QueueQuery.from(queue.getWaitId());
+
         //then
-        assertThatThrownBy(() -> queueService.query(QueueQuery.from(queue.getWaitId())))
+        assertThatThrownBy(() -> queueService.query(failQuery))
                 .isInstanceOf(IllegalStateException.class);
 
     }
 
     @Test
-    void 앞에10명이대기하고있고_새로활성화되려면_내순번은11번째다() throws Exception {
+    void 앞에10명이대기하고있고_새로활성화되려면_내순번은11번째다() {
         //given
-        for (int i = 0; i < 10; i++) {
-            queueService.enqueue(EnqueueCommand.from("userId" + i));
+        for (int i = 1; i <= 10; i++) {
+            queueService.enqueue(EnqueueCommand.from((long) i));
         }
-        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
+        Long queueId = queueService.enqueue(EnqueueCommand.from(11L)).userId();
 
         //when
         String waitId = queueRepository.findById(queueId).orElseThrow().getWaitId();
@@ -123,16 +127,17 @@ public class QueueServiceIntegrateTest {
     }
 
     @Test
-    void 앞에10명이활성중이고_새로활성화되려면_내순번은1번째다() throws Exception {
+    void 앞에10명이활성중이고_새로활성화되려면_내순번은1번째다() {
         //given
-        for (int i = 0; i < 10; i++) {
-            queueService.enqueue(EnqueueCommand.from("userId" + i));
-            Queue queue = queueRepository.findByUserId("userId" + i).get();
+        for (int i = 1; i <= 10; i++) {
+            queueService.enqueue(EnqueueCommand.from((long) i));
+            Queue queue = queueRepository.findByUserId((long) i).get();
             queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(10));
             queueRepository.save(queue);
         }
 
-        Long queueId = queueService.enqueue(EnqueueCommand.from("userId")).id();
+        Long queueId = queueService.enqueue(EnqueueCommand.from(11L)).userId();
+
         //when
         String waitId = queueRepository.findById(queueId).orElseThrow().getWaitId();
         QueueQueryResult myTurn = queueService.query(QueueQuery.from(waitId));
@@ -143,12 +148,12 @@ public class QueueServiceIntegrateTest {
     }
 
 //    @Test
-//    void 앞에10명이대기하고있고_새로활성화되려면_최대20초는기다려야하고_내순번은11번째다() throws Exception {
+//    void 앞에10명이대기하고있고_새로활성화되려면_최대20초는기다려야하고_내순번은11번째다() {
 //        //given
 //        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from("userId" + i));
+//            queueService.enqueue(EnqueueCommand.from((long) i));
 //        }
-//        queueService.enqueue(EnqueueCommand.from("userId"));
+//        queueService.enqueue(EnqueueCommand.from(1L));
 //
 //        //when
 //        QueueQueryResult myTurn = queueService.query(QueueQuery.from("userId"));
@@ -161,14 +166,14 @@ public class QueueServiceIntegrateTest {
 //    }
 //
 //    @Test
-//    void 앞에10명이활성중이고_새로활성화되려면_최대10초는기다려야하고_내순번은1번째다() throws Exception {
+//    void 앞에10명이활성중이고_새로활성화되려면_최대10초는기다려야하고_내순번은1번째다() {
 //        //given
 //        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from("userId" + i));
+//            queueService.enqueue(EnqueueCommand.from((long) i));
 //            Queue queue = queueRepository.findByWaitId("userId"+i).get();
 //            queue.activate(LocalDateTime.now());
 //        }
-//        queueService.enqueue(EnqueueCommand.from("userId"));
+//        queueService.enqueue(EnqueueCommand.from(1L));
 //
 //        //when
 //        QueueQueryResult myTurn = queueService.query(QueueQuery.from("userId"));

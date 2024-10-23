@@ -10,7 +10,7 @@ public interface QueueRepository {
 
     Optional<Long> findMaxPositionOfActivated();
 
-    Optional<Queue> findByUserId(String userId);
+    Optional<Queue> findByUserId(Long userId);
 
     Optional<Queue> findByWaitId(String wait);
 

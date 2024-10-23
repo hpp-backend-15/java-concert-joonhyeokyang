@@ -4,7 +4,7 @@ import com.joonhyeok.app.queue.domain.Queue;
 
 public record QueueQueryResult(
         String waitId,
-        String userId,
+        Long userId,
         Long position
 ) {
 

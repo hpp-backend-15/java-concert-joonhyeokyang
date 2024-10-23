@@ -20,7 +20,7 @@ public class QueueService {
 
     @Transactional
     public EnqueueResult enqueue(EnqueueCommand command) {
-        String userId = command.userId();
+        Long userId = command.userId();
 
         queueRepository.findByUserId(userId).ifPresent(queue -> {
             throw new EntityExistsException("이미 대기중인 대기자입니다. userId = " + queue.getWaitId());
@@ -28,7 +28,7 @@ public class QueueService {
 
         Queue queue = Queue.create(userId);
         Queue savedQueue = queueRepository.save(queue);
-        return new EnqueueResult(savedQueue.getId());
+        return new EnqueueResult(savedQueue.getId(), savedQueue.getWaitId());
     }
 
     /**

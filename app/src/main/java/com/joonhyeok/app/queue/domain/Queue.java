@@ -29,7 +29,7 @@ public class Queue {
     private String waitId;
 
     @Column(name = "queues_user_id", nullable = false)
-    private String userId;
+    private Long userId;
 
     @Enumerated(STRING)
     private QueueStatus status;
@@ -69,7 +69,7 @@ public class Queue {
         this.status = EXPIRED;
     }
 
-    public static Queue create(String userId) {
+    public static Queue create(Long userId) {
         Queue queue = new Queue();
         queue.waitId = UUID.randomUUID().toString();
         queue.userId = userId;

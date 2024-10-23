@@ -44,7 +44,7 @@ public class QueueMemoryRepository implements QueueRepository {
     }
 
     @Override
-    public Optional<Queue> findByUserId(String userId) {
+    public Optional<Queue> findByUserId(Long userId) {
         for (Queue value : map.values()) {
             if (value.getUserId().equals(userId))
                 return Optional.of(value);

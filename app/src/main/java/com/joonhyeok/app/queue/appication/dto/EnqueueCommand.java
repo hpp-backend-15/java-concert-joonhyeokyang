@@ -1,9 +1,9 @@
 package com.joonhyeok.app.queue.appication.dto;
 
 public record EnqueueCommand(
-        String userId
+        Long userId
 ) {
-    public static EnqueueCommand from(String userId) {
+    public static EnqueueCommand from(Long userId) {
         return new EnqueueCommand(userId);
     }
 
