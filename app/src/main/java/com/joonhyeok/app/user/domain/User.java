@@ -20,10 +20,8 @@ public class User {
     private Long id;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "balance", column = @Column(name = "users_account_balance")),
-            @AttributeOverride(name = "balance", column = @Column(name = "users_account_modifiedAt"))
-    })
+    @AttributeOverride(name = "balance", column = @Column(name = "users_account_balance"))
+    @AttributeOverride(name = "modifiedAt", column = @Column(name = "users_account_modifiedAt"))
     private Account account;
 
     @Version

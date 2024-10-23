@@ -122,8 +122,8 @@ CREATE TABLE "concert-test".reservation (
                                             created_at timestamp(6) without time zone,
                                             modified_at timestamp(6) without time zone,
                                             reservations_id bigint NOT NULL,
-                                            resrvations_seat_id bigint NOT NULL,
-                                            resrvations_user_id bigint NOT NULL,
+                                            reservations_seat_id bigint NOT NULL,
+                                            reservations_user_id bigint NOT NULL,
                                             reservations_status character varying(255) NOT NULL,
                                             CONSTRAINT reservation_reservations_status_check CHECK (((reservations_status)::text = ANY ((ARRAY['RESERVED'::character varying, 'PAYED'::character varying, 'CANCELLED'::character varying])::text[])))
 );
@@ -180,6 +180,9 @@ ALTER SEQUENCE "concert-test".seat_seq OWNER TO postgres;
 --
 
 CREATE TABLE "concert-test"."user" (
+                                       version integer NOT NULL,
+                                       users_account_balance bigint,
+                                       users_account_modified_at timestamp(6) without time zone,
                                        users_id bigint NOT NULL
 );
 
