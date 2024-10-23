@@ -7,6 +7,9 @@ import com.joonhyeok.app.queue.appication.dto.QueueQuery;
 import com.joonhyeok.app.queue.appication.dto.QueueQueryResult;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
+import com.joonhyeok.app.user.domain.Account;
+import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,24 +18,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.joonhyeok.app.queue.domain.QueueStatus.WAIT;
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
-import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Sql("/ddl-test.sql")
-@AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
+@AutoConfigureEmbeddedDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class QueueServiceIntegrateTest {
+class QueueServiceIntegrateTest {
 
     @Autowired
     QueueService queueService;
@@ -40,9 +40,14 @@ public class QueueServiceIntegrateTest {
     @Autowired
     QueueRepository queueRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Test
     void Queue_대기열_등록하는_경우_성공한다() {
         //given
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        userRepository.save(user);
 
         //when
         EnqueueResult result = queueService.enqueue(EnqueueCommand.from(1L));
@@ -60,6 +65,9 @@ public class QueueServiceIntegrateTest {
     @Test
     void Queue_이미대기하는_대기요청은_실패한다() {
         //given
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        userRepository.save(user);
+
         queueService.enqueue(EnqueueCommand.from(1L));
 
         //when
@@ -73,6 +81,9 @@ public class QueueServiceIntegrateTest {
     @Test
     void Queue_이미대기하는_요청을_쿼리하면_찾을수있어야한다() {
         //given
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        userRepository.save(user);
+
         Long queueId = queueService.enqueue(EnqueueCommand.from(1L)).userId();
 
         //when
@@ -87,6 +98,8 @@ public class QueueServiceIntegrateTest {
     @Test
     void Queue_대기하지않는다면_쿼리가_실패해야한다() {
         //given
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        userRepository.save(user);
         queueService.enqueue(EnqueueCommand.from(1L));
 
         //when
@@ -97,29 +110,17 @@ public class QueueServiceIntegrateTest {
     }
 
     @Test
-    void Queue_만료된큐라면_쿼리가_실패해야한다() {
-        //given
-        queueService.enqueue(EnqueueCommand.from(1L));
-        Queue queue = queueRepository.findByUserId(1L).orElseThrow();
-        queue.activate(LocalDateTime.now().minusDays(1), LocalDateTime.now().minusHours(23));
-        queue.expire();
-        queueRepository.save(queue);
-
-        //when
-        QueueQuery failQuery = QueueQuery.from(queue.getWaitId());
-
-        //then
-        assertThatThrownBy(() -> queueService.query(failQuery))
-                .isInstanceOf(IllegalStateException.class);
-
-    }
-
-    @Test
     void 앞에10명이대기하고있고_새로활성화되려면_내순번은11번째다() {
         //given
         for (int i = 1; i <= 10; i++) {
+            User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+            userRepository.save(user);
+
             queueService.enqueue(EnqueueCommand.from((long) i));
         }
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        userRepository.save(user);
+
         Long queueId = queueService.enqueue(EnqueueCommand.from(11L)).userId();
 
         //when
@@ -134,11 +135,16 @@ public class QueueServiceIntegrateTest {
     void 앞에10명이활성중이고_새로활성화되려면_내순번은1번째다() {
         //given
         for (int i = 1; i <= 10; i++) {
+            User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+            userRepository.save(user);
+
             queueService.enqueue(EnqueueCommand.from((long) i));
             Queue queue = queueRepository.findByUserId((long) i).get();
             queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(10));
             queueRepository.save(queue);
         }
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        userRepository.save(user);
 
         Long queueId = queueService.enqueue(EnqueueCommand.from(11L)).userId();
 
@@ -151,42 +157,5 @@ public class QueueServiceIntegrateTest {
 
     }
 
-//    @Test
-//    void 앞에10명이대기하고있고_새로활성화되려면_최대20초는기다려야하고_내순번은11번째다() {
-//        //given
-//        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from((long) i));
-//        }
-//        queueService.enqueue(EnqueueCommand.from(1L));
-//
-//        //when
-//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("userId"));
-//
-//        //then
-//        assertThat(myTurn.userId()).isEqualTo("userId");
-//        assertThat(myTurn.position()).isEqualTo(10);
-//        assertThat(myTurn.estimatedWaitTime()).isAfterOrEqualTo(LocalDateTime.now().plusSeconds(2 * Constants.SCHEDULER_ACTIVE_PERIOD_IN_SECONDS - 1));
-//
-//    }
-//
-//    @Test
-//    void 앞에10명이활성중이고_새로활성화되려면_최대10초는기다려야하고_내순번은1번째다() {
-//        //given
-//        for (int i = 0; i < 10; i++) {
-//            queueService.enqueue(EnqueueCommand.from((long) i));
-//            Queue queue = queueRepository.findByWaitId("userId"+i).get();
-//            queue.activate(LocalDateTime.now());
-//        }
-//        queueService.enqueue(EnqueueCommand.from(1L));
-//
-//        //when
-//        QueueQueryResult myTurn = queueService.query(QueueQuery.from("userId"));
-//
-//        //then
-//        assertThat(myTurn.userId()).isEqualTo("userId");
-//        assertThat(myTurn.position()).isEqualTo(1);
-//        assertThat(myTurn.estimatedWaitTime()).isAfterOrEqualTo(LocalDateTime.now().plusSeconds(1 * Constants.SCHEDULER_ACTIVE_PERIOD_IN_SECONDS - 1));
-//
-//    }
 
 }

@@ -17,7 +17,7 @@ public class QueuePolicyScheduler {
         queuePolicy.activate();
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 2500)
     public void expire() {
         queuePolicy.expire();
     }

@@ -6,6 +6,7 @@ import com.joonhyeok.app.queue.appication.dto.QueueQuery;
 import com.joonhyeok.app.queue.appication.dto.QueueQueryResult;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
+import com.joonhyeok.app.user.domain.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class QueueService {
     private final QueueRepository queueRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public EnqueueResult enqueue(EnqueueCommand command) {
         Long userId = command.userId();
+
+        userRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException("가입된 유저가 아닙니다. 요청 Id = " + userId)
+        );
 
         queueRepository.findByUserId(userId).ifPresent(queue -> {
             throw new EntityExistsException("이미 대기중인 대기자입니다. userId = " + queue.getWaitId());
@@ -42,12 +48,10 @@ public class QueueService {
      */
     public QueueQueryResult query(QueueQuery query) {
         String waitId = query.waitId();
+
         Queue queue = queueRepository.findByWaitId(waitId).orElseThrow(() ->
                 new EntityNotFoundException("존재하지 않는 대기자입니다. waitId = " + waitId));
 
-        if (queue.isExpired()) {
-            throw new IllegalStateException("이미 만료된 대기자입니다. waitId = " + waitId);
-        }
 
         Long lastActivatedIdx = queueRepository.findMaxPositionOfActivated().orElse(0L);
 
