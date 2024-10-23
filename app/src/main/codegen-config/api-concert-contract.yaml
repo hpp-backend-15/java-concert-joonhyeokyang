@@ -254,10 +254,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  chargedAmount:
-                    type: integer
-                    description: 충전된 금액
-                    example: 10000
                   timestamp:
                     type: string
                     format: date-time

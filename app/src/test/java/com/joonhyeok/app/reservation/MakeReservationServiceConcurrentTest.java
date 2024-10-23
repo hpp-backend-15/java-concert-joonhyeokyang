@@ -2,45 +2,41 @@ package com.joonhyeok.app.reservation;
 
 import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
-import com.joonhyeok.app.concert.domain.SeatRepository;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
-import com.joonhyeok.app.reservation.domain.ReservationRepository;
-import com.joonhyeok.app.user.User;
-import com.joonhyeok.app.user.UserRepository;
+import com.joonhyeok.app.user.domain.Account;
+import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.UserRepository;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.test.context.jdbc.Sql;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:application-test.yaml")
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@Sql("/ddl-test.sql")
+@AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MakeReservationServiceConcurrentTest {
 
     @Autowired
     ConcertRepository concertRepository;
-
-    @Autowired
-    ReservationRepository reservationRepository;
-
-    @Autowired
-    SeatRepository seatRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -64,7 +60,7 @@ public class MakeReservationServiceConcurrentTest {
     void 한_유저가_한_좌석을_동시에_300번_예약시도한다_그러나_예약한사람은_오직한명이다() throws Exception {
         //given
         Concert concert = createConcertWithAvailableSeats();
-        User user = new User(null);
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         userRepository.save(user);
         concertRepository.save(concert);
 
@@ -101,7 +97,7 @@ public class MakeReservationServiceConcurrentTest {
         concertRepository.save(concert);
 
         for (int i = 0; i < 300; i++) {
-            User user = new User(null);
+            User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
             userRepository.save(user);
         }
 
@@ -138,7 +134,7 @@ public class MakeReservationServiceConcurrentTest {
         concertRepository.save(concert);
 
         for (int i = 0; i < 300; i++) {
-            User user = new User(null);
+            User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
             userRepository.save(user);
         }
 
@@ -150,7 +146,7 @@ public class MakeReservationServiceConcurrentTest {
             executorService.submit(() -> {
                 try {
                     //when
-                    makeReservationService.reserve(new MakeReservationCommand((long)(finalI1%50), (long) (finalI1)));
+                    makeReservationService.reserve(new MakeReservationCommand((long) (finalI1 % 50), (long) (finalI1)));
                     success.incrementAndGet();
                 } catch (Exception e) {
                     fail.incrementAndGet();

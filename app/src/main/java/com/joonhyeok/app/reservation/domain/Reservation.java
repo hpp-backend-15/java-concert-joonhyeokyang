@@ -26,10 +26,10 @@ public class Reservation {
     @Column(nullable = false, name = "reservations_status")
     private ReservationStatus status;
 
-    @Column(nullable = false, updatable = false, name = "resrvations_seat_id")
+    @Column(nullable = false, updatable = false, name = "reservations_seat_id")
     private Long seatId;
 
-    @Column(nullable = false, updatable = false, name = "resrvations_user_id")
+    @Column(nullable = false, updatable = false, name = "reservations_user_id")
     private Long userId;
     LocalDateTime createdAt;
     LocalDateTime modifiedAt;

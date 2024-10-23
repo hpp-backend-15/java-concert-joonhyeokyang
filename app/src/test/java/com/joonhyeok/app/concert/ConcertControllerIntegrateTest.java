@@ -3,11 +3,11 @@ package com.joonhyeok.app.concert;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
-import com.joonhyeok.app.concert.presentation.ConcertController;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.domain.QueueStatus;
 import com.joonhyeok.openapi.models.FindConcertPerformanceDatesResponse;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,31 +15,32 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:application-test.yaml")
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@Sql("/ddl-test.sql")
+@AutoConfigureEmbeddedDatabase
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ConcertControllerIntegrateTest {
-    @Autowired
-    private ConcertController concertController;
 
     @Autowired
     private ConcertRepository concertRepository;
 
     @Autowired
     private QueueRepository queueRepository;
+
     @Autowired
     MockMvc mvc;
 

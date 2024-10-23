@@ -7,6 +7,7 @@ import com.joonhyeok.app.queue.appication.dto.QueueQuery;
 import com.joonhyeok.app.queue.appication.dto.QueueQueryResult;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -15,20 +16,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.joonhyeok.app.queue.domain.QueueStatus.WAIT;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:application-test.yaml")
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
-class QueueServiceIntegrateTest {
+@Sql("/ddl-test.sql")
+@AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+public class QueueServiceIntegrateTest {
 
     @Autowired
     QueueService queueService;

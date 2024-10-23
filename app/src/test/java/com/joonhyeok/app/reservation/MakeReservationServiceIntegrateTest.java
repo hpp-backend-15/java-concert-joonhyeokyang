@@ -6,8 +6,10 @@ import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
-import com.joonhyeok.app.user.User;
-import com.joonhyeok.app.user.UserRepository;
+import com.joonhyeok.app.user.domain.Account;
+import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.UserRepository;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,18 +17,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+
+import java.time.LocalDateTime;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithUnavailableSeats;
 import static com.joonhyeok.app.reservation.domain.ReservationStatus.RESERVED;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:application-test.yaml")
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
-public class MakeReservationServiceIntegrateTest {
+@Sql("/ddl-test.sql")
+@AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+class MakeReservationServiceIntegrateTest {
 
     @Autowired
     ConcertRepository concertRepository;
@@ -43,12 +50,15 @@ public class MakeReservationServiceIntegrateTest {
     @Autowired
     MakeReservationService makeReservationService;
 
+
     @Test
-    void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() throws Exception {
+    void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() {
         //given
         Concert concert = createConcertWithAvailableSeats();
-        User user = new User(null);
-        userRepository.save(user);
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        User save = userRepository.save(user);
+        System.out.println("save.getId() = " + save.getId());
+
         concertRepository.save(concert);
 
         //when
@@ -65,29 +75,35 @@ public class MakeReservationServiceIntegrateTest {
     }
 
     @Test
-    void 유저가없다면_예약할수없다() throws Exception {
+    void 유저가없다면_예약할수없다() {
         //given
         Concert concert = createConcertWithAvailableSeats();
         concertRepository.save(concert);
 
         //when
+        MakeReservationCommand command = new MakeReservationCommand(1L, 1L);
+
         //then
-        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(1L, 1L)))
-                .isInstanceOf(EntityNotFoundException.class);
+        assertThatThrownBy(() -> makeReservationService.reserve(command))
+                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(RuntimeException.class);
 
     }
 
     @Test
-    void 선택좌석이_예약불가능하다면_예약할수없다() throws Exception {
+    void 선택좌석이_예약불가능하다면_예약할수없다() {
         //given
         Concert concert = createConcertWithUnavailableSeats();
-        User user = new User(null);
-        userRepository.save(user);
+        User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
+        User save = userRepository.save(user);
         concertRepository.save(concert);
 
+        System.out.println("save.getId() = " + save.getId());
+
         //when
+        MakeReservationCommand command = new MakeReservationCommand(1L, 1L);
         //then
-        Assertions.assertThatThrownBy(() -> makeReservationService.reserve(new MakeReservationCommand(1L, 1L)))
+        assertThatThrownBy(() -> makeReservationService.reserve(command))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 선택된 좌석입니다");
     }
