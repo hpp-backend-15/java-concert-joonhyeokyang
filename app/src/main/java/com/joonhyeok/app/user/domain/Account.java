@@ -33,7 +33,7 @@ public class Account {
     }
 
     public void withdraw(long amount) {
-        if (amount <= 0) {
+        if (amount < 0) {
             throw new IllegalArgumentException("출금 금액은 음수일 수 없습니다. amount = " + amount);
         }
         if (this.balance < amount) {
