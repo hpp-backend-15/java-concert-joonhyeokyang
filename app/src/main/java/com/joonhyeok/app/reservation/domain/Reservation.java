@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import static com.joonhyeok.app.reservation.domain.ReservationStatus.RESERVED;
 import static jakarta.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PROTECTED;
 
+@Slf4j
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
@@ -44,9 +46,11 @@ public class Reservation {
         setSeatId(seatId);
         setUserId(userId);
         setCreatedAt(LocalDateTime.now());
+        log.info("new Reservation seatId = {}, userId = {}", seatId, userId);
     }
 
     public void invalidate() {
+        log.info("invalidate reservation reservationId = {}", this.id);
         this.status = ReservationStatus.CANCELLED;
     }
 
@@ -54,6 +58,7 @@ public class Reservation {
         if (!isPayable()) {
             throw new IllegalStateException("결제할 수 없는 예약입니다");
         }
+        log.info("pay confirmed reservationId = {}", this.id);
         this.status = PAYED;
     }
 
