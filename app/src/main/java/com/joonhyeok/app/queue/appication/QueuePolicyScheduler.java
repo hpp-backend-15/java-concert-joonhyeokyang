@@ -14,11 +14,13 @@ public class QueuePolicyScheduler {
 
     @Scheduled(fixedDelay = 1000)
     public void activate() {
+        log.debug("activate queuePolicy");
         queuePolicy.activate();
     }
 
     @Scheduled(fixedDelay = 2500)
     public void expire() {
+        log.debug("expire queuePolicy");
         queuePolicy.expire();
     }
 }

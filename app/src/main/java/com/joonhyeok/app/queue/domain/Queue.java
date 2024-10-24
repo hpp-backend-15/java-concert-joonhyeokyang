@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import static jakarta.persistence.EnumType.STRING;
 import static java.lang.Math.ceil;
 import static lombok.AccessLevel.PROTECTED;
 
+@Slf4j
 @Entity
 @Table(name = "queues")
 @NoArgsConstructor(access = PROTECTED)
@@ -50,8 +52,11 @@ public class Queue {
     }
 
     public void activate(LocalDateTime enteredAt, LocalDateTime expireAt) {
+        log.info("activate queue userId = {}, waitId = {}, enteredAt = {} will be expired at = {}",
+                this.userId, this.waitId, this.enteredAt, this.expireAt);
         if (status != WAIT) {
-            throw new IllegalStateException("cannot change queue status to ACTIVE, current status is " + status);
+            log.error("cannot change queue status to ACTIVE, current status is {}", this.status);
+            throw new IllegalStateException("cannot change queue status to ACTIVE, current status is {}" + this.status);
         }
         this.status = ACTIVE;
         this.enteredAt = enteredAt;
@@ -59,12 +64,17 @@ public class Queue {
     }
 
     public void expire() {
+        log.info("expire queue userId = {}, waitId = {}, enteredAt = {} will be expired at = {}",
+                this.userId, this.waitId, this.enteredAt, this.expireAt);
+
         if (status != ACTIVE) {
+            log.error("cannot change queue status to EXPIRE, current status is {}", this.status);
             throw new IllegalStateException("cannot change queue status to EXPIRE, current status is " + status);
         }
 
         // 아직 최소 만료시간이 되지 않은 경우
         if (expireAt.isAfter(LocalDateTime.now())) {
+            log.error("cannot change queue status to EXPIRE, will be expired At {}", expireAt);
             throw new IllegalStateException("cannot change queue status to EXPIRE, will be expired At " + expireAt);
         }
         this.status = EXPIRED;
@@ -75,6 +85,7 @@ public class Queue {
         queue.waitId = UUID.randomUUID().toString();
         queue.userId = userId;
         queue.status = WAIT;
+        log.info("issue queue userId = {}, waitId = {}, issuedAt = {}", queue.userId, queue.waitId, queue.issueAt);
         return queue;
     }
 

@@ -53,6 +53,7 @@ public class UserPayService {
             reservation.confirmPay();
             queueRepository.findByUserId(userId).ifPresent(Queue::expire);
         }
+
         return new UserPayResult(reservation.getId());
     }
 }
