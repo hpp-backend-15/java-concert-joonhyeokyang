@@ -6,8 +6,7 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -19,19 +18,19 @@ import java.util.Enumeration;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class HttpLoggingFilter implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpLoggingFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        logger.info("Initializing HTTP Logging Filter");
+        log.info("Initializing HTTP Logging Filter");
     }
 
     @Override
     public void doFilter(
-            jakarta.servlet.ServletRequest request, 
-            jakarta.servlet.ServletResponse response, 
+            jakarta.servlet.ServletRequest request,
+            jakarta.servlet.ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -54,27 +53,27 @@ public class HttpLoggingFilter implements Filter {
 
     @Override
     public void destroy() {
-        logger.info("Destroying HTTP Logging Filter");
+        log.info("Destroying HTTP Logging Filter");
     }
 
     private String getRequestBody(HttpServletRequest request) {
         try (BufferedReader reader = request.getReader()) {
             return reader.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (IOException e) {
-            logger.error("Failed to read request body", e);
+            log.error("Failed to read request body", e);
             return "Unable to read request body.";
         }
     }
 
     private void logRequest(HttpServletRequest request, String requestBody) {
         String headers = getHeadersAsString(request);
-        logger.info("HTTP REQUEST - Method: {}, URI: {}, Headers: {}, Body: {}",
+        log.info("HTTP REQUEST - Method: {}, URI: {}, Headers: {}, Body: {}",
                 request.getMethod(), request.getRequestURI(), headers, requestBody);
     }
 
     private void logResponse(HttpServletRequest request, HttpResponseWrapper response, long duration) {
         String headers = response.getHeadersAsString();
-        logger.info("HTTP RESPONSE - URI: {}, Status: {}, Duration: {}ms, Headers: {}, Body: {}",
+        log.info("HTTP RESPONSE - URI: {}, Status: {}, Duration: {}ms, Headers: {}, Body: {}",
                 request.getRequestURI(), response.getStatus(), duration, headers, response.getBody());
     }
 

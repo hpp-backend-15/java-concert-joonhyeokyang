@@ -19,7 +19,7 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-  - url: https://petstore3.swagger.io/api/v3
+  - url: localhost:8080
 tags:
   - name: concert
     description: 콘서트 날짜/좌석 정보 작업
