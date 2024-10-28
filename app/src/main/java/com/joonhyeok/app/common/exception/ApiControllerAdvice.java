@@ -8,27 +8,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
 
 @RestControllerAdvice
 class ApiControllerAdvice extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(Exception e) {
+        return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = EntityExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEntityExistsException(Exception e) {
+        return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(Exception e) {
+        return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception e) {
+        return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
+    }
+
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
-
-        if (e instanceof EntityNotFoundException) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
-        }
-
-        if (e instanceof EntityExistsException) {
-            return ResponseEntity.status(CONFLICT).body(new ErrorResponse(CONFLICT.value(), e.getMessage()));
-        }
-
-        if (e instanceof IllegalStateException) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
-        }
-
-        if (e instanceof IllegalArgumentException) {
-            return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
-        } else return ResponseEntity.status(500).body(new ErrorResponse(500, "에러가 발생했습니다."));
+    public ResponseEntity<ErrorResponse> handleUnCaughtException(Exception e) {
+        return ResponseEntity.status(500).body(new ErrorResponse(500, "에러가 발생했습니다."));
     }
 }
