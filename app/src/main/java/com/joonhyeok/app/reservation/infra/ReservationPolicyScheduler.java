@@ -1,4 +1,4 @@
-package com.joonhyeok.app.reservation.application;
+package com.joonhyeok.app.reservation.infra;
 
 import com.joonhyeok.app.reservation.domain.ReservationTimeOutPolicy;
 import lombok.RequiredArgsConstructor;

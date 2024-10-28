@@ -1,4 +1,4 @@
-package com.joonhyeok.app.queue.appication;
+package com.joonhyeok.app.queue.infra;
 
 import com.joonhyeok.app.queue.domain.QueuePolicy;
 import lombok.RequiredArgsConstructor;
