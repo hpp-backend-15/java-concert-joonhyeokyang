@@ -1,6 +1,5 @@
 package com.joonhyeok.app.common.config;
 
-import org.junit.ClassRule;
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -11,7 +10,6 @@ public class RedisTestContainerConfig {
 
     private static final String REDIS_IMAGE = "redis:7.0.8-alpine";
     private static final int REDIS_PORT = 6379;
-    @ClassRule
     public static final GenericContainer REDIS_CONTAINER;
 
     static {

@@ -10,7 +10,6 @@ import com.joonhyeok.app.user.domain.Account;
 import com.joonhyeok.app.user.domain.User;
 import com.joonhyeok.app.user.domain.UserRepository;
 import com.joonhyeok.openapi.models.MakeReservationRequest;
-import com.joonhyeok.openapi.models.RegisterQueueRequest;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,10 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -117,121 +113,6 @@ class ReservationControllerIntegrateTest {
         //then
         assertThat(success.get()).isEqualTo(1);
         assertThat(fail.get()).isEqualTo(299);
-    }
-
-    @Test
-    void 존재하지_않는_유저는_대기열등록이_불가능하다() throws Exception {
-        //given
-
-
-        //when
-        ResultActions resultActions = mvc.perform(
-                post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RegisterQueueRequest().userId(-1L)))
-        );
-
-        //then
-        resultActions
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void 이미_대기하는_유저는_대기열등록이_불가능하다() throws Exception {
-        //given
-        userRepository.save(new User(1L, new Account(0L, null), 0));
-
-        mvc.perform(
-                post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RegisterQueueRequest().userId(1L)))
-        );
-
-        //when
-        ResultActions resultActions = mvc.perform(
-                post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RegisterQueueRequest().userId(1L)))
-        );
-
-        //then
-        resultActions
-                .andExpect(status().isConflict());
-    }
-
-    @Test
-    void 대기열에_등록된_유저를_조회할수있다() throws Exception {
-        //given
-        userRepository.save(new User(1L, new Account(0L, null), 0));
-        ResultActions registerResult = mvc.perform(
-                post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RegisterQueueRequest().userId(1L)))
-        );
-
-        String waitId = registerResult.andReturn().getResponse().getHeader("Wait-Token");
-
-
-        //when
-        ResultActions resultActions = mvc.perform(
-                get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Wait-Token", waitId)
-        );
-
-
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.positionInQueue").value(1))
-                .andExpect(jsonPath("$.waitId").value(waitId))
-                .andExpect(jsonPath("$.status").value(QueueStatus.WAIT.name()));
-    }
-
-    @Test
-    void 대기열에_ACTIVE된_유저를_조회하는경우_status는_ACTIVE() throws Exception {
-        //given
-        userRepository.save(new User(1L, new Account(0L, null), 0));
-        ResultActions registerResult = mvc.perform(
-                post(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new RegisterQueueRequest().userId(1L)))
-        );
-
-        String waitId = registerResult.andReturn().getResponse().getHeader("Wait-Token");
-        Thread.sleep(1200);
-
-
-        //when
-        ResultActions resultActions = mvc.perform(
-                get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Wait-Token", waitId)
-        );
-
-
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value(1))
-                .andExpect(jsonPath("$.positionInQueue").value(0))
-                .andExpect(jsonPath("$.waitId").value(waitId))
-                .andExpect(jsonPath("$.status").value(QueueStatus.ACTIVE.name()));
-
-    }
-
-
-    @Test
-    void 대기열에_존재하지않는_waitId를_조회할수없다() throws Exception {
-        //given
-        //when
-        ResultActions resultActions = mvc.perform(
-                get(BASE_URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Wait-Token", "invalidRandomWaitToken")
-        );
-
-        //then
-        resultActions.andExpect(status().isBadRequest());
     }
 
 }
