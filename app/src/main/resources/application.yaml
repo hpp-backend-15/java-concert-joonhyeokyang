@@ -1,5 +1,5 @@
 spring:
-  datasource :
+  datasource:
     url: jdbc:postgresql://localhost:5432/hhplus
     #    driverClassName: org.h2.Driver
     username: postgres
@@ -13,7 +13,10 @@ spring:
       hibernate:
         default_schema: concert
         #    database-platform: org.hibernate.dialect.H2Dialect
-
+  data:
+    redis:
+      port: 6379
+      host: localhost
 #logging:
 #  level:
 #    org.hibernate.orm.jdbc.bind: trace

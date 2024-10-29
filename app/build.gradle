@@ -38,10 +38,15 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     implementation("org.projectlombok:lombok-mapstruct-binding:0.2.0")
-    testImplementation 'io.zonky.test:embedded-database-spring-test:2.5.1'
-
+    implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
 
     compileOnly 'org.projectlombok:lombok'
+
+    // test containers settings
+    testImplementation 'io.zonky.test:embedded-database-spring-test:2.5.1'
+    testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
+    testImplementation "org.testcontainers:testcontainers:1.20.3"
+    testImplementation "org.testcontainers:junit-jupiter:1.20.3"
 
     testImplementation 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -50,7 +55,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
-
 
 }
 
