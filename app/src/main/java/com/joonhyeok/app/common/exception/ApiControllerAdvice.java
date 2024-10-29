@@ -1,5 +1,6 @@
 package com.joonhyeok.app.common.exception;
 
+import com.joonhyeok.app.common.lock.LockException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @RestControllerAdvice
 class ApiControllerAdvice extends ResponseEntityExceptionHandler {
@@ -29,6 +31,11 @@ class ApiControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception e) {
         return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = LockException.class)
+    public ResponseEntity<ErrorResponse> handleLockException(Exception e) {
+        return ResponseEntity.status(SERVICE_UNAVAILABLE).body(new ErrorResponse(SERVICE_UNAVAILABLE.value(), e.getMessage()));
     }
 
     @ExceptionHandler(value = Exception.class)
