@@ -1,5 +1,6 @@
 package com.joonhyeok.app.reservation;
 
+import com.joonhyeok.app.common.config.RedisTestContainerConfig;
 import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
@@ -10,6 +11,7 @@ import com.joonhyeok.app.user.domain.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -32,7 +34,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Sql("/ddl-test.sql")
 @AutoConfigureEmbeddedDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class MakeReservationServiceConcurrentTest2 {
+class MakeReservationServiceConcurrentTest {
 
     @Autowired
     ConcertRepository concertRepository;
