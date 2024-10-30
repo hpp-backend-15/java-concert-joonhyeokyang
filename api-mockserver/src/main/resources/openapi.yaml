@@ -1,91 +1,582 @@
-openapi: "3.0.0"
+openapi: 3.1.0
+
 info:
-  version: 0.0.1
-  title: Orders
+  title: 콘서트 예약 시스템 - OpenAPI 3.1
+  description: |-
+    항해 플러스 3주차+ 과제로 진행되는 콘서트 예약 시스템입니다.
+
+    관련 링크:
+    - [깃허브 레포지토리](https://github.com/hpp-backend-15/java-concert-joonhyeokyang)
+
+  termsOfService: https://en.meming.world/wiki/File:We_Don%27t_Do_That_Here.jpg/
+  contact:
+    email: highestbright98@naver.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: localhost:8085
+tags:
+  - name: concert
+    description: 콘서트 날짜/좌석 정보 작업
+  - name: reservation
+    description: 콘서트 좌석 예약 관련 작업
+  - name: queue
+    description: 대기열 관련 작업
 paths:
-  /apis/orders:
+  /queue:
     get:
-      summary: 특정 유저의 모든 주문내역을 조회합니다.
-      operationId: showAllOrdersByUsers
       tags:
-        - order
+        - queue
+      summary: 대기열에 등록된 고유 ID 정보를 가져온다
+      operationId: getRegisteredQueue
       parameters:
-        - in: query
-          name: v
+        - name: Wait-Token
+          in: header
+          description: 대기열 토큰
+          required: true
           schema:
             type: string
-            example: '0.0.2'
-          description: The version of api
-        - in: query
-          name: user
-          schema:
-            type: string
-            example: '123456-2222123'
-          description: "user name"
-        - in: query
-          name: detail
-          schema:
-            type: string
-            example: '얼굴이 동그라미'
-          description: "user detail"
       responses:
         '200':
-          description: 모든 주문 내역을 반환 합니다.
+          description: 대기열에 등록된 고유 ID 정보 반환
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SubscriptionOrdersModel'
+                type: object
+                $ref: '#/components/schemas/QueueResponse'
         '400':
-          description: unexpected error
+          description: 헤더 Wait-Token 없음
+        '404':
+          description: 대기열에 등록된 고유 ID를 찾을 수 없음
+
+    post:
+      tags:
+        - queue
+      summary: 대기열에 등록한다.
+      description: 대기열에 등록한다. 기 존재하는 대기열이 있다면, 예외를 반환한다. 등록된 User ID로 대기열을 확인한다.
+      operationId: registerQueue
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  description: 대기하려는 유저 Id
+                  type: integer
+                  format: int64
+                  example: 1
+      responses:
+        '201':
+          description: 대기열 등록 완료
+          headers:
+            Wait-Token:
+              description: 대기열 토큰 정보
+              schema:
+                type: string
+        '400':
+          description: 존재하지 않는 유저입니다.
+        '409':
+          description: 이미 대기 등록된 유저입니다.
+
+
+  /concerts/{concertId}/performanceDates:
+    get:
+      tags:
+        - concert
+      summary: 콘서트 예약 가능 일자 확인
+      description: 해당 콘서트의 모든 예약 가능한 일자를 조회한다
+      operationId: findConcertPerformanceDates
+      parameters:
+        - name: Wait-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+        - name: concertId
+          in: path
+          description: 콘서트 Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: 조회 성공
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                type: object
+                $ref: '#/components/schemas/FindConcertPerformanceDatesResponse'
+        '301':
+          description: 301 Redirect /queue (ACTIVE하지 않은 토큰을 갖는 유저)
+        '400':
+          description: Invalid ConcertId value
+        '404':
+          description: No Such Conecrt
+  /concerts/{concertId}/performanceDates/{performanceDateId}/seats:
+    get:
+      tags:
+        - concert
+      summary: 콘서트 예약 가능한 일자의 예악 가능한 좌석 확인
+      description: 해당 콘서트 일자의 모든 예약 가능한 좌석을 반환한다.
+      operationId: findConcertPerformanceDatesSeats
+      parameters:
+        - name: Wait-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+        - name: concertId
+          in: path
+          description: 콘서트 Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: performanceDateId
+          in: path
+          description: 콘서트 공연일
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindConcertAvailableSeatsResponse'
+        '301':
+          description: 301 Redirect /queue (ACTIVE하지 않은 토큰을 갖는 유저)
+        '400':
+          description: Invalid ConcertId/PerformanceDateId
+        '404':
+          description: No Such Conecrt/PerformanceDate
+  /reservations:
+    post:
+      tags:
+        - reservation
+      parameters:
+        - name: Wait-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+      summary: 좌석 예약 요청
+      description: 콘서트, 공연 날짜, 좌석에 대한 좌석 예약을 요청합니다.
+      operationId: makeReservation
+      requestBody:
+        description: 예약할 콘서트, 공연 날짜, 좌석 정보
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                seatId:
+                  type: integer
+                  format: int64
+                  description: 좌석 ID
+                  example: 789
+                userId:
+                  type: integer
+                  format: int64
+                  description: 예약을 요청하는 유저 ID
+                  example: 1
+      responses:
+        '201':
+          description: 예약 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponse'
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid input data"
+        '409':
+          description: 예약 충돌 (이미 예약된 좌석 등)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "이미 선택된 좌석입니다"
+        '301':
+          description: 301 Redirect /queue (ACTIVE하지 않은 토큰을 갖는 유저)
+  /accounts/{userId}/charge:
+    post:
+      tags:
+        - account
+      summary: 잔액 충전 요청
+      description: 사용자 식별자와 금액을 받아 잔액을 충전합니다.
+      operationId: chargeUserPoint
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: 충전할 사용자 식별자
+          schema:
+            type: string
+      requestBody:
+        description: 충전할 금액 정보
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChargeUserPointRequest'
+
+      responses:
+        '200':
+          description: 충전 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChargeUserPointResponse'
+        '409':
+          description: 충전 실패 (낙관적 잠금 충돌 등)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: 충전 실패 사유
+                    example: "Failed due to concurrent access."
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: 잘못된 요청에 대한 설명
+                    example: "Invalid input data."
+  /accounts/{userId}:
+    get:
+      tags:
+        - account
+      summary: 잔액 조회 요청
+      description: 사용자 식별자를 받아 해당 사용자의 잔액을 조회합니다.
+      operationId: findUserPoint
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: 조회할 사용자 식별자
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 잔액 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPointResponse'
+
+        '404':
+          description: 사용자를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: 사용자 식별자에 해당하는 사용자를 찾을 수 없다는 설명
+                    example: "User not found."
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: 잘못된 요청에 대한 설명
+                    example: "Invalid input data."
+  /users/{userId}/reservations/{reservationId}/pay:
+    post:
+      tags:
+        - pay
+      summary: "결제 요청"
+      description: "사용자가 예약 좌석의 결제를 시도합니다."
+      operationId: payUserReservation
+      parameters:
+        - name: userId
+          in: path
+          description: 유저 Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: reservationId
+          in: path
+          description: 공연예약 Id
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        '200':
+          description: "결제 성공"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayResponse'
+
+        '400':
+          description: "잘못된 요청 - 예약 정보가 없거나 만료됨"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "예약 정보가 없습니다. 또는 만료된 예약입니다."
+        '409':
+          description: "충돌 - 잔액 부족"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "잔액 부족"
+        '500':
+          description: "서버 오류"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "서버에서 오류가 발생했습니다."
 components:
   schemas:
-    SubscriptionOrdersModel:
-      type: 'object'
+    PayResponse:
+      type: object
+      properties:
+        reservationId:
+          type: integer
+          format: int64
+          description: "예약 식별자"
+          example: 456
+    UserPointResponse:
+      type: object
+      properties:
+        balance:
+          type: integer
+          description: 사용자 계좌 잔액
+          example: 50000
+    ChargeUserPointRequest:
+      type: object
+      properties:
+        amount:
+          type: integer
+          description: 충전할 금액
+          example: 10000
+    ChargeUserPointResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: 충전 완료 시간
+          example: "2024-10-10T12:34:56Z"
+        balance:
+          type: integer
+          description: 충전 후 잔액
+          example: 50000
+    ReservationResponse:
+      type: object
+      properties:
+        #        seatId:
+        #          type: integer
+        #          format: int64
+        #          description: 좌석 ID
+        #          example: 1
+        #        userId:
+        #          type: integer
+        #          format: int64
+        #          description: 유저 ID
+        #          example: 1
+        #        performanceDate:
+        #          type: string
+        #          example: "2018-01-01"
+        #          format: date
+        reservationId:
+          type: integer
+          format: int64
+          description: 예약 ID
+    Concert:
+      type: object
+      description: 콘서트 관련 정보
       properties:
         id:
-          type: 'string'
-          description: 'orderId'
-          example: '246523764'
-        subscriptionId:
-          type: 'string'
-          description: '정기 결제가 진행된 구독 ID 입니다'
-          example: 'ad4d8bed-1967-4e68-af97-290ca710c2f6_3647777233'
-        result:
-          type: 'string'
-          example: "SUCCESS | FAILED"
-          description: '여부 실패시, additionalProperties 에 failedReason 포함됨'
-        userId:
-          type: 'string'
-          example: 'ad4d8bed-1967-4e68-af97-290ca710c2f6'
-        orderId:
-          type: 'string'
-          example: 'order-2312355'
-          description: 'PG 에서 확인할 수 있는 고유 결제 ID'
-        paidAt:
-          type: 'string'
-          example: "2022-08-11"
-          description: '결제일을 확인할 수 있다.'
-        refundedAt:
-          type: 'string'
-          example: "2022-08-09"
-          description: '결제일을 확인할 수 있다.'
-        additionalProperties:
-          additionalProperties:
-            $ref: '#/components/schemas/StringMap'
-          type: object
-          description: '추가 되어질 수 있는 내역 담기'
-    Error:
-      required:
-        - value
+          type: integer
+          format: int64
+          description: 공연 Id
+          example: 1
+        performer:
+          type: string
+          description: 공연자 정보
+          example: 양준혁
+
+    SeatResponse:
+      type: object
+      description: 콘서트 좌석 정보
       properties:
-        description:
-          type: 'string'
-          example: '적절하지 않은 값입니다.'
-    StringMap:
-      type: string
+        id:
+          type: integer
+          format: int64
+          description: 좌석 Id
+          example: 1
+        status:
+          type: string
+          example: AVAILABLE
+          enum:
+            - AVAILABLE
+            - PENDING
+            - UNAVAILABLE
+
+    QueueResponse:
+      type: object
+      properties:
+        waitId:
+          type: string
+          description: 대기열에 등록된 고유 ID
+        positionInQueue:
+          type: integer
+          format: int64
+          description: 현재 대기열에서의 위치
+        userId:
+          type: integer
+          format: int64
+          description: 대기하는 유저 ID
+        status:
+          type: string
+          description: 토큰의 상태(대기중, 활성, 만료)
+
+    PerformanceDateResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        date:
+          type: string
+          format: date
+
+    FindConcertAvailableSeatsResponse:
+      type: object
+      properties:
+        availableSeats:
+          type: array
+          description: 예약 가능한 좌석 목록
+          items:
+            $ref: '#/components/schemas/SeatResponse'
+        unavailableSeats:
+          type: array
+          description: 예약 불가능한 좌석 목록
+          items:
+            $ref: '#/components/schemas/SeatResponse'
+
+    FindConcertPerformanceDatesResponse:
+      type: object
+      properties:
+        availablePerformanceDates:
+          type: array
+          description: 예약 가능한 공연일자 목록
+          items:
+            $ref: '#/components/schemas/PerformanceDateResponse'
+        unavailablePerformanceDates:
+          type: array
+          description: 예약 불가능한 공연일자 목록
+          items:
+            $ref: '#/components/schemas/PerformanceDateResponse'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+      xml:
+        name: user
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: tag
+
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int64
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+
+  headers:
+    Wait-Token:
+      schema:
+        type: string
+        description: 대기열에 등록된 토큰 정보
+        example: "1234asdu410gfi0df"

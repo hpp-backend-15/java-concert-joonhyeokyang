@@ -1,4 +1,4 @@
-package com.joonhyeok.app.common.config;
+package com.joonhyeok.app.common;
 
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.GenericContainer;
