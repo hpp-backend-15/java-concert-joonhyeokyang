@@ -13,10 +13,8 @@ import com.joonhyeok.app.reservation.domain.ReservationStatus;
 import com.joonhyeok.app.user.application.UserPayService;
 import com.joonhyeok.app.user.application.dto.UserPayCommand;
 import com.joonhyeok.app.user.domain.Account;
-import com.joonhyeok.app.user.domain.PayValidator;
 import com.joonhyeok.app.user.domain.User;
 import com.joonhyeok.app.user.domain.UserRepository;
-import com.joonhyeok.app.user.infra.PayValidatorImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +32,7 @@ class UserPayServiceTest {
         reservationRepository = new ReservationMemoryRepository();
         seatRepository = new SeatMemoryRepository();
         QueueRepository queueRepository = new QueueMemoryRepository();
-        PayValidator payValidator = new PayValidatorImpl();
-        userPayService = new UserPayService(userRepository, seatRepository, reservationRepository, queueRepository, payValidator);
+        userPayService = new UserPayService(userRepository, seatRepository, reservationRepository, queueRepository);
     }
 
     @Test
