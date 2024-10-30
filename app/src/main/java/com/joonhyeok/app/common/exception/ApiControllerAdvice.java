@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 class ApiControllerAdvice extends ResponseEntityExceptionHandler {
@@ -20,7 +19,7 @@ class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = EntityExistsException.class)
     public ResponseEntity<ErrorResponse> handleEntityExistsException(Exception e) {
-        return ResponseEntity.status(BAD_REQUEST).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
+        return ResponseEntity.status(CONFLICT).body(new ErrorResponse(BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(value = IllegalStateException.class)
