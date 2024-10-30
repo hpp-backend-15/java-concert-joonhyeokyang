@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class SeatRedissonLock implements LockManager {
+public class RedissonLockManager implements LockManager {
     long waitTime = 10L;
     long leaseTime = 9L;
     TimeUnit timeUnit = TimeUnit.SECONDS;
