@@ -1,9 +1,9 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/hhplus
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/hhplus
 #    driverClassName: org.h2.Driver
-    username: postgres
-    password:
+#    username: postgres
+#    password:
 
   jpa:
     hibernate:
