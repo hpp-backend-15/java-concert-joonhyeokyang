@@ -20,7 +20,7 @@ public class RedissonConfig {
     @Value("${spring.data.redis.prefix}")
     private String prefix;
 
-    @Bean
+//    @Bean
     public RedissonClient redissonClient() {
         RedissonClient redisson = null;
         Config config = new Config();
