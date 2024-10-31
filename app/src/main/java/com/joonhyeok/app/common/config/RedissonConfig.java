@@ -11,14 +11,14 @@ import org.springframework.context.annotation.Configuration;
 //@Configuration
 //@EnableCaching
 public class RedissonConfig {
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
-
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
-
-    @Value("${spring.data.redis.prefix}")
-    private String prefix;
+//    @Value("${spring.data.redis.host}")
+//    private String redisHost;
+//
+//    @Value("${spring.data.redis.port}")
+//    private int redisPort;
+//
+//    @Value("${spring.data.redis.prefix}")
+//    private String prefix;
 
 //    @Bean
 //    public RedissonClient redissonClient() {
