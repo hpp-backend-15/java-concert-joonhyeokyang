@@ -21,11 +21,11 @@ public class RedissonConfig {
     private String prefix;
 
 //    @Bean
-    public RedissonClient redissonClient() {
-        RedissonClient redisson = null;
-        Config config = new Config();
-        config.useSingleServer().setAddress(prefix + redisHost + ":" + redisPort);
-        redisson = Redisson.create(config);
-        return redisson;
-    }
+//    public RedissonClient redissonClient() {
+//        RedissonClient redisson = null;
+//        Config config = new Config();
+//        config.useSingleServer().setAddress(prefix + redisHost + ":" + redisPort);
+//        redisson = Redisson.create(config);
+//        return redisson;
+//    }
 }
