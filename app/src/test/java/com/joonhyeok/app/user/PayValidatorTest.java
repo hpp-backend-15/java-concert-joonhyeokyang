@@ -5,9 +5,8 @@ import com.joonhyeok.app.concert.domain.SeatStatus;
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationStatus;
 import com.joonhyeok.app.user.domain.Account;
-import com.joonhyeok.app.user.domain.PayValidator;
 import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.infra.PayValidatorImpl;
+import com.joonhyeok.app.user.domain.PayValidator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ class PayValidatorTest {
 
     @BeforeEach
     public void setUp() {
-        payValidator = new PayValidatorImpl();
+        payValidator = new PayValidator();
     }
 
     @Test

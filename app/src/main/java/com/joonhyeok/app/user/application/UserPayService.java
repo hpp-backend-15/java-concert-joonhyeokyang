@@ -24,7 +24,6 @@ public class UserPayService {
     private final SeatRepository seatRepository;
     private final ReservationRepository reservationRepository;
     private final QueueRepository queueRepository;
-    private final PayValidator payValidator;
 
     @Transactional
     public UserPayResult pay(UserPayCommand command) {
@@ -44,7 +43,7 @@ public class UserPayService {
         );
 
 
-        boolean isPayable = payValidator.validate(user, seat, reservation);
+        boolean isPayable = new PayValidator().validate(user, seat, reservation);
 
         //TODO 코치님께 여쭤봐서 아래 구문을 이벤트로 처리하는 게 의미 있는지 확인..?
         if (isPayable) {

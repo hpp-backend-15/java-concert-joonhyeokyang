@@ -8,19 +8,29 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Enumeration;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.enumeration;
 
 @Component
 @Slf4j
 public class HttpLoggingFilter implements Filter {
 
+
+    private final HttpServletRequest httpServletRequest;
+
+    public HttpLoggingFilter(HttpServletRequest httpServletRequest) {
+        this.httpServletRequest = httpServletRequest;
+    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -33,22 +43,20 @@ public class HttpLoggingFilter implements Filter {
             jakarta.servlet.ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        ContentCachingRequestWrapper cachingRequestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
+        ContentCachingResponseWrapper cachingResponseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
 
         Instant start = Instant.now(); // 시작 시간 기록
-        String requestBody = getRequestBody(httpRequest); // 요청 본문 읽기
 
-        logRequest(httpRequest, requestBody); // 요청 로깅
-
-        // 응답 필터 체인 실행
-        HttpResponseWrapper wrappedResponse = new HttpResponseWrapper(httpResponse);
-        chain.doFilter(request, wrappedResponse);
+        chain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
 
         Instant end = Instant.now(); // 종료 시간 기록
         long duration = java.time.Duration.between(start, end).toMillis(); // 처리 시간 계산
 
-        logResponse(httpRequest, wrappedResponse, duration); // 응답 로깅
+        cachingResponseWrapper.copyBodyToResponse();
+        logRequest(cachingRequestWrapper); // 요청 로깅
+        logResponse(cachingRequestWrapper, cachingResponseWrapper, duration); // 응답 로깅
+        cachingResponseWrapper.copyBodyToResponse();
     }
 
     @Override
@@ -65,19 +73,19 @@ public class HttpLoggingFilter implements Filter {
         }
     }
 
-    private void logRequest(HttpServletRequest request, String requestBody) {
+
+    private void logRequest(ContentCachingRequestWrapper request) {
         String headers = getHeadersAsString(request);
         log.info("HTTP REQUEST - Method: {}, URI: {}, Headers: {}, Body: {}",
-                request.getMethod(), request.getRequestURI(), headers, requestBody);
+                request.getMethod(), request.getRequestURI(), headers, new String(request.getContentAsByteArray(), StandardCharsets.UTF_8));
     }
 
-    private void logResponse(HttpServletRequest request, HttpResponseWrapper response, long duration) {
-        String headers = response.getHeadersAsString();
+    private void logResponse(HttpServletRequest request, ContentCachingResponseWrapper response, long duration) {
         log.info("HTTP RESPONSE - URI: {}, Status: {}, Duration: {}ms, Headers: {}, Body: {}",
-                request.getRequestURI(), response.getStatus(), duration, headers, response.getBody());
+                request.getRequestURI(), response.getStatus(), duration, getHeaders(response), new String(response.getContentAsByteArray(), StandardCharsets.UTF_8));
     }
 
-    private String getHeadersAsString(HttpServletRequest request) {
+    private static String getHeadersAsString(HttpServletRequest request) {
         Enumeration<String> headerNames = request.getHeaderNames();
         StringBuilder headers = new StringBuilder();
         while (headerNames.hasMoreElements()) {
@@ -88,28 +96,24 @@ public class HttpLoggingFilter implements Filter {
         return headers.toString();
     }
 
-    // HttpServletResponse를 래핑하는 클래스
-    private static class HttpResponseWrapper extends jakarta.servlet.http.HttpServletResponseWrapper {
-
-        private final StringWriter responseWriter = new StringWriter();
-
-        public HttpResponseWrapper(HttpServletResponse response) {
-            super(response);
+    private static String getHeadersAsString(Enumeration<String> headerNames,
+                                             UnaryOperator<String> headerResolver) {
+        StringBuilder headers = new StringBuilder();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
+            headers.append(name).append(": ").append(headerResolver.apply(name)).append(", ");
         }
-
-        @Override
-        public PrintWriter getWriter() {
-            return new PrintWriter(responseWriter);
+        // 마지막 콤마와 공백 제거
+        if (headers.length() > 2) {
+            headers.setLength(headers.length() - 2);
         }
+        return headers.toString();
+    }
 
-        public String getBody() {
-            return responseWriter.toString();
-        }
-
-        public String getHeadersAsString() {
-            return this.getHeaderNames().stream()
-                    .map(name -> name + ": " + this.getHeader(name))
-                    .collect(Collectors.joining("; "));
-        }
+    private static String getHeaders(HttpServletResponse response) {
+        return getHeadersAsString(
+                enumeration(response.getHeaderNames()),
+                name -> String.join(", ", response.getHeaders(name))
+        );
     }
 }

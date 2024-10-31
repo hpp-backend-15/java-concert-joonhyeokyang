@@ -32,7 +32,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Sql("/ddl-test.sql")
 @AutoConfigureEmbeddedDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class MakeReservationServiceConcurrentTest2 {
+class MakeReservationServiceConcurrentTest {
 
     @Autowired
     ConcertRepository concertRepository;
