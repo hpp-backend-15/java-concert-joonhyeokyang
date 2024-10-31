@@ -17,6 +17,7 @@ spring:
     redis:
       port: 6379
       host: localhost
+      prefix: "redis://"
 #logging:
 #  level:
 #    org.hibernate.orm.jdbc.bind: trace
