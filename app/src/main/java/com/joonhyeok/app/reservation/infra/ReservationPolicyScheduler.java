@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ReservationPolicyScheduler {
     private final ReservationTimeOutPolicy reservationPolicy;
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 300000)
     public void expire() {
         reservationPolicy.invalidate();
     }
