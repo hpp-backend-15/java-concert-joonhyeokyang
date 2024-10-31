@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface SeatJpaRepository extends SeatRepository, Repository<Seat, Long> {
 
-    @Lock(LockModeType.OPTIMISTIC)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Seat> findWithLockById(Long seatId);
 
 }
