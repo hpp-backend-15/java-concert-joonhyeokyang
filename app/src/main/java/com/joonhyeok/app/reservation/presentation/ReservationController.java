@@ -1,7 +1,7 @@
 package com.joonhyeok.app.reservation.presentation;
 
 import com.joonhyeok.app.common.aop.token.VerifyWait;
-import com.joonhyeok.app.common.lock.LockManager;
+//import com.joonhyeok.app.common.lock.LockManager;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ReservationController implements ReservationApi {
     private final MakeReservationService makeReservationService;
-    private final LockManager lockManager;
+//    private final LockManager lockManager;
 
 
     @VerifyWait
