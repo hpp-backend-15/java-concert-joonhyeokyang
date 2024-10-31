@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/concert")
 @RequiredArgsConstructor
 public class ConcertController implements ConcertApi {
     private final ConcertService concertService;
@@ -25,7 +24,6 @@ public class ConcertController implements ConcertApi {
 
     @Override
     @VerifyWait
-    @GetMapping("/{concertId}/performanceDates")
     public ResponseEntity<FindConcertPerformanceDatesResponse> findConcertPerformanceDates(
             @RequestHeader("Wait-Token") String waitToken,
             @PathVariable(value = "concertId") Long concertId
@@ -45,7 +43,6 @@ public class ConcertController implements ConcertApi {
 
     @Override
     @VerifyWait
-    @GetMapping("/{concertId}/performanceDates/{performanceDateId}/seats")
     public ResponseEntity<FindConcertAvailableSeatsResponse> findConcertPerformanceDatesSeats(
             @RequestHeader("Wait-Token") String waitToken,
             @PathVariable(value = "concertId") Long concertId,
