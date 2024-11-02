@@ -53,7 +53,6 @@ public class HttpLoggingFilter implements Filter {
         Instant end = Instant.now(); // 종료 시간 기록
         long duration = java.time.Duration.between(start, end).toMillis(); // 처리 시간 계산
 
-        cachingResponseWrapper.copyBodyToResponse();
         logRequest(cachingRequestWrapper); // 요청 로깅
         logResponse(cachingRequestWrapper, cachingResponseWrapper, duration); // 응답 로깅
         cachingResponseWrapper.copyBodyToResponse();
