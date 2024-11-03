@@ -27,7 +27,6 @@ public class ReservationController implements ReservationApi {
     @Override
     public ResponseEntity<ReservationResponse> makeReservation(String waitToken, MakeReservationRequest request) {
         MakeReservationResult result = null;
-
         LockId lock = null;
         try {
             lock = lockManager.tryLock("seat", request.getSeatId());
