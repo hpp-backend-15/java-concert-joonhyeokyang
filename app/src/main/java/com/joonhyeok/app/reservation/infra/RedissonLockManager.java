@@ -39,13 +39,13 @@ public class RedissonLockManager implements LockManager {
 
     @Override
     public void releaseLock(LockId lockId) throws LockException {
-        log.info("releaseLock lockId = {}", lockId);
+        log.info("releaseLock lockId = {}", lockId.getValue());
         RLock rLock = redissonClient.getLock(lockId.getValue());
         try {
             if(rLock.isHeldByCurrentThread() && rLock.isLocked()) {}
             rLock.unlock();
         } catch (IllegalMonitorStateException e) {
-            log.error("releaseLock fail, lockId = {}", lockId);
+            log.error("releaseLock fail, lockId = {}", lockId.getValue());
             throw new NoLockException();
         }
     }
