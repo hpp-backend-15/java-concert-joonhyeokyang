@@ -21,7 +21,8 @@ public class RedissonLockManager implements LockManager {
     @Override
     public LockId tryLock(String type, Long id) throws LockException {
         log.info("tryLock type = {}, id = {}", type, id);
-        RLock rLock = redissonClient.getLock(type + "-" + id);
+        LockId lockId = new LockId(type + "-" + id);
+        RLock rLock = redissonClient.getLock(lockId.getValue());
         boolean gotLock = false;
         try {
             gotLock = rLock.tryLock(waitTime, leaseTime, timeUnit);
@@ -34,7 +35,7 @@ public class RedissonLockManager implements LockManager {
             log.info("tryLock interrupted, waitTime = {}, leaseTime = {}", waitTime, leaseTime);
             throw new LockingFailException(e);
         }
-        return new LockId(type + "-" + id);
+        return lockId;
     }
 
     @Override
@@ -42,8 +43,9 @@ public class RedissonLockManager implements LockManager {
         log.info("releaseLock lockId = {}", lockId.getValue());
         RLock rLock = redissonClient.getLock(lockId.getValue());
         try {
-            if(rLock.isHeldByCurrentThread() && rLock.isLocked()) {}
-            rLock.unlock();
+            if (rLock.isHeldByCurrentThread() && rLock.isLocked()) {
+                rLock.unlock();
+            }
         } catch (IllegalMonitorStateException e) {
             log.error("releaseLock fail, lockId = {}", lockId.getValue());
             throw new NoLockException();
