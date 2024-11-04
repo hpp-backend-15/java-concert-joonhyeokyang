@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 public class Reservation {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservations_id")
     private Long id;
 

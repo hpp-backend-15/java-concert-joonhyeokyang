@@ -4,8 +4,8 @@ import {sleep} from "k6"
 // Base URL 설정
 var BASE_URL = `http://${__ENV.TARGET_HOST}:8080/`
 
-const TARGET_TPS = 1; // 목표 TPS 설정
-const MAX_SEAT_ID = 30_000; // seatId의 최대값 설정
+const TARGET_TPS = 5_000; // 목표 TPS 설정
+const MAX_SEAT_ID = 10_000; // seatId의 최대값 설정
 
 // 시나리오 설정
 export let options = {

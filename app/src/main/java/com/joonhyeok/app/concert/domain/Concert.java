@@ -18,7 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 public class Concert {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "concerts_id")
     private Long id;
     private String performer;

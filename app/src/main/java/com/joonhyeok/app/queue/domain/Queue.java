@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 public class Queue {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "queues_wait_id", nullable = false)

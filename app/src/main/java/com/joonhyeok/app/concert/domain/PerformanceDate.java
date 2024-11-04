@@ -20,7 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Builder
 public class PerformanceDate {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "performance_dates_id")
     private Long id;
 

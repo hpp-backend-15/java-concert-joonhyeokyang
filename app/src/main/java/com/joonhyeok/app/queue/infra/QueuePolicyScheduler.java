@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class QueuePolicyScheduler {
     private final QueuePolicy queuePolicy;
 
-    @Scheduled(fixedDelay = 10_000)
+    @Scheduled(fixedDelay = 1_000)
     public void activate() {
         log.debug("activate queuePolicy");
         queuePolicy.activate();

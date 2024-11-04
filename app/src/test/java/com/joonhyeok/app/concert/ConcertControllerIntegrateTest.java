@@ -45,7 +45,7 @@ public class ConcertControllerIntegrateTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    private static final String BASE_URL = "/concert";
+    private static final String BASE_URL = "/concerts";
 
     @Test
     void 적절한_토큰으로_예약가능일자를_조회성공한다() throws Exception {
@@ -94,7 +94,7 @@ public class ConcertControllerIntegrateTest {
         Queue queue = new Queue(null, "waitId", 1L, QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
         queueRepository.save(queue);
 
-        Thread.sleep(1500);
+        Thread.sleep(2_000);
         //when
         //then
         mvc.perform(
