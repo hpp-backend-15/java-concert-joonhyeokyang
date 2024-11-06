@@ -27,5 +27,36 @@ spring:
       host: localhost
       prefix: "redis://"
 
-  jmx.enabled: true
-server.tomcat.mbeanregistry.enabled: true
+  sleuth:
+    otel:
+      config:
+        trace-id-ratio-based: 0.1
+      exporter:
+        otlp:
+          endpoint: http://10.0.0.106:4317
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+
+exporters:
+  jaeger:
+    endpoint: 10.0.0.106:14250
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers:  [ otlp ]
+      processors: [ batch ]
+      exporters:  [ jaeger ]
+
+
+#   jmx.enabled: true
+# server.tomcat.mbeanregistry.enabled: true
