@@ -1,3 +1,9 @@
+drop table if exists concert.concert;
+drop table if exists concert.performance_date;
+drop table if exists concert.queues;
+drop table if exists concert.reservation;
+drop table if exists concert.seat;
+drop table if exists concert.users;
 create table if not exists concert.concert
 (
     concerts_id bigint auto_increment
