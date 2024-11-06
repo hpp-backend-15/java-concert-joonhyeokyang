@@ -17,8 +17,7 @@ plugins {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
-        mavenBom 'org.springframework.cloud:spring-cloud-sleuth-otel-dependencies:1.1.2'
+        mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.6.0")
     }
 }
 
@@ -45,13 +44,9 @@ dependencies {
     implementation 'com.mysql:mysql-connector-j'
     implementation("org.projectlombok:lombok-mapstruct-binding:0.2.0")
     implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation ('org.springframework.cloud:spring-cloud-starter-sleuth') {
-        exclude group: 'org.springframework.cloud', module: 'spring-cloud-sleuth-brave'
-    }
-    implementation 'org.springframework.cloud:spring-cloud-sleuth-otel-autoconfigure'
-    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.23.1'
+    implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter")
+    implementation("io.opentelemetry:opentelemetry-exporter-jaeger:1.34.1")
+
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
     // p6spy
