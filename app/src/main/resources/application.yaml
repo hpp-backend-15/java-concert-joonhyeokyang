@@ -27,13 +27,15 @@ spring:
       host: localhost
       prefix: "redis://"
 
-  sleuth:
-    otel:
-      config:
-        trace-id-ratio-based: 0.1
-      exporter:
-        otlp:
-          endpoint: http://10.0.0.106:4317
+otel:
+  config:
+    trace-id-ratio-based: 0.1
+  exporter:
+    otlp:
+      protocol: grpc
+      endpoint: http://10.0.0.106:4317
+  traces:
+    exporter: jaeger
 
 
 #   jmx.enabled: true
