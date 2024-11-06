@@ -16,9 +16,11 @@ spring:
       data-locations: classpath:sql/dml.sql # 서버 시작시 dml sql문을 실행할 위치 및 파일 지정
       schema-locations: classpath:sql/ddl.sql # 서버 시작시 ddl sql문을 실행할
 
+
   data:
     redis:
       port: 6379
       host: localhost
       prefix: "redis://"
-
+  jmx.enabled: true
+server.tomcat.mbeanregistry.enabled: true
