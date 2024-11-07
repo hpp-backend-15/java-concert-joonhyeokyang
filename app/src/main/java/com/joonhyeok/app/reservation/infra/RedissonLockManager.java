@@ -1,6 +1,5 @@
 package com.joonhyeok.app.reservation.infra;
 
-import com.joonhyeok.app.common.config.RedisTracingService;
 import com.joonhyeok.app.common.lock.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ public class RedissonLockManager implements LockManager {
     long waitTime = 900L;
     long leaseTime = 300L;
     TimeUnit timeUnit = TimeUnit.MICROSECONDS;
-    private final RedisTracingService redissonClient;
+    private final RedissonClient redissonClient;
 
     @Override
     public LockId tryLock(String type, Long id) throws LockException {

@@ -46,6 +46,7 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
     implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter")
     implementation("io.opentelemetry:opentelemetry-exporter-jaeger:1.34.1")
+    implementation 'io.opentelemetry.javaagent.instrumentation:opentelemetry-javaagent-redisson-3.17:2.9.0-alpha'
 
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
