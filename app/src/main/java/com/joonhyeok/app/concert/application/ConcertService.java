@@ -20,7 +20,8 @@ public class ConcertService {
 
     @Cacheable(
             value = "performanceDates",
-            key = "read-concert-#query.concertId()",
+            cacheNames = "concerts",
+            key = "concertId-#query.concertId()",
             cacheManager = "contentCacheManager"
     )
     public PerformanceDatesQueryResult queryPerformanceDates(AvailablePerformanceDatesQuery query) {
@@ -32,7 +33,8 @@ public class ConcertService {
 
     @Cacheable(
             value = "performanceDates",
-            key = "read-concert-#query.concertId()-#query.performanceDateId()",
+            cacheNames = "concerts",
+            key = "concertId-#query.concertId()-performanceDateId-#query.performanceDateId()",
             cacheManager = "contentCacheManager"
     )
     public SeatsQueryResult querySeatsByDate(AvailableSeatsByDateQuery query) {
