@@ -8,3 +8,4 @@
 - [시나리오 요구사항 분석 - 시퀀스 다이어그램](https://github.com/hpp-backend-15/java-concert-joonhyeokyang/blob/main/docs/sequecne/)
 - [API 명세](https://github.com/hpp-backend-15/java-concert-joonhyeokyang/blob/STEP-7/docs/markdown/4.API%20%EB%AA%85%EC%84%B8%20(OAS).md)
 - [ERD](https://github.com/hpp-backend-15/java-concert-joonhyeokyang/issues/4)
+- [7주차 분석]()
