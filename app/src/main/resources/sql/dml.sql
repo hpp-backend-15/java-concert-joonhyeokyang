@@ -25,6 +25,7 @@ INSERT INTO users VALUES (0, 0, '2024-10-31 21:26:19.371344', 1);
 --
 -- Data for Name: reservation; Type: TABLE DATA; Schema: concert-test; Owner: postgres
 --
+CALL loopInsert();
 
 
 
@@ -64,4 +65,3 @@ DELIMITER ;
 --
 
 
-CALL loopInsert();
