@@ -11,6 +11,8 @@ import com.joonhyeok.app.user.domain.User;
 import com.joonhyeok.app.user.domain.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,17 +25,17 @@ public class MakeReservationService {
     private final UserRepository userRepository;
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "performanceDates", cacheNames = "concerts", key = "concertId-#command.concertId()", cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "SeatsByDate", cacheNames = "concerts", key = "concertId-#command.concertId()-performanceDateId-#command.performanceDateId()", cacheManager = "contentCacheManager")
+    })
     public MakeReservationResult reserve(MakeReservationCommand command) {
         Long seatId = command.seatId();
         Long userId = command.userId();
 
-        Seat lockedSeat = seatRepository.findWithLockById(seatId).orElseThrow(() ->
-                new EntityNotFoundException("해당 좌석은 존재하지 않습니다. seatId = " + seatId)
-        );
+        Seat lockedSeat = seatRepository.findWithLockById(seatId).orElseThrow(() -> new EntityNotFoundException("해당 좌석은 존재하지 않습니다. seatId = " + seatId));
 
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new EntityNotFoundException("해당 유저는 존재하지 않습니다. userId = " + userId)
-        );
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다. userId = " + userId));
 
         // TODO in new Reservation() -> Events.raise(new SeatReservationEvent) with Transaction
         lockedSeat.reserveSeat();

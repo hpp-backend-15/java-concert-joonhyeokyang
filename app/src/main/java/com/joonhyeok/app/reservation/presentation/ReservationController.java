@@ -1,8 +1,8 @@
 package com.joonhyeok.app.reservation.presentation;
 
 import com.joonhyeok.app.common.aop.token.VerifyWait;
-import com.joonhyeok.app.common.lock.LockManager;
 import com.joonhyeok.app.common.lock.LockId;
+import com.joonhyeok.app.common.lock.LockManager;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
@@ -30,7 +30,13 @@ public class ReservationController implements ReservationApi {
         LockId lock = null;
         try {
             lock = lockManager.tryLock("seat", request.getSeatId());
-            result = makeReservationService.reserve(new MakeReservationCommand(request.getSeatId(), request.getUserId()));
+            result = makeReservationService.reserve(
+                    new MakeReservationCommand(
+                            request.getConcertId(),
+                            request.getPerformanceDateId(),
+                            request.getSeatId(),
+                            request.getUserId()))
+            ;
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
