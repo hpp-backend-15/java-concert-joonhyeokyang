@@ -21,6 +21,7 @@ public class RedissonLockManager implements LockManager {
     private final RedissonClient redissonClient;
     private final Tracer tracer;
 
+    //TODO Tracer AOP 분리
     @Override
     public LockId tryLock(String type, Long id) throws LockException {
         log.info("tryLock type = {}, id = {}", type, id);
