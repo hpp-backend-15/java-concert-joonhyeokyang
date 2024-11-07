@@ -15,6 +15,12 @@ plugins {
     id 'idea'
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:2.6.0")
+    }
+}
+
 group = 'com.joonhyeok'
 version = '0.0.1-SNAPSHOT'
 
@@ -38,6 +44,17 @@ dependencies {
     implementation 'com.mysql:mysql-connector-j'
     implementation("org.projectlombok:lombok-mapstruct-binding:0.2.0")
     implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
+
+
+    //otel
+    implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter")
+//    implementation("io.opentelemetry:opentelemetry-api")
+//    implementation("io.opentelemetry:opentelemetry-sdk")
+//    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+
+
+    implementation("io.opentelemetry:opentelemetry-exporter-jaeger:1.34.1")
+    implementation 'io.opentelemetry.javaagent.instrumentation:opentelemetry-javaagent-redisson-3.17:2.9.0-alpha'
 
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
