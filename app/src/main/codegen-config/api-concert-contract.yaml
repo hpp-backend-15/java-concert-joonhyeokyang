@@ -186,6 +186,16 @@ paths:
             schema:
               type: object
               properties:
+                concertId:
+                  type: integer
+                  format: int64
+                  description: 콘서트 ID
+                  example: 1
+                performanceDateId:
+                  type: integer
+                  format: int64
+                  description: 공연일 ID
+                  example: 2
                 seatId:
                   type: integer
                   format: int64
