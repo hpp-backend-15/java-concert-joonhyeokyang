@@ -8,6 +8,7 @@ import com.joonhyeok.app.concert.domain.Concert;
 import com.joonhyeok.app.concert.domain.ConcertRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ConcertService {
     private final ConcertRepository concertRepository;
 
+    @Cacheable(
+            value = "performanceDates",
+            cacheNames = "concerts",
+            key = "concertId-#query.concertId()",
+            cacheManager = "contentCacheManager"
+    )
     public PerformanceDatesQueryResult queryPerformanceDates(AvailablePerformanceDatesQuery query) {
         Long concertId = query.concertId();
         Concert concert = concertRepository.findById(concertId)
@@ -24,6 +31,12 @@ public class ConcertService {
         return new PerformanceDatesQueryResult(concert);
     }
 
+    @Cacheable(
+            value = "SeatsByDate",
+            cacheNames = "concerts",
+            key = "concertId-#query.concertId()-performanceDateId-#query.performanceDateId()",
+            cacheManager = "contentCacheManager"
+    )
     public SeatsQueryResult querySeatsByDate(AvailableSeatsByDateQuery query) {
         Long concertId = query.concertId();
         Long performanceDateId = query.performanceDateId();
