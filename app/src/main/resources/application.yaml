@@ -27,5 +27,13 @@ spring:
       host: localhost
       prefix: "redis://"
 
-  jmx.enabled: true
-server.tomcat.mbeanregistry.enabled: true
+otel:
+  exporter:
+    jaeger:
+    otlp:
+      protocol: grpc
+      endpoint: http://localhost:4317
+  traces:
+    exporter: jaeger
+  service:
+    name: springboot
