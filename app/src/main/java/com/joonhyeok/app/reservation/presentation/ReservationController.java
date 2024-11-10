@@ -23,7 +23,7 @@ public class ReservationController implements ReservationApi {
     private final LockManager lockManager;
 
 
-    @VerifyWait
+//    @VerifyWait
     @Override
     public ResponseEntity<ReservationResponse> makeReservation(String waitToken, MakeReservationRequest request) {
         MakeReservationResult result = null;
@@ -41,7 +41,7 @@ public class ReservationController implements ReservationApi {
             log.error(e.getMessage());
             e.printStackTrace();
         } finally {
-            lockManager.releaseLock(lock);
+//            lockManager.releaseLock(lock);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(new ReservationResponse().reservationId(result.reservationId()));
     }
