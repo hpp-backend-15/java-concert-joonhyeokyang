@@ -25,10 +25,10 @@ public class MakeReservationService {
     private final UserRepository userRepository;
 
     @Transactional
-    @Caching(evict = {
-            @CacheEvict(value = "performanceDates", key = "concertId-#command.concertId()", cacheManager = "contentCacheManager"),
-            @CacheEvict(value = "SeatsByDate", key = "concertId-#command.concertId()-performanceDateId-#command.performanceDateId()", cacheManager = "contentCacheManager")
-    })
+//    @Caching(evict = {
+//            @CacheEvict(value = "performanceDates", key = "concertId-#command.concertId()", cacheManager = "contentCacheManager"),
+//            @CacheEvict(value = "SeatsByDate", key = "concertId-#command.concertId()-performanceDateId-#command.performanceDateId()", cacheManager = "contentCacheManager")
+//    })
     public MakeReservationResult reserve(MakeReservationCommand command) {
         Long seatId = command.seatId();
         Long userId = command.userId();
