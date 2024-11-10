@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Component
 public class RedissonLockManager implements LockManager {
-    long waitTime = 300L;
+    long waitTime = 100L;
     long leaseTime = 50_000L;
     TimeUnit timeUnit = TimeUnit.MILLISECONDS;
     private final RedissonClient redissonClient;
