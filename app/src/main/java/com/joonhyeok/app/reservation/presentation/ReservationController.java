@@ -28,21 +28,21 @@ public class ReservationController implements ReservationApi {
     public ResponseEntity<ReservationResponse> makeReservation(String waitToken, MakeReservationRequest request) {
         MakeReservationResult result = null;
         LockId lock = null;
-        try {
-            lock = lockManager.tryLock("seat", request.getSeatId());
-            result = makeReservationService.reserve(
-                    new MakeReservationCommand(
-                            request.getConcertId(),
-                            request.getPerformanceDateId(),
-                            request.getSeatId(),
-                            request.getUserId()))
-            ;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        } finally {
-            lockManager.releaseLock(lock);
-        }
+//        try {
+//            lock = lockManager.tryLock("seat", request.getSeatId());
+        result = makeReservationService.reserve(
+                new MakeReservationCommand(
+                        request.getConcertId(),
+                        request.getPerformanceDateId(),
+                        request.getSeatId(),
+                        request.getUserId()))
+        ;
+//        } catch (Exception e) {
+//            log.error(e.getMessage());
+//            e.printStackTrace();
+//        } finally {
+//            lockManager.releaseLock(lock);
+//        }
         return ResponseEntity.status(HttpStatus.CREATED).body(new ReservationResponse().reservationId(result.reservationId()));
     }
 }
