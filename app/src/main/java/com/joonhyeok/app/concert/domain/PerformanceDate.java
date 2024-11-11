@@ -14,6 +14,7 @@ import static com.joonhyeok.app.concert.domain.SeatStatus.AVAILABLE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
+@Table(name = "performance_dates")
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Getter

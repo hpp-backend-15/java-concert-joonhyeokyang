@@ -1,11 +1,11 @@
-create table if not exists test.concert
+create table if not exists test.concerts
 (
     concerts_id bigint auto_increment
     primary key,
     performer   varchar(255) null
     );
 
-create table if not exists test.performance_date
+create table if not exists test.performance_dates
 (
     performance_dates_dates date   null,
     concerts_id             bigint null,
@@ -26,7 +26,7 @@ create table if not exists test.queues
     status            enum ('ACTIVE', 'EXPIRED', 'WAIT') null
     );
 
-create table if not exists test.reservation
+create table if not exists test.reservations
 (
     created_at           datetime(6)                             null,
     modified_at          datetime(6)                             null,
@@ -37,7 +37,7 @@ create table if not exists test.reservation
     reservations_status  enum ('CANCELLED', 'PAYED', 'RESERVED') not null
     );
 
-create table if not exists test.seat
+create table if not exists test.seats
 (
     version              int                                          null,
     last_reserved_at     datetime(6)                                  null,

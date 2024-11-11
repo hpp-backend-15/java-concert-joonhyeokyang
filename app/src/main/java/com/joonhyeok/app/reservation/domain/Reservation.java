@@ -19,6 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
 @Entity
+@Table(name = "reservations")
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Getter

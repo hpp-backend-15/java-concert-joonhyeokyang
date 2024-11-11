@@ -15,6 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
 @Entity
+@Table(name = "seats")
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Getter

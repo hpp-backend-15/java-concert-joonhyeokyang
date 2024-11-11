@@ -12,6 +12,7 @@ import java.util.List;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
+@Table(name = "concerts")
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Getter
