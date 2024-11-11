@@ -51,7 +51,7 @@ class MakeReservationServiceTest {
         concertRepository.save(concert);
 
         //when
-        MakeReservationResult result = makeReservationService.reserve(new MakeReservationCommand(1L, 1L));
+        MakeReservationResult result = makeReservationService.reserve(new MakeReservationCommand(1L,1L,1L, 1L));
 
         //then
         Reservation reservation = reservationRepository.findById(result.reservationId()).get();
@@ -70,7 +70,7 @@ class MakeReservationServiceTest {
         concertRepository.save(concert);
 
         //when
-        MakeReservationCommand command = new MakeReservationCommand(1L, 1L);
+        MakeReservationCommand command = new MakeReservationCommand(1L,1L,1L, 1L);
 
         //then
         Assertions.assertThatThrownBy(() -> makeReservationService.reserve(command))
@@ -88,7 +88,7 @@ class MakeReservationServiceTest {
         concertRepository.save(concert);
 
         //when
-        MakeReservationCommand command = new MakeReservationCommand(1L, 1L);
+        MakeReservationCommand command = new MakeReservationCommand(1L,1L,1L, 1L);
 
         //then
         Assertions.assertThatThrownBy(() -> makeReservationService.reserve(command))

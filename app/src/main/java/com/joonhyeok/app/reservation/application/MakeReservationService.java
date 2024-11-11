@@ -1,5 +1,6 @@
 package com.joonhyeok.app.reservation.application;
 
+import com.joonhyeok.app.common.aop.lock.DistributedLock;
 import com.joonhyeok.app.concert.domain.Seat;
 import com.joonhyeok.app.concert.domain.SeatRepository;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
@@ -16,6 +17,8 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,11 +27,17 @@ public class MakeReservationService {
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
 
-    @Transactional
 //    @Caching(evict = {
 //            @CacheEvict(value = "performanceDates", key = "concertId-#command.concertId()", cacheManager = "contentCacheManager"),
 //            @CacheEvict(value = "SeatsByDate", key = "concertId-#command.concertId()-performanceDateId-#command.performanceDateId()", cacheManager = "contentCacheManager")
 //    })
+    /**
+     * Distributed Lock applied for reservations.
+     * set type as "seat", key is seatId
+     * Wait for 200ms, Lock the Seat for 5 Minute.
+     */
+//    @Transactional
+    @DistributedLock(type = "seat", key= "#command.seatId()", waitTime = 200, leaseTime = 5*60*1000, timeUnit = TimeUnit.MILLISECONDS)
     public MakeReservationResult reserve(MakeReservationCommand command) {
         Long seatId = command.seatId();
         Long userId = command.userId();

@@ -88,6 +88,12 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["-parameters"]
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
+
 configurations {
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'

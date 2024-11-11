@@ -1,7 +1,5 @@
 package com.joonhyeok.app.reservation.presentation;
 
-import com.joonhyeok.app.common.aop.token.VerifyWait;
-import com.joonhyeok.app.common.lock.LockId;
 import com.joonhyeok.app.common.lock.LockManager;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
@@ -20,29 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ReservationController implements ReservationApi {
     private final MakeReservationService makeReservationService;
-    private final LockManager lockManager;
 
-
-//    @VerifyWait
+    //    @VerifyWait
     @Override
     public ResponseEntity<ReservationResponse> makeReservation(String waitToken, MakeReservationRequest request) {
-        MakeReservationResult result = null;
-        LockId lock = null;
-        try {
-            lock = lockManager.tryLock("seat", request.getSeatId());
-        result = makeReservationService.reserve(
+        MakeReservationResult result = makeReservationService.reserve(
                 new MakeReservationCommand(
                         request.getConcertId(),
                         request.getPerformanceDateId(),
                         request.getSeatId(),
-                        request.getUserId()))
-        ;
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        } finally {
-//            lockManager.releaseLock(lock);
-        }
+                        request.getUserId()));
         return ResponseEntity.status(HttpStatus.CREATED).body(new ReservationResponse().reservationId(result.reservationId()));
     }
 }

@@ -70,7 +70,7 @@ class MakeReservationServiceConcurrentTest {
             executorService.submit(() -> {
                 try {
                     //when
-                    makeReservationService.reserve(new MakeReservationCommand(1L, 1L));
+                    makeReservationService.reserve(new MakeReservationCommand(1L, 1L, 1L, 1L));
                     success.incrementAndGet();
                 } catch (Exception e) {
                     fail.incrementAndGet();
@@ -107,7 +107,7 @@ class MakeReservationServiceConcurrentTest {
             executorService.submit(() -> {
                 try {
                     //when
-                    makeReservationService.reserve(new MakeReservationCommand(1L, (long) (finalI1)));
+                    makeReservationService.reserve(new MakeReservationCommand(1L, 1L, 1L, (long) (finalI1)));
                     success.incrementAndGet();
                 } catch (Exception e) {
                     fail.incrementAndGet();
@@ -144,7 +144,8 @@ class MakeReservationServiceConcurrentTest {
             executorService.submit(() -> {
                 try {
                     //when
-                    makeReservationService.reserve(new MakeReservationCommand((long) (finalI1 % 50), (long) (finalI1)));
+                    makeReservationService.reserve(new MakeReservationCommand(1L, 1L,
+                    (long) (finalI1 % 50), (long) (finalI1)));
                     success.incrementAndGet();
                 } catch (Exception e) {
                     fail.incrementAndGet();
