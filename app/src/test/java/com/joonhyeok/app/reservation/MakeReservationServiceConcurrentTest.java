@@ -10,6 +10,7 @@ import com.joonhyeok.app.user.domain.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -25,12 +26,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Sql("/ddl-test.sql")
-@AutoConfigureEmbeddedDatabase
+@AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MakeReservationServiceConcurrentTest {
 
@@ -43,16 +46,21 @@ class MakeReservationServiceConcurrentTest {
     @Autowired
     MakeReservationService makeReservationService;
 
+    @Autowired
+    RedissonClient redissonClient;
+
     int numberOfThreads = 300;
     List<Integer> executionOrder;
     ExecutorService executorService;
     CountDownLatch latch; // 스레드 종료를 대기하기 위한 Latch
+
 
     @BeforeEach
     void setUp() {
         executorService = Executors.newFixedThreadPool(16);
         executionOrder = new ArrayList<>();
         latch = new CountDownLatch(numberOfThreads);
+        redissonClient.getKeys().flushdb();
     }
 
     @Test

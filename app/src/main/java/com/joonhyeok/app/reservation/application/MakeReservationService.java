@@ -39,7 +39,6 @@ public class MakeReservationService {
 //    @Transactional
     @DistributedLock(type = "seat", key= "#command.seatId()", waitTime = 200, leaseTime = 5*60*1000, timeUnit = TimeUnit.MILLISECONDS)
     public MakeReservationResult reserve(MakeReservationCommand command) {
-        System.out.println("reservationRepository = " + reservationRepository.getClass());
         Long seatId = command.seatId();
         Long userId = command.userId();
 

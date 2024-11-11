@@ -13,6 +13,7 @@ import com.joonhyeok.openapi.models.MakeReservationRequest;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,7 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @Sql("/ddl-test.sql")
 @ActiveProfiles("test")
-@AutoConfigureEmbeddedDatabase
+@AutoConfigureEmbeddedDatabase(refresh = AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class ReservationControllerIntegrateTest {
     @Autowired
@@ -53,10 +55,19 @@ class ReservationControllerIntegrateTest {
     QueueRepository queueRepository;
 
     @Autowired
+    RedissonClient redissonClient;
+
+
+    @Autowired
     MockMvc mvc;
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @BeforeEach
+    public void clearRedisCache() {
+        redissonClient.getKeys().flushdb();
+    }
 
     private static final String BASE_URL = "/reservations";
 

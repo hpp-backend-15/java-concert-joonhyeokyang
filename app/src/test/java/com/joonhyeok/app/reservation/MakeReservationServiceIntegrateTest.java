@@ -12,9 +12,12 @@ import com.joonhyeok.app.user.domain.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -24,13 +27,15 @@ import java.time.LocalDateTime;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithAvailableSeats;
 import static com.joonhyeok.app.concert.ConcertTestHelper.createConcertWithUnavailableSeats;
 import static com.joonhyeok.app.reservation.domain.ReservationStatus.RESERVED;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.AFTER_EACH_TEST_METHOD;
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.RefreshMode.BEFORE_EACH_TEST_METHOD;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Sql("/ddl-test.sql")
-@AutoConfigureEmbeddedDatabase
+@AutoConfigureEmbeddedDatabase(refresh = BEFORE_EACH_TEST_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MakeReservationServiceIntegrateTest {
 
@@ -49,6 +54,14 @@ class MakeReservationServiceIntegrateTest {
     @Autowired
     MakeReservationService makeReservationService;
 
+    @Autowired
+    RedissonClient redissonClient;
+
+    @BeforeEach
+    public void clearRedisCache() {
+        redissonClient.getKeys().flushdb();
+    }
+
 
     @Test
     void 선택좌석이_예약가능상태라면_예약할수있다_좌석상태_변경확인() {
@@ -56,7 +69,6 @@ class MakeReservationServiceIntegrateTest {
         Concert concert = createConcertWithAvailableSeats();
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
         User save = userRepository.save(user);
-        System.out.println("save.getId() = " + save.getId());
 
         concertRepository.save(concert);
 
