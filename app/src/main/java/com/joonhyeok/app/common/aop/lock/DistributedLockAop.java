@@ -56,7 +56,6 @@ public class DistributedLockAop {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
 
-        // Spring Boot 3에서 파라미터 이름을 추출
         ParameterNameDiscoverer paramDiscoverer = new DefaultParameterNameDiscoverer();
         String[] parameterNames = paramDiscoverer.getParameterNames(method);
         Object[] parameterValues = joinPoint.getArgs();
