@@ -20,12 +20,10 @@ public class VerifyWaitAspect {
 
     private final QueueRepository queueRepository;
 
-    // @VerifyToken 어노테이션이 적용된 메서드를 타겟팅
     @Pointcut("@annotation(com.joonhyeok.app.common.aop.token.VerifyWait)")
     public void verifyTokenPointcut() {
     }
 
-    // 메서드 실행 전에 토큰 검증 수행
     @Before("verifyTokenPointcut()")
     public void verifyToken(JoinPoint joinPoint) {
         ServletRequestAttributes requestAttributes =

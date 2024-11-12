@@ -25,13 +25,6 @@ import static java.util.Collections.enumeration;
 @Slf4j
 public class HttpLoggingFilter implements Filter {
 
-
-    private final HttpServletRequest httpServletRequest;
-
-    public HttpLoggingFilter(HttpServletRequest httpServletRequest) {
-        this.httpServletRequest = httpServletRequest;
-    }
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info("Initializing HTTP Logging Filter");
@@ -46,30 +39,21 @@ public class HttpLoggingFilter implements Filter {
         ContentCachingRequestWrapper cachingRequestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
         ContentCachingResponseWrapper cachingResponseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) response);
 
-        Instant start = Instant.now(); // 시작 시간 기록
+        Instant start = Instant.now();
 
         chain.doFilter(cachingRequestWrapper, cachingResponseWrapper);
 
-        Instant end = Instant.now(); // 종료 시간 기록
-        long duration = java.time.Duration.between(start, end).toMillis(); // 처리 시간 계산
+        Instant end = Instant.now();
+        long duration = java.time.Duration.between(start, end).toMillis();
 
-        logRequest(cachingRequestWrapper); // 요청 로깅
-        logResponse(cachingRequestWrapper, cachingResponseWrapper, duration); // 응답 로깅
+        logRequest(cachingRequestWrapper);
+        logResponse(cachingRequestWrapper, cachingResponseWrapper, duration);
         cachingResponseWrapper.copyBodyToResponse();
     }
 
     @Override
     public void destroy() {
         log.info("Destroying HTTP Logging Filter");
-    }
-
-    private String getRequestBody(HttpServletRequest request) {
-        try (BufferedReader reader = request.getReader()) {
-            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
-        } catch (IOException e) {
-            log.error("Failed to read request body", e);
-            return "Unable to read request body.";
-        }
     }
 
 
@@ -102,7 +86,6 @@ public class HttpLoggingFilter implements Filter {
             String name = headerNames.nextElement();
             headers.append(name).append(": ").append(headerResolver.apply(name)).append(", ");
         }
-        // 마지막 콤마와 공백 제거
         if (headers.length() > 2) {
             headers.setLength(headers.length() - 2);
         }

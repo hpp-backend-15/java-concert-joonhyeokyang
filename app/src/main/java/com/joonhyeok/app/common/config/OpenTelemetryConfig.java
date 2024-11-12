@@ -14,7 +14,6 @@ public class OpenTelemetryConfig {
 
     @Bean
     public Tracer tracer() {
-        // 'my-application-name' 부분을 애플리케이션의 이름으로 변경합니다.
         return GlobalOpenTelemetry.getTracer("otelServiceName");
     }
 }
