@@ -5,7 +5,7 @@ import com.joonhyeok.app.concert.domain.PerformanceDate;
 
 import java.util.List;
 
-public record PerformanceDatesQueryResult(
+public record PerformanceDatesQueryResult (
         List<PerformanceDate> availableDates,
         List<PerformanceDate> unavailableDates
 ) {
