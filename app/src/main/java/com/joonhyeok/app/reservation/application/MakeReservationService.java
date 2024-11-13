@@ -12,6 +12,8 @@ import com.joonhyeok.app.user.domain.User;
 import com.joonhyeok.app.user.domain.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +26,10 @@ public class MakeReservationService {
     private final ReservationRepository reservationRepository;
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
-
-//    @Caching(evict = {
-//            @CacheEvict(value = "performanceDates", key = "concertId-#command.concertId()", cacheManager = "contentCacheManager"),
-//            @CacheEvict(value = "SeatsByDate", key = "concertId-#command.concertId()-performanceDateId-#command.performanceDateId()", cacheManager = "contentCacheManager")
-//    })
-    /**
-     * Distributed Lock applied for reservations.
-     * set type as "seat", key is seatId
-     * Wait for 200ms, Lock the Seat for 5 Minute.
-     */
-//    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "performanceDates", key = "'concertId-'+#command.concertId()", cacheManager = "contentCacheManager"),
+            @CacheEvict(value = "SeatsByDate", key = "'concertId-'+#command.concertId()+'-performanceDateId-'+#command.performanceDateId()", cacheManager = "contentCacheManager")
+    })
     @DistributedLock(type = "seat", key= "#command.seatId()", waitTime = 200, leaseTime = 5*60*1000, timeUnit = TimeUnit.MILLISECONDS)
     public MakeReservationResult reserve(MakeReservationCommand command) {
         Long seatId = command.seatId();
