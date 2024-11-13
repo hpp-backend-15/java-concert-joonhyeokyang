@@ -1,6 +1,5 @@
 package com.joonhyeok.app.reservation.presentation;
 
-import com.joonhyeok.app.common.lock.LockManager;
 import com.joonhyeok.app.reservation.application.MakeReservationService;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationCommand;
 import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
