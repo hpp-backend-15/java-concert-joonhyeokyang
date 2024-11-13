@@ -9,7 +9,9 @@ import com.joonhyeok.app.queue.domain.QueueStatus;
 import com.joonhyeok.openapi.models.FindConcertPerformanceDatesResponse;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,6 +46,14 @@ public class ConcertControllerIntegrateTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    RedissonClient redissonClient;
+
+    @BeforeEach
+    public void clearRedisCache() {
+        redissonClient.getKeys().flushdb();
+    }
 
     private static final String BASE_URL = "/concerts";
 

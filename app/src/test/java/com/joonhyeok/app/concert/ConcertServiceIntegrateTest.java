@@ -1,5 +1,6 @@
 package com.joonhyeok.app.concert;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joonhyeok.app.concert.application.ConcertService;
 import com.joonhyeok.app.concert.application.dto.AvailablePerformanceDatesQuery;
 import com.joonhyeok.app.concert.application.dto.AvailableSeatsByDateQuery;
@@ -10,7 +11,9 @@ import com.joonhyeok.app.concert.domain.ConcertRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -32,7 +35,16 @@ class ConcertServiceIntegrateTest {
     @Autowired
     ConcertRepository concertRepository;
 
+    @Autowired
+    ObjectMapper objectMapper;
 
+    @Autowired
+    RedissonClient redissonClient;
+
+    @BeforeEach
+    public void clearRedisCache() {
+        redissonClient.getKeys().flushdb();
+    }
     @Test
     void 예약가능한일자를_조회할수있다() {
         //given
