@@ -1,4 +1,4 @@
-package com.joonhyeok.app.common.filter;
+package com.joonhyeok.config.web;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
