@@ -1,4 +1,4 @@
-package com.joonhyeok.config.redis;
+package com.joonhyeok.app.common.config.redis;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

@@ -1,4 +1,4 @@
-package com.joonhyeok.config.opentelemetry;
+package com.joonhyeok.app.common.config.opentelemetry;
 
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;

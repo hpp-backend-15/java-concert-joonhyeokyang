@@ -1,4 +1,4 @@
-package com.joonhyeok.config.redis;
+package com.joonhyeok.app.common.config.redis;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
