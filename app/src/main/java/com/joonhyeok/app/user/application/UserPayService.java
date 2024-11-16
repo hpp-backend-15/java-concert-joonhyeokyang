@@ -45,10 +45,9 @@ public class UserPayService {
 
         boolean isPayable = new PayValidator().validate(user, seat, reservation);
 
-        //TODO 코치님께 여쭤봐서 아래 구문을 이벤트로 처리하는 게 의미 있는지 확인..?
         if (isPayable) {
             user.usePoint(seat.getPrice());
-            seat.confirmPay();
+            seat.paySeat();
             reservation.confirmPay();
             queueRepository.findByUserId(userId).ifPresent(Queue::expire);
         }
