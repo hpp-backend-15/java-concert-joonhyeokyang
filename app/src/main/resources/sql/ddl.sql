@@ -1,17 +1,17 @@
-drop table if exists concert.concert;
-drop table if exists concert.performance_date;
+drop table if exists concert.concerts;
+drop table if exists concert.performance_dates;
 drop table if exists concert.queues;
-drop table if exists concert.reservation;
-drop table if exists concert.seat;
+drop table if exists concert.reservations;
+drop table if exists concert.seats;
 drop table if exists concert.users;
-create table if not exists concert.concert
+create table if not exists concert.concerts
 (
     concerts_id bigint auto_increment
     primary key,
     performer   varchar(255) null
     );
 
-create table if not exists concert.performance_date
+create table if not exists concert.performance_dates
 (
     performance_dates_dates date   null,
     concerts_id             bigint null,
@@ -32,7 +32,7 @@ create table if not exists concert.queues
     status            enum ('ACTIVE', 'EXPIRED', 'WAIT') null
     );
 
-create table if not exists concert.reservation
+create table if not exists concert.reservations
 (
     created_at           datetime(6)                             null,
     modified_at          datetime(6)                             null,
@@ -43,7 +43,7 @@ create table if not exists concert.reservation
     reservations_status  enum ('CANCELLED', 'PAYED', 'RESERVED') not null
     );
 
-create table if not exists concert.seat
+create table if not exists concert.seats
 (
     version              int                                          null,
     last_reserved_at     datetime(6)                                  null,
