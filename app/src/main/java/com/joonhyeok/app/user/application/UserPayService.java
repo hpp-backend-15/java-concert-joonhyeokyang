@@ -1,6 +1,5 @@
 package com.joonhyeok.app.user.application;
 
-import com.joonhyeok.app.common.config.event.Events;
 import com.joonhyeok.app.concert.domain.Seat;
 import com.joonhyeok.app.concert.domain.SeatRepository;
 import com.joonhyeok.app.queue.domain.Queue;
@@ -9,10 +8,7 @@ import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.user.application.dto.UserPayCommand;
 import com.joonhyeok.app.user.application.dto.UserPayResult;
-import com.joonhyeok.app.user.domain.PayEvent;
-import com.joonhyeok.app.user.domain.PayValidator;
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.domain.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +24,7 @@ public class UserPayService {
     private final SeatRepository seatRepository;
     private final ReservationRepository reservationRepository;
     private final QueueRepository queueRepository;
+    private final PayEventPublisher payEventPublisher;
 
     @Transactional
     public UserPayResult pay(UserPayCommand command) {
@@ -60,7 +57,7 @@ public class UserPayService {
         queueRepository.findByUserId(userId).ifPresent(Queue::expire);
 
         UserPayResult userPayResult = new UserPayResult(reservation.getId());
-        Events.raise(new PayEvent(userPayResult));
+        payEventPublisher.publish(new PayEvent(userPayResult));
 
         return userPayResult;
     }

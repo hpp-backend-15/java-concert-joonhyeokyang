@@ -8,18 +8,23 @@ import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.reservation.domain.ReservationStatus;
 import com.joonhyeok.app.user.application.UserPayService;
 import com.joonhyeok.app.user.application.dto.UserPayCommand;
-import com.joonhyeok.app.user.domain.Account;
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.application.dto.UserPayResult;
+import com.joonhyeok.app.user.domain.*;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+
+import static org.mockito.BDDMockito.then;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -35,6 +40,9 @@ class UserPayServiceIntegrateTest {
     private SeatRepository seatRepository;
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @SpyBean
+    private PayEventListener payEventListener;
 
     @Test
     void 예약한유저가없는경우_결제_실패() {
@@ -96,6 +104,22 @@ class UserPayServiceIntegrateTest {
         Assertions.assertThatThrownBy(() -> userPayService.pay(command))
                 .isInstanceOf(IllegalArgumentException.class);
 
+    }
+
+    @Test
+    @DisplayName("결제가 성공하면, 외부 데이터 플랫폼에 정보를 보낸다.")
+    void pay() {
+        //given
+        seatRepository.save(new Seat(1L, SeatStatus.PENDING, null, 0L, 0));
+        userRepository.save(new User(1L, new Account(0L, null), 0));
+        reservationRepository.save(new Reservation(ReservationStatus.RESERVED, 1L, 1L));
+
+        //when
+        UserPayCommand command = new UserPayCommand(1L, 1L);
+        UserPayResult result = userPayService.pay(command);
+
+        //then
+        then(payEventListener).should(BDDMockito.times(1)).sendPayInfo(new PayEvent(result));
     }
 
 }
