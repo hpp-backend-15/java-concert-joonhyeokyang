@@ -122,4 +122,20 @@ class UserPayServiceIntegrateTest {
         then(payEventListener).should(BDDMockito.times(1)).sendPayInfo(new PayEvent(result));
     }
 
+
+    @Test
+    @DisplayName("결제 성공시 카프카에 정보가 저장되는지 확인한다.")
+    void payWithKafkaInfo() {
+        //given
+        seatRepository.save(new Seat(1L, SeatStatus.PENDING, null, 0L, 0));
+        userRepository.save(new User(1L, new Account(0L, null), 0));
+        reservationRepository.save(new Reservation(ReservationStatus.RESERVED, 1L, 1L));
+
+        //when
+        UserPayCommand command = new UserPayCommand(1L, 1L);
+        UserPayResult result = userPayService.pay(command);
+
+        //then
+        then(payEventListener).should(BDDMockito.times(1)).sendPayInfo(new PayEvent(result));
+    }
 }
