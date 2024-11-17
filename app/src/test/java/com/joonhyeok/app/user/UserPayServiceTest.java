@@ -13,12 +13,15 @@ import com.joonhyeok.app.reservation.domain.ReservationStatus;
 import com.joonhyeok.app.user.application.UserPayService;
 import com.joonhyeok.app.user.application.dto.UserPayCommand;
 import com.joonhyeok.app.user.domain.Account;
+import com.joonhyeok.app.user.domain.PayEventPublisher;
 import com.joonhyeok.app.user.domain.User;
 import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.infra.PaySpringEventPublisher;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 
 class UserPayServiceTest {
     private UserPayService userPayService;
@@ -32,7 +35,7 @@ class UserPayServiceTest {
         reservationRepository = new ReservationMemoryRepository();
         seatRepository = new SeatMemoryRepository();
         QueueRepository queueRepository = new QueueMemoryRepository();
-        userPayService = new UserPayService(userRepository, seatRepository, reservationRepository, queueRepository);
+        userPayService = new UserPayService(userRepository, seatRepository, reservationRepository, queueRepository, new DummyEventPublisher());
     }
 
     @Test

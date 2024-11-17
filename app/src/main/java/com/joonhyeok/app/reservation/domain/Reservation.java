@@ -56,14 +56,14 @@ public class Reservation {
     }
 
     public void confirmPay() {
-        if (!isPayable()) {
+        if (!isReservable()) {
             throw new IllegalStateException("결제할 수 없는 예약입니다");
         }
         log.info("pay confirmed reservationId = {}", this.id);
         this.status = PAYED;
     }
 
-    public boolean isPayable() {
+    public boolean isReservable() {
         return this.status == RESERVED;
     }
 

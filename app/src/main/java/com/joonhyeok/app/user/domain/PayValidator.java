@@ -5,11 +5,11 @@ import com.joonhyeok.app.reservation.domain.Reservation;
 
 public class PayValidator {
     public boolean validate(User user, Seat seat, Reservation reservation) {
-        if (!seat.isPayable()) {
+        if (!seat.isAvailable()) {
             throw new IllegalStateException("결제 가능한 좌석 상태가 아닙니다. Status = " + seat.getStatus());
         }
 
-        if (!reservation.isPayable()) {
+        if (!reservation.isReservable()) {
             throw new IllegalStateException("결제 가능한 예약 상태가 아닙니다. Status = " + reservation.getStatus());
         }
 

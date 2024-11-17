@@ -42,7 +42,7 @@ public class Seat {
         return this.status == AVAILABLE;
     }
 
-    public boolean isPayable() {
+    public boolean isAvailable() {
         return this.status == PENDING;
     }
 
@@ -54,8 +54,8 @@ public class Seat {
         this.status = PENDING;
     }
 
-    public void confirmPay() {
-        if (!isPayable()) {
+    public void paySeat() {
+        if (!isAvailable()) {
             throw new IllegalStateException("결제할 수 없는 좌석입니다");
         }
         this.status = UNAVAILABLE;
