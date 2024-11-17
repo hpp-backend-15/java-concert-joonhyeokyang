@@ -46,6 +46,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+
     //otel
     implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter")
     implementation("io.opentelemetry:opentelemetry-exporter-jaeger:1.34.1")
@@ -56,7 +57,10 @@ dependencies {
 
     // p6spy
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
+    implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.testcontainers:mysql'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.testcontainers:kafka'
     compileOnly 'org.projectlombok:lombok'
 
     // test containers settings
