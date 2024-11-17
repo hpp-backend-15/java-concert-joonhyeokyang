@@ -37,6 +37,8 @@ spring:
       type: batch
       concurrency: 3
       ack-mode: batch
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringsSerializer
     consumer:
       group-id: pay-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer

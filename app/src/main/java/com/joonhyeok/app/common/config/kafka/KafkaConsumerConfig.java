@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.*;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
@@ -31,8 +30,9 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.consumer.key-deserializer}")
     private String keyDeserializer;
 
+
     @Bean
-    public ConsumerFactory<String, PayEvent> consumerPayEventFactory() {
+    public ConsumerFactory<String, PayEvent> consumerFactory() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -46,11 +46,11 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, PayEvent>
-    PayEventListenerContainerFactory() {
+    payKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, PayEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setCommonErrorHandler(customErrorHandler());
-        factory.setConsumerFactory(consumerPayEventFactory());
+        factory.setConsumerFactory(consumerFactory());
         return factory;
     }
 

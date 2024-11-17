@@ -20,7 +20,7 @@ public class PayEventSpringListener implements PayEventListener {
     public void sendPayInfo(PayEvent payEvent) {
         try {
             log.info("listen pay event");
-            payInfoService.sendPayInfo(payEvent.result());
+            payInfoService.sendPayInfo(payEvent);
         } catch (Exception e) {
             log.info("주문정보 전달에 실패했어요~잉");
         }

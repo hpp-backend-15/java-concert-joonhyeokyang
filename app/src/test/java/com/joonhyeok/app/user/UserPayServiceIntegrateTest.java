@@ -19,11 +19,17 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.then;
 
 
@@ -46,8 +52,10 @@ class UserPayServiceIntegrateTest {
     private PayEventListener payEventListener;
 
     @Autowired
-    private PayExternalKafkaListener payExternalKafkaListener;
+    private KafkaTemplate kafkaTemplate;
 
+    @Autowired
+    private PayExternalKafkaListener payExternalKafkaListener;
 
     @Test
     void 예약한유저가없는경우_결제_실패() {
@@ -59,7 +67,7 @@ class UserPayServiceIntegrateTest {
         UserPayCommand command = new UserPayCommand(1L, 1L);
 
         //then
-        Assertions.assertThatThrownBy(() -> userPayService.pay(command))
+        assertThatThrownBy(() -> userPayService.pay(command))
                 .isInstanceOf(EntityNotFoundException.class);
 
     }
@@ -74,7 +82,7 @@ class UserPayServiceIntegrateTest {
         UserPayCommand command = new UserPayCommand(1L, 1L);
 
         //then
-        Assertions.assertThatThrownBy(() -> userPayService.pay(command))
+        assertThatThrownBy(() -> userPayService.pay(command))
                 .isInstanceOf(EntityNotFoundException.class);
 
     }
@@ -89,7 +97,7 @@ class UserPayServiceIntegrateTest {
         UserPayCommand command = new UserPayCommand(1L, 1L);
 
         //then
-        Assertions.assertThatThrownBy(() -> userPayService.pay(command))
+        assertThatThrownBy(() -> userPayService.pay(command))
                 .isInstanceOf(EntityNotFoundException.class);
 
     }
@@ -106,7 +114,7 @@ class UserPayServiceIntegrateTest {
         UserPayCommand command = new UserPayCommand(2L, 1L);
 
         //then
-        Assertions.assertThatThrownBy(() -> userPayService.pay(command))
+        assertThatThrownBy(() -> userPayService.pay(command))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -130,7 +138,7 @@ class UserPayServiceIntegrateTest {
 
     @Test
     @DisplayName("결제 성공시 카프카에 정보가 저장되는지 확인한다.")
-    void payWithKafkaInfo() {
+    void payWithKafkaInfo() throws InterruptedException {
         //given
         seatRepository.save(new Seat(1L, SeatStatus.PENDING, null, 0L, 0));
         userRepository.save(new User(1L, new Account(0L, null), 0));
@@ -139,8 +147,10 @@ class UserPayServiceIntegrateTest {
         //when
         UserPayCommand command = new UserPayCommand(1L, 1L);
         UserPayResult result = userPayService.pay(command);
+        PayEvent payEvent = new PayEvent(result);
 
         //then
-        then(payEventListener).should(BDDMockito.times(1)).sendPayInfo(new PayEvent(result));
+        payExternalKafkaListener.getLatch().await(3, TimeUnit.SECONDS);
+        assertThat(payExternalKafkaListener.getReceived()).isEqualTo(payEvent);
     }
 }
