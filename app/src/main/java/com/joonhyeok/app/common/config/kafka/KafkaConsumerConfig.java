@@ -1,6 +1,5 @@
 package com.joonhyeok.app.common.config.kafka;
 
-import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 import com.joonhyeok.app.user.domain.PayEvent;
 import com.joonhyeok.app.user.infra.domain.payEvent.PayEventDeserializer;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +28,9 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
+    @Value("${spring.kafka.consumer.key-deserializer}")
+    private String keyDeserializer;
+
     @Bean
     public ConsumerFactory<String, PayEvent> consumerPayEventFactory() {
         Map<String, Object> properties = new HashMap<>();
@@ -36,7 +38,7 @@ public class KafkaConsumerConfig {
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        properties.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
+        properties.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, keyDeserializer);
         properties.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, PayEventDeserializer.class);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         return new DefaultKafkaConsumerFactory<>(properties);

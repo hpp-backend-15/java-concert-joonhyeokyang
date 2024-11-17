@@ -93,13 +93,13 @@ tasks.withType(JavaCompile) {
     targetCompatibility = '17'
 }
 
-configurations {
-    all {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
-    }
-}
+//configurations {
+//    all {
+//        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//        exclude group: 'ch.qos.logback', module: 'logback-classic'
+//        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+//    }
+//}
 
 def swaggerRoot = "$projectDir/src/main/codegen-config".toString()
 def swaggerAPIOutput = "$projectDir/src/main".toString()

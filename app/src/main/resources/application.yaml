@@ -38,7 +38,7 @@ spring:
       concurrency: 3
       ack-mode: batch
     consumer:
-      group-id: ${random.uuid}
+      group-id: pay-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 

@@ -32,7 +32,6 @@ import static org.mockito.BDDMockito.then;
 @Sql("/ddl-test.sql")
 @AutoConfigureEmbeddedDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
 class UserPayServiceIntegrateTest {
     @Autowired
     private UserPayService userPayService;
