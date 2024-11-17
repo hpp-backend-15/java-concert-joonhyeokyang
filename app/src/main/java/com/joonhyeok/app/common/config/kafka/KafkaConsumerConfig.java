@@ -44,7 +44,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, PayEvent>
-    EventListenerContainerFactory() {
+    PayEventListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, PayEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setCommonErrorHandler(customErrorHandler());

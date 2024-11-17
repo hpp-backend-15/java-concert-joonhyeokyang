@@ -21,6 +21,17 @@ zonky:
         docker:
           image: mysql:8.0
 
+otel:
+  exporter:
+    jaeger:
+    otlp:
+      protocol: grpc
+      endpoint: http://localhost:4317
+  traces:
+    exporter: jaeger
+  service:
+    name: springboot
+
 #logging:
 #  level:
 #    org.hibernate.orm.jdbc.bind: trace
