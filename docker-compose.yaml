@@ -84,7 +84,7 @@ services:
       - kafka-2
       - kafka-3
     ports:
-      - 8080:8080
+      - 14444:8080
     environment:
       - DYNAMIC_CONFIG_ENABLED=true
       - KAFKA_CLUSTERS_0_NAME=peters_kafka
