@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.infra;
+package com.joonhyeok.app.user.infra.domain.payEvent;
 
 import com.joonhyeok.app.user.domain.PayEvent;
 import com.joonhyeok.app.user.domain.PayEventPublisher;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PaySpringEventPublisher implements PayEventPublisher {
+public class PayEventSpringPublisher implements PayEventPublisher {
     private final ApplicationEventPublisher eventPublisher;
 
     @Override

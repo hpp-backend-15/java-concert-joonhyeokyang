@@ -1,11 +1,10 @@
-package com.joonhyeok.app.user.infra;
+package com.joonhyeok.app.user.infra.domain.payEvent;
 
-import com.joonhyeok.app.user.application.ExternalPayInfoService;
+import com.joonhyeok.app.user.application.PayInfoService;
 import com.joonhyeok.app.user.domain.PayEvent;
 import com.joonhyeok.app.user.domain.PayEventListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -14,10 +13,9 @@ import static org.springframework.transaction.event.TransactionPhase.AFTER_COMMI
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PaySpringEventListener implements PayEventListener {
-    private final ExternalPayInfoService payInfoService;
+public class PayEventSpringListener implements PayEventListener {
+    private final PayInfoService payInfoService;
 
-    @Async
     @TransactionalEventListener(phase = AFTER_COMMIT)
     public void sendPayInfo(PayEvent payEvent) {
         try {

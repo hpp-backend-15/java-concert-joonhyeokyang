@@ -19,6 +19,7 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
@@ -31,6 +32,7 @@ import static org.mockito.BDDMockito.then;
 @Sql("/ddl-test.sql")
 @AutoConfigureEmbeddedDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
 class UserPayServiceIntegrateTest {
     @Autowired
     private UserPayService userPayService;
@@ -43,6 +45,10 @@ class UserPayServiceIntegrateTest {
 
     @SpyBean
     private PayEventListener payEventListener;
+
+    @Autowired
+    private PayExternalKafkaListener payExternalKafkaListener;
+
 
     @Test
     void 예약한유저가없는경우_결제_실패() {
