@@ -13,8 +13,7 @@ public class OutboxService {
     @Transactional
     public Outbox save(OutboxSaveCommand command) {
         Outbox outBox = command.createOutbox();
-        Outbox save = outBoxRepository.save(outBox);
-        return save;
+        return outBoxRepository.save(outBox);
     }
 
     @Transactional
@@ -32,5 +31,14 @@ public class OutboxService {
         Outbox outBox = outBoxRepository.findOutboxByTypeAndRelationalId(type, relationalId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 outBox가 존재하지 않습니다. type: " + type + "relationalId: " + relationalId));
         outBox.changeStatusToFail();
+    }
+
+    @Transactional
+    public void updateSuccessStatus(OutboxSendSuccessCommand command) {
+        String type = command.type();
+        Long relationalId = command.relationalId();
+        Outbox outBox = outBoxRepository.findOutboxByTypeAndRelationalId(type, relationalId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 outBox가 존재하지 않습니다. type: " + type + "relationalId: " + relationalId));
+        outBox.changeStatusToSuccess();
     }
 }

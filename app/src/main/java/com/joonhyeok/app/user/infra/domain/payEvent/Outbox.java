@@ -1,16 +1,15 @@
 package com.joonhyeok.app.user.infra.domain.payEvent;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 import static com.joonhyeok.app.user.infra.domain.payEvent.OutboxStatus.*;
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -19,15 +18,22 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Outbox {
     @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "outbox_events_id")
     private Long id;
 
+    @Column(name = "outbox_events_type")
     private String type;
 
+    @Getter
     @Enumerated(STRING)
+    @Column(name = "outbox_events_status")
     private OutboxStatus status;
 
+    @Column(name = "outbox_events_created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "outbox_events_relational_id")
     private Long relationalId;
 
     public static Outbox issueOutbox(String type, Long relationalId) {
@@ -41,4 +47,5 @@ public class Outbox {
     public void changeStatusToFail() {
         this.status = SEND_FAIL;
     }
+
 }

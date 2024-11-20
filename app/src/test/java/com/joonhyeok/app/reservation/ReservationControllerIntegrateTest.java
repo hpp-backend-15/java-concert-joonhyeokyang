@@ -103,7 +103,7 @@ class ReservationControllerIntegrateTest {
                             post(BASE_URL)
                                     .header("Wait-Token", "1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(objectMapper.writeValueAsString(new MakeReservationRequest().userId(1L).seatId(1L)))
+                                    .content(objectMapper.writeValueAsString(new MakeReservationRequest().concertId(1L).performanceDateId(1L).userId(1L).seatId(1L)))
                     );
                     if (perform.andReturn().getResponse().getStatus() == 201) {
                         success.incrementAndGet();
