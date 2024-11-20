@@ -11,7 +11,9 @@ import org.testcontainers.utility.DockerImageName;
 public class KafkaTestContainerConfig {
     static {
         KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
+
         kafka.start();
+        System.setProperty("spring.kafka.bootstrap-servers", kafka.getBootstrapServers());
     }
 
 }
