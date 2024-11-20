@@ -31,8 +31,8 @@ public class PayEventSpringListener implements PayEventListener {
             log.info("listen pay event");
             payInfoService.sendPayInfo(payEvent);
         } catch (Exception e) {
-            outBoxService.updateFailStatus(new OutboxSendFailCommand("pay", payEvent.result().reservationId()));
             log.info("주문정보 전달에 실패했어요~잉");
+            outBoxService.updateFailStatus(new OutboxSendFailCommand("pay", payEvent.result().reservationId()));
         }
     }
 }
