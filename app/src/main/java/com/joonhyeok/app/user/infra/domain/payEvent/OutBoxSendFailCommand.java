@@ -1,6 +1,6 @@
 package com.joonhyeok.app.user.infra.domain.payEvent;
 
-public record OutBoxSendFailCommand(
+public record OutboxSendFailCommand(
         String type,
         Long relationalId
 ) {

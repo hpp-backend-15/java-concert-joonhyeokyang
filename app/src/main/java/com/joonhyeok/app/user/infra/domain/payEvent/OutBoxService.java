@@ -7,29 +7,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class OutBoxService {
-    private final OutBoxRepository outBoxRepository;
+public class OutboxService {
+    private final OutboxRepository outBoxRepository;
 
     @Transactional
-    public OutBox save(OutBoxSaveCommand command) {
-        OutBox outBox = command.createOutBox();
-        OutBox save = outBoxRepository.save(outBox);
+    public Outbox save(OutboxSaveCommand command) {
+        Outbox outBox = command.createOutbox();
+        Outbox save = outBoxRepository.save(outBox);
         return save;
     }
 
     @Transactional
-    public OutBox findOutBoxById(OutBoxFindCommand command) {
+    public Outbox findOutboxById(OutboxFindCommand command) {
         String type = command.type();
         Long relationalId = command.relationalId();
-        return outBoxRepository.findOutBoxByTypeAndRelationalId(type, relationalId)
+        return outBoxRepository.findOutboxByTypeAndRelationalId(type, relationalId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 outBox가 존재하지 않습니다. type: " + type + "relationalId: " + relationalId));
     }
 
     @Transactional
-    public void updateFailStatus(OutBoxSendFailCommand command) {
+    public void updateFailStatus(OutboxSendFailCommand command) {
         String type = command.type();
         Long relationalId = command.relationalId();
-        OutBox outBox = outBoxRepository.findOutBoxByTypeAndRelationalId(type, relationalId)
+        Outbox outBox = outBoxRepository.findOutboxByTypeAndRelationalId(type, relationalId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 outBox가 존재하지 않습니다. type: " + type + "relationalId: " + relationalId));
         outBox.changeStatusToFail();
     }

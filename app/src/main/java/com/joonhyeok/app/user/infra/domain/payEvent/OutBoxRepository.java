@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface OutBoxRepository extends JpaRepository<OutBox, Long> {
-    Optional<OutBox> findOutBoxByTypeAndRelationalId(String pay, Long relationalId);
+public interface OutboxRepository extends JpaRepository<Outbox, Long> {
+    Optional<Outbox> findOutboxByTypeAndRelationalId(String pay, Long relationalId);
 }

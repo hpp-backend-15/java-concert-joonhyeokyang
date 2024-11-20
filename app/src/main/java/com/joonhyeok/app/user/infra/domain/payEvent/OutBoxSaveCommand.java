@@ -1,10 +1,10 @@
 package com.joonhyeok.app.user.infra.domain.payEvent;
 
-public record OutBoxSaveCommand(
+public record OutboxSaveCommand(
         String type,
         Long relationalId
 ) {
-    public OutBox createOutBox() {
-        return OutBox.issueOutBox(type, relationalId);
+    public Outbox createOutbox() {
+        return Outbox.issueOutbox(type, relationalId);
     }
 }

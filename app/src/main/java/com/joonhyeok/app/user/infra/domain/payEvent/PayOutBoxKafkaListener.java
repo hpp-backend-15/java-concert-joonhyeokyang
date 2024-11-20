@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PayOutBoxKafkaListener {
-    private final OutBoxRepository outBoxRepository;
+public class PayOutboxKafkaListener {
+    private final OutboxRepository outBoxRepository;
 
     @Transactional
     @KafkaListener(topics = "#{'${spring.kafka.topic.names}'}", containerFactory = "payKafkaListenerContainerFactory")
     public void listen(PayEvent payEvent) {
-        OutBox outBox = outBoxRepository.findOutBoxByTypeAndRelationalId("pay", payEvent.result().reservationId())
-                .orElseThrow(() -> new EntityNotFoundException("OutBox에 등록되지 않은 이벤트입니다. >>> {}"));
+        Outbox outBox = outBoxRepository.findOutboxByTypeAndRelationalId("pay", payEvent.result().reservationId())
+                .orElseThrow(() -> new EntityNotFoundException("Outbox에 등록되지 않은 이벤트입니다. >>> {}"));
 
         outBox.changeStatusToSuccess();
     }
