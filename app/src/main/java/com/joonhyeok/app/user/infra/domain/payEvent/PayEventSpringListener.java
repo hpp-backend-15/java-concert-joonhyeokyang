@@ -21,7 +21,7 @@ public class PayEventSpringListener implements PayEventListener {
     @TransactionalEventListener(phase = BEFORE_COMMIT)
     public void outBoxing(PayEvent payEvent) {
         log.info("outBoxing >>> {}", payEvent);
-        OutBoxCommand command = new OutBoxCommand("pay", payEvent.result().reservationId());
+        OutBoxSaveCommand command = new OutBoxSaveCommand("pay", payEvent.result().reservationId());
         outBoxService.save(command);
 
     }

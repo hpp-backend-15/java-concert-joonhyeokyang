@@ -11,7 +11,7 @@ public class OutBoxService {
     private final OutBoxRepository outBoxRepository;
 
     @Transactional
-    public OutBox save(OutBoxCommand command) {
+    public OutBox save(OutBoxSaveCommand command) {
         OutBox outBox = command.createOutBox();
         OutBox save = outBoxRepository.save(outBox);
         return save;
