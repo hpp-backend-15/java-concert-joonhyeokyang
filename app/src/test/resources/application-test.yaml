@@ -19,14 +19,13 @@ spring:
       names: pay_event
     bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
     listener:
-      type: batch
       concurrency: 3
-      ack-mode: batch
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
       group-id: pay-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: latest
 zonky:
   test:
     database:
