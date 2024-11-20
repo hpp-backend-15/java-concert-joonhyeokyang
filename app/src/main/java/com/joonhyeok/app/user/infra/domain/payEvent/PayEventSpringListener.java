@@ -23,7 +23,6 @@ public class PayEventSpringListener implements PayEventListener {
         log.info("outBoxing >>> {}", payEvent);
         OutBoxSaveCommand command = new OutBoxSaveCommand("pay", payEvent.result().reservationId());
         outBoxService.save(command);
-
     }
 
     @TransactionalEventListener(phase = AFTER_COMMIT)
