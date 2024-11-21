@@ -10,15 +10,18 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class QueuePolicyScheduler {
+    public static final int ONE_MINUTE = 60 * 1000;
+    public static final int FIVE_MINUTE = 5 * 60 * 1000;
+
     private final QueueFixedTotalPolicy queuePolicy;
 
-    @Scheduled(fixedDelay = 1_000)
+    @Scheduled(fixedDelay = ONE_MINUTE)
     public void activate() {
         log.debug("activate queuePolicy");
         queuePolicy.activate();
     }
 
-    @Scheduled(fixedDelay = 300_000)
+    @Scheduled(fixedDelay = FIVE_MINUTE)
     public void expire() {
         log.debug("expire queuePolicy");
         queuePolicy.expire();

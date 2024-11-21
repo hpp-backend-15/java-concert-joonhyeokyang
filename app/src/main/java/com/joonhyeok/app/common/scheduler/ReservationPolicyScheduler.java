@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ReservationPolicyScheduler {
+    public static final int FIVE_MINUTE = 5 * 60 * 1000;
     private final Reservation5MinuteTimeOutPolicy reservationPolicy;
 
-    @Scheduled(fixedDelay = 300_000)
+    @Scheduled(fixedDelay = FIVE_MINUTE)
     public void expire() {
         reservationPolicy.invalidate();
     }
