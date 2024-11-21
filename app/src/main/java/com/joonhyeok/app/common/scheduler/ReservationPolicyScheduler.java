@@ -1,6 +1,6 @@
-package com.joonhyeok.app.reservation.infra;
+package com.joonhyeok.app.common.scheduler;
 
-import com.joonhyeok.app.reservation.domain.ReservationTimeOutPolicy;
+import com.joonhyeok.app.reservation.domain.Reservation5MinuteTimeOutPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ReservationPolicyScheduler {
-    private final ReservationTimeOutPolicy reservationPolicy;
+    private final Reservation5MinuteTimeOutPolicy reservationPolicy;
 
     @Scheduled(fixedDelay = 300_000)
     public void expire() {

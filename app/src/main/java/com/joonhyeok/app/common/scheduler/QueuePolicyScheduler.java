@@ -1,6 +1,6 @@
-package com.joonhyeok.app.queue.infra;
+package com.joonhyeok.app.common.scheduler;
 
-import com.joonhyeok.app.queue.domain.QueuePolicy;
+import com.joonhyeok.app.queue.domain.QueueFixedTotalPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class QueuePolicyScheduler {
-    private final QueuePolicy queuePolicy;
+    private final QueueFixedTotalPolicy queuePolicy;
 
     @Scheduled(fixedDelay = 1_000)
     public void activate() {
