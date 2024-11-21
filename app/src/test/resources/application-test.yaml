@@ -34,6 +34,9 @@ zonky:
           image: mysql:8.0
 
 otel:
+  instrumentation:
+    logback-appender:
+      enabled: false
   exporter:
     jaeger:
     otlp:
@@ -43,6 +46,8 @@ otel:
     exporter: jaeger
   service:
     name: springboot
+  sdk:
+    disabled: true
 
 #logging:
 #  level:
