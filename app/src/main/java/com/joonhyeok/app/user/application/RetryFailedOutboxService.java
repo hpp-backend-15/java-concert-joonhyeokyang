@@ -22,6 +22,9 @@ public class RetryFailedOutboxService {
     private final PayEventPublisher payEventPublisher;
 
 
+    /**
+     * 5분전 발송시도 했으나 실패한 상태(INIT, SEND_FAIL)의 Outbox를 재시도 하는 메서드
+     */
     @Transactional(readOnly = true)
     public void execute() {
         LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusMinutes(5);
