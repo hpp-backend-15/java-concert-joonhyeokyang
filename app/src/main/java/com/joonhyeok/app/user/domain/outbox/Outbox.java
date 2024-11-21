@@ -33,6 +33,7 @@ public class Outbox {
     @Column(name = "outbox_events_created_at")
     private LocalDateTime createdAt;
 
+    @Getter
     @Column(name = "outbox_events_relational_id")
     private Long relationalId;
 
