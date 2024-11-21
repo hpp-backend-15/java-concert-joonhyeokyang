@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.infra.domain.payEvent;
+package com.joonhyeok.app.user.application.outbox;
 
 public record OutboxSendSuccessCommand(
         String type,

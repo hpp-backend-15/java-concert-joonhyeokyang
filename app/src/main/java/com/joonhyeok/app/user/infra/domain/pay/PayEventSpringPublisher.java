@@ -1,7 +1,7 @@
-package com.joonhyeok.app.user.infra.domain.payEvent;
+package com.joonhyeok.app.user.infra.domain.pay;
 
-import com.joonhyeok.app.user.domain.PayEvent;
-import com.joonhyeok.app.user.domain.PayEventPublisher;
+import com.joonhyeok.app.user.domain.pay.PayEvent;
+import com.joonhyeok.app.user.domain.pay.PayEventPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

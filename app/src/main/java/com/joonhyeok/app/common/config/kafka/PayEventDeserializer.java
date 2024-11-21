@@ -1,7 +1,7 @@
-package com.joonhyeok.app.user.infra.domain.payEvent;
+package com.joonhyeok.app.common.config.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.joonhyeok.app.user.domain.PayEvent;
+import com.joonhyeok.app.user.domain.pay.PayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
 

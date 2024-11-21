@@ -1,7 +1,7 @@
 package com.joonhyeok.app.user;
 
-import com.joonhyeok.app.user.domain.PayEvent;
-import com.joonhyeok.app.user.domain.PayEventPublisher;
+import com.joonhyeok.app.user.domain.pay.PayEvent;
+import com.joonhyeok.app.user.domain.pay.PayEventPublisher;
 
 public class DummyEventPublisher implements PayEventPublisher {
 

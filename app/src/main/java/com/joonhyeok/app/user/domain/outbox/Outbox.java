@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.infra.domain.payEvent;
+package com.joonhyeok.app.user.domain.outbox;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static com.joonhyeok.app.user.infra.domain.payEvent.OutboxStatus.*;
+import static com.joonhyeok.app.user.domain.outbox.OutboxStatus.*;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;

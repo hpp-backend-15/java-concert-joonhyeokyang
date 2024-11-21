@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.domain;
+package com.joonhyeok.app.user.domain.pay;
 
 import com.joonhyeok.app.user.application.dto.UserPayResult;
 

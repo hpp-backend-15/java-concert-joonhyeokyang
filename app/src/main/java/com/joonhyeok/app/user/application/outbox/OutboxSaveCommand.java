@@ -1,4 +1,6 @@
-package com.joonhyeok.app.user.infra.domain.payEvent;
+package com.joonhyeok.app.user.application.outbox;
+
+import com.joonhyeok.app.user.domain.outbox.Outbox;
 
 public record OutboxSaveCommand(
         String type,

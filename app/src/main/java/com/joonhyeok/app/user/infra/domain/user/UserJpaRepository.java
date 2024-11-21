@@ -1,7 +1,7 @@
-package com.joonhyeok.app.user.infra;
+package com.joonhyeok.app.user.infra.domain.user;
 
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.domain.user.User;
+import com.joonhyeok.app.user.domain.user.UserRepository;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.repository.Repository;

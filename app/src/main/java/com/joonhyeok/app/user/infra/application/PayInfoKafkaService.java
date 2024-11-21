@@ -1,7 +1,7 @@
 package com.joonhyeok.app.user.infra.application;
 
 import com.joonhyeok.app.user.application.PayInfoService;
-import com.joonhyeok.app.user.domain.PayEvent;
+import com.joonhyeok.app.user.domain.pay.PayEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

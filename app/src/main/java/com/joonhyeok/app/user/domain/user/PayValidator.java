@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.domain;
+package com.joonhyeok.app.user.domain.user;
 
 import com.joonhyeok.app.concert.domain.Seat;
 import com.joonhyeok.app.reservation.domain.Reservation;

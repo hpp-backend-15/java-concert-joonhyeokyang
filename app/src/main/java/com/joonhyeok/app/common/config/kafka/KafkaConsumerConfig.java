@@ -1,7 +1,6 @@
 package com.joonhyeok.app.common.config.kafka;
 
-import com.joonhyeok.app.user.domain.PayEvent;
-import com.joonhyeok.app.user.infra.domain.payEvent.PayEventDeserializer;
+import com.joonhyeok.app.user.domain.pay.PayEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.beans.factory.annotation.Value;

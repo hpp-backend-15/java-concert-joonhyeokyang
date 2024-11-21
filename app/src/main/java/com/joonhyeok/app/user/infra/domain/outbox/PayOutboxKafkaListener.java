@@ -1,6 +1,9 @@
-package com.joonhyeok.app.user.infra.domain.payEvent;
+package com.joonhyeok.app.user.infra.domain.outbox;
 
-import com.joonhyeok.app.user.domain.PayEvent;
+import com.joonhyeok.app.user.domain.outbox.PayOutboxListener;
+import com.joonhyeok.app.user.domain.pay.PayEvent;
+import com.joonhyeok.app.user.application.outbox.OutboxSendSuccessCommand;
+import com.joonhyeok.app.user.application.OutboxService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -9,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PayOutboxKafkaListener {
+public class PayOutboxKafkaListener implements PayOutboxListener {
     private final OutboxService outboxService;
 
     @KafkaListener(topics = "#{'${spring.kafka.topic.names}'}", containerFactory = "payKafkaListenerContainerFactory")

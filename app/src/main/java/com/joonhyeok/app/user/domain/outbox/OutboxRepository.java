@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.infra.domain.payEvent;
+package com.joonhyeok.app.user.domain.outbox;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
