@@ -15,6 +15,7 @@ public class OutboxFailRetryScheduler {
 
     @Scheduled(fixedDelay = FIVE_MINUTE)
     public void retry() {
+        log.info("retrying failed outbox...");
         retryFailedOutboxService.execute();
     }
 }

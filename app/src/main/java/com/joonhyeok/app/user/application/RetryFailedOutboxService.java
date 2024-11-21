@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class RetryFailedOutboxService {
     private final OutboxRepository outBoxRepository;
@@ -30,6 +30,7 @@ public class RetryFailedOutboxService {
         List<Outbox> outboxes = outBoxRepository.findByCreatedAtBeforeAndTypeAndStatusIn(fiveMinutesAgo, "pay", statuses);
 
         for (Outbox outbox : outboxes) {
+            log.info("retrying failed outbox: {} ", outbox);
             PayEvent payEvent = PayEvent.from(outbox);
             payEventPublisher.publish(payEvent);
         }
