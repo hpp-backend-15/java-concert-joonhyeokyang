@@ -2,9 +2,9 @@ package com.joonhyeok.app.user;
 
 
 import com.joonhyeok.app.user.application.AccountService;
-import com.joonhyeok.app.user.application.dto.AccountBalanceQuery;
-import com.joonhyeok.app.user.application.dto.AccountBalanceQueryResult;
-import com.joonhyeok.app.user.application.dto.AccountChargeCommand;
+import com.joonhyeok.app.user.application.dto.user.AccountBalanceQuery;
+import com.joonhyeok.app.user.application.dto.user.AccountBalanceQueryResult;
+import com.joonhyeok.app.user.application.dto.user.AccountChargeCommand;
 import com.joonhyeok.app.user.domain.user.Account;
 import com.joonhyeok.app.user.domain.user.User;
 import com.joonhyeok.app.user.domain.user.UserRepository;

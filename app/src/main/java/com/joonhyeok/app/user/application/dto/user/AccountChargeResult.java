@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.application.dto;
+package com.joonhyeok.app.user.application.dto.user;
 
 import java.time.LocalDateTime;
 

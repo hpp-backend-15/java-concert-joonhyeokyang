@@ -1,6 +1,6 @@
 package com.joonhyeok.app.user;
 
-import com.joonhyeok.app.user.domain.pay.PayEvent;
+import com.joonhyeok.app.user.domain.user.PayEvent;
 
 import java.util.concurrent.CountDownLatch;
 

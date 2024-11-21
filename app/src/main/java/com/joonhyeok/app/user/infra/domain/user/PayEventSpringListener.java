@@ -1,10 +1,10 @@
-package com.joonhyeok.app.user.infra.domain.pay;
+package com.joonhyeok.app.user.infra.domain.user;
 
 import com.joonhyeok.app.user.application.PayInfoService;
-import com.joonhyeok.app.user.domain.pay.PayEvent;
-import com.joonhyeok.app.user.domain.pay.PayEventListener;
-import com.joonhyeok.app.user.application.outbox.OutboxSaveCommand;
-import com.joonhyeok.app.user.application.outbox.OutboxSendFailCommand;
+import com.joonhyeok.app.user.domain.user.PayEvent;
+import com.joonhyeok.app.user.domain.user.PayEventListener;
+import com.joonhyeok.app.user.application.dto.outbox.OutboxSaveCommand;
+import com.joonhyeok.app.user.application.dto.outbox.OutboxSendFailCommand;
 import com.joonhyeok.app.user.application.OutboxService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

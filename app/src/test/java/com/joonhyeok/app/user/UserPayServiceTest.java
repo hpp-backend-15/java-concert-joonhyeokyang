@@ -11,7 +11,7 @@ import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.reservation.domain.ReservationStatus;
 import com.joonhyeok.app.user.application.UserPayService;
-import com.joonhyeok.app.user.application.dto.UserPayCommand;
+import com.joonhyeok.app.user.application.dto.user.UserPayCommand;
 import com.joonhyeok.app.user.domain.user.Account;
 import com.joonhyeok.app.user.domain.user.User;
 import com.joonhyeok.app.user.domain.user.UserRepository;

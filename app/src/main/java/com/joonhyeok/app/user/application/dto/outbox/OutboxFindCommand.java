@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.application.outbox;
+package com.joonhyeok.app.user.application.dto.outbox;
 
 public record OutboxFindCommand(
         String type,
