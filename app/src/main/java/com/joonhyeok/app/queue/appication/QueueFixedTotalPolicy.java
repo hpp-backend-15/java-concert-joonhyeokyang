@@ -1,5 +1,7 @@
-package com.joonhyeok.app.queue.domain;
+package com.joonhyeok.app.queue.appication;
 
+import com.joonhyeok.app.queue.domain.Queue;
+import com.joonhyeok.app.queue.domain.QueueRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;

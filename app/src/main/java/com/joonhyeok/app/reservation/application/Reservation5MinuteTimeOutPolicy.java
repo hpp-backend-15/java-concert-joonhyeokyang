@@ -1,5 +1,7 @@
-package com.joonhyeok.app.reservation.domain;
+package com.joonhyeok.app.reservation.application;
 
+import com.joonhyeok.app.reservation.domain.Reservation;
+import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

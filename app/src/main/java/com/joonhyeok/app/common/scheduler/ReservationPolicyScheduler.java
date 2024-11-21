@@ -1,6 +1,6 @@
 package com.joonhyeok.app.common.scheduler;
 
-import com.joonhyeok.app.reservation.domain.Reservation5MinuteTimeOutPolicy;
+import com.joonhyeok.app.reservation.application.Reservation5MinuteTimeOutPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

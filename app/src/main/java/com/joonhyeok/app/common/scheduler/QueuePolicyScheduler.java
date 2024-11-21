@@ -1,6 +1,6 @@
 package com.joonhyeok.app.common.scheduler;
 
-import com.joonhyeok.app.queue.domain.QueueFixedTotalPolicy;
+import com.joonhyeok.app.queue.appication.QueueFixedTotalPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
