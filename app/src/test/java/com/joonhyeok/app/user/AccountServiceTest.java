@@ -2,12 +2,12 @@ package com.joonhyeok.app.user;
 
 
 import com.joonhyeok.app.user.application.AccountService;
-import com.joonhyeok.app.user.application.dto.AccountBalanceQuery;
-import com.joonhyeok.app.user.application.dto.AccountBalanceQueryResult;
-import com.joonhyeok.app.user.application.dto.AccountChargeCommand;
-import com.joonhyeok.app.user.domain.Account;
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.application.dto.user.AccountBalanceQuery;
+import com.joonhyeok.app.user.application.dto.user.AccountBalanceQueryResult;
+import com.joonhyeok.app.user.application.dto.user.AccountChargeCommand;
+import com.joonhyeok.app.user.domain.user.Account;
+import com.joonhyeok.app.user.domain.user.User;
+import com.joonhyeok.app.user.domain.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

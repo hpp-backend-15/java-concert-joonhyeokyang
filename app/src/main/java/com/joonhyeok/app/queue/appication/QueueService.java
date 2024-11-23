@@ -6,7 +6,7 @@ import com.joonhyeok.app.queue.appication.dto.QueueQuery;
 import com.joonhyeok.app.queue.appication.dto.QueueQueryResult;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.domain.user.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

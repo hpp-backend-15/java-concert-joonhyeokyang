@@ -29,6 +29,20 @@ spring:
       host: localhost
       prefix: "redis://"
 
+  kafka:
+    topic:
+      names: pay_event
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+    listener:
+      concurrency: 3
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringsSerializer
+    consumer:
+      group-id: pay-consumer-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+
+
 otel:
   exporter:
     jaeger:

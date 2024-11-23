@@ -11,17 +11,14 @@ import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.reservation.domain.ReservationStatus;
 import com.joonhyeok.app.user.application.UserPayService;
-import com.joonhyeok.app.user.application.dto.UserPayCommand;
-import com.joonhyeok.app.user.domain.Account;
-import com.joonhyeok.app.user.domain.PayEventPublisher;
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
-import com.joonhyeok.app.user.infra.PaySpringEventPublisher;
+import com.joonhyeok.app.user.application.dto.user.UserPayCommand;
+import com.joonhyeok.app.user.domain.user.Account;
+import com.joonhyeok.app.user.domain.user.User;
+import com.joonhyeok.app.user.domain.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.ApplicationEventPublisher;
 
 class UserPayServiceTest {
     private UserPayService userPayService;

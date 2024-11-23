@@ -1,8 +1,8 @@
 package com.joonhyeok.app.user;
 
 
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.domain.user.User;
+import com.joonhyeok.app.user.domain.user.UserRepository;
 
 import java.util.HashMap;
 import java.util.Optional;

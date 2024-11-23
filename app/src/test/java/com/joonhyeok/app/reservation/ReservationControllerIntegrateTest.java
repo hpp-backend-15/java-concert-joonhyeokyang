@@ -6,9 +6,9 @@ import com.joonhyeok.app.concert.domain.ConcertRepository;
 import com.joonhyeok.app.queue.domain.Queue;
 import com.joonhyeok.app.queue.domain.QueueRepository;
 import com.joonhyeok.app.queue.domain.QueueStatus;
-import com.joonhyeok.app.user.domain.Account;
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.domain.user.Account;
+import com.joonhyeok.app.user.domain.user.User;
+import com.joonhyeok.app.user.domain.user.UserRepository;
 import com.joonhyeok.openapi.models.MakeReservationRequest;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,7 +103,7 @@ class ReservationControllerIntegrateTest {
                             post(BASE_URL)
                                     .header("Wait-Token", "1")
                                     .contentType(MediaType.APPLICATION_JSON)
-                                    .content(objectMapper.writeValueAsString(new MakeReservationRequest().userId(1L).seatId(1L)))
+                                    .content(objectMapper.writeValueAsString(new MakeReservationRequest().concertId(1L).performanceDateId(1L).userId(1L).seatId(1L)))
                     );
                     if (perform.andReturn().getResponse().getStatus() == 201) {
                         success.incrementAndGet();
