@@ -1,7 +1,7 @@
 package com.joonhyeok.app.reservation.domain;
 
 import com.joonhyeok.app.concert.domain.Seat;
-import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -8,8 +8,8 @@ import com.joonhyeok.app.reservation.application.dto.MakeReservationResult;
 import com.joonhyeok.app.reservation.domain.Reservation;
 import com.joonhyeok.app.reservation.domain.ReservationRepository;
 import com.joonhyeok.app.reservation.domain.ReservationStatus;
-import com.joonhyeok.app.user.domain.User;
-import com.joonhyeok.app.user.domain.UserRepository;
+import com.joonhyeok.app.user.domain.user.User;
+import com.joonhyeok.app.user.domain.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -26,6 +26,7 @@ public class MakeReservationService {
     private final ReservationRepository reservationRepository;
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
+
     @Caching(evict = {
             @CacheEvict(value = "performanceDates", key = "'concertId-'+#command.concertId()", cacheManager = "contentCacheManager"),
             @CacheEvict(value = "SeatsByDate", key = "'concertId-'+#command.concertId()+'-performanceDateId-'+#command.performanceDateId()", cacheManager = "contentCacheManager")

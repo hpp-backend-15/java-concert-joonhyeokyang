@@ -1,22 +1,20 @@
 package com.joonhyeok.app.user;
 
-import com.joonhyeok.app.user.domain.PayEvent;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
+import com.joonhyeok.app.user.domain.user.PayEvent;
 
 import java.util.concurrent.CountDownLatch;
 
 /**
  * 외부 API 보낸 데이터를 받는지 테스트하기 위하여 생성한 Listener
  */
-@Service
+//@Service
 public class PayExternalKafkaListener {
 
     private final CountDownLatch latch = new CountDownLatch(1);
 
     private PayEvent received;
 
-    @KafkaListener(topics = "#{'${spring.kafka.topic.names}'}", containerFactory = "payKafkaListenerContainerFactory")
+//    @KafkaListener(topics = "pay-event-step17", containerFactory = "payKafkaListenerContainerFactory")
     public void listen(PayEvent payEvent) {
         received = payEvent;
     }

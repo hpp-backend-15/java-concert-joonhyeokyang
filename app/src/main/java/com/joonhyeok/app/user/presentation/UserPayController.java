@@ -1,8 +1,8 @@
 package com.joonhyeok.app.user.presentation;
 
 import com.joonhyeok.app.user.application.UserPayService;
-import com.joonhyeok.app.user.application.dto.UserPayCommand;
-import com.joonhyeok.app.user.application.dto.UserPayResult;
+import com.joonhyeok.app.user.application.dto.user.UserPayCommand;
+import com.joonhyeok.app.user.application.dto.user.UserPayResult;
 import com.joonhyeok.openapi.apis.PayApi;
 import com.joonhyeok.openapi.models.PayResponse;
 import lombok.RequiredArgsConstructor;

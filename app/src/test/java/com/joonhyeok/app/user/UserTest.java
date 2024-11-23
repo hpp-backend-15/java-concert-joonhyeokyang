@@ -1,7 +1,7 @@
 package com.joonhyeok.app.user;
 
-import com.joonhyeok.app.user.domain.Account;
-import com.joonhyeok.app.user.domain.User;
+import com.joonhyeok.app.user.domain.user.Account;
+import com.joonhyeok.app.user.domain.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
