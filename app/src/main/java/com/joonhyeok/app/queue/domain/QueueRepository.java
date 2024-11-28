@@ -18,8 +18,7 @@ public interface QueueRepository {
 
     Queue save(Queue queue);
 
-    Long countByStatus(QueueStatus queueStatus);
-
     List<Queue> findByStatus(QueueStatus queueStatus, Limit limit);
+
     List<Queue> findByStatusAndExpireAtAfter(QueueStatus queueStatus, LocalDateTime expireAt);
 }

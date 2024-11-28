@@ -88,7 +88,7 @@ class ReservationControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         User user = new User(null, new Account(0L, LocalDateTime.now()), 0);
-        queueRepository.save(new Queue(1L, "1", 1L, QueueStatus.ACTIVE, LocalDateTime.now(), null, null, null));
+        queueRepository.save(new Queue(1L, "1", 1L, QueueStatus.ACTIVE, LocalDateTime.now(), null, null, null,864000));
         userRepository.save(user);
         concertRepository.save(concert);
 

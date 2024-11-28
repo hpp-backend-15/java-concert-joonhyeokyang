@@ -8,7 +8,9 @@ import com.joonhyeok.app.user.domain.user.User;
 import com.joonhyeok.app.user.domain.user.UserRepository;
 import com.joonhyeok.openapi.models.RegisterQueueRequest;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +47,14 @@ class QueueControllerIntegrateTest {
     ObjectMapper objectMapper;
 
     private static final String BASE_URL = "/queue";
+
+    @Autowired
+    RedissonClient redissonClient;
+
+    @BeforeEach
+    public void clearRedisCache() {
+        redissonClient.getKeys().flushdb();
+    }
 
     @Test
     void 대기열_등록에_성공한다() throws Exception {

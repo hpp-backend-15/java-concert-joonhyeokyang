@@ -59,22 +59,12 @@ public class QueueMemoryRepository implements QueueRepository {
 
     @Override
     public Queue save(Queue queue) {
-        Queue newQueue = new Queue(id, queue.getWaitId(), queue.getUserId(), QueueStatus.WAIT, LocalDateTime.now(), null, null, null);
+        Queue newQueue = new Queue(id, queue.getWaitId(), queue.getUserId(), QueueStatus.WAIT, LocalDateTime.now(), null, null, null,864000);
         map.put(newQueue.getId(), newQueue);
         id = id + 1;
         return newQueue;
     }
 
-    @Override
-    public Long countByStatus(QueueStatus queueStatus) {
-        Long count = 0L;
-        for (Queue value : map.values()) {
-            if (value.getStatus() == queueStatus) {
-                count++;
-            }
-        }
-        return count;
-    }
 
     @Override
     public List<Queue> findByStatus(QueueStatus queueStatus, Limit limit) {

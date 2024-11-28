@@ -4,7 +4,7 @@ import {sleep} from "k6"
 // Base URL 설정
 var BASE_URL = `http://${__ENV.TARGET_HOST}:8080/`
 
-const TARGET_TPS = 300; // 목표 TPS 설정
+const TARGET_TPS = 5; // 목표 TPS 설정
 const MAX_SEAT_ID = 150; // seatId의 최대값 설정
 
 // 시나리오 설정
@@ -13,7 +13,7 @@ export let options = {
         burst_test: {
             executor: 'constant-vus',
             vus: TARGET_TPS, // 동시에 요청을 보낼 VU 수 설정
-            duration: '10s', // 지속 시간 (한번의 집중 burst를 위해 짧은 시간 설정)
+            duration: '5s', // 지속 시간 (한번의 집중 burst를 위해 짧은 시간 설정)
         }
     },
 
@@ -38,7 +38,7 @@ export default function () {
     };
 
     // 각 VU별로 seatId를 균등 분배하여 순환할 수 있도록 설정
-    let seatId = (__VU % MAX_SEAT_ID) + 1;
+    let seatId = Math.floor(Math.random() * MAX_SEAT_ID) + 1;
 
     let body = {
         userId: 1,

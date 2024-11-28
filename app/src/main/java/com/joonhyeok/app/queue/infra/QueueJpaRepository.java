@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface QueueJpaRepository extends QueueRepository, JpaRepository<Queue, Long> {
-    @Override
-    @Query("select max(q.id) " +
-            "from Queue q " +
-            "where q.status = 'ACTIVE'")
-    Optional<Long> findMaxPositionOfActivated();
-}
+
+//public interface QueueJpaRepository extends QueueRepository, JpaRepository<Queue, Long> {
+//    @Override
+//    @Query("select max(q.id) " +
+//            "from Queue q " +
+//            "where q.status = 'ACTIVE'")
+//    Optional<Long> findMaxPositionOfActivated();
+//}

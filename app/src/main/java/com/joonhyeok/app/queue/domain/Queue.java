@@ -1,12 +1,16 @@
 package com.joonhyeok.app.queue.domain;
 
 import com.joonhyeok.app.common.Constants;
-import jakarta.persistence.*;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.redis.core.index.Indexed;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,30 +21,32 @@ import static java.lang.Math.ceil;
 import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
-@Entity
-@Table(name = "queues")
+//@Entity
+//@Table(name = "queues")
+@RedisHash("Queue")
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Getter
 @Builder
 public class Queue {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "queues_wait_id", nullable = false)
     private String waitId;
 
-    @Column(name = "queues_user_id", nullable = false)
     private Long userId;
 
     @Enumerated(STRING)
     private QueueStatus status;
 
+
     private LocalDateTime issueAt = LocalDateTime.now();
     private LocalDateTime enteredAt;
     private LocalDateTime expireAt;
     private LocalDateTime lastRequestedAt;
+
+    @TimeToLive
+    private long ttl;
 
 
     public boolean isExpired() {
@@ -61,6 +67,10 @@ public class Queue {
         this.status = ACTIVE;
         this.enteredAt = enteredAt;
         this.expireAt = expireAt;
+    }
+
+    public void invalidate() {
+        this.status = EXPIRED;
     }
 
     public void expire() {

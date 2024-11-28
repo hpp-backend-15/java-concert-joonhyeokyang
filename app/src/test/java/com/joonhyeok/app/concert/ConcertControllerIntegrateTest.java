@@ -62,7 +62,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.ACTIVE, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.ACTIVE, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null, 864000);
         queueRepository.save(queue);
 
         //when
@@ -85,7 +85,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null,864000);
         queueRepository.save(queue);
 
         //when
@@ -101,7 +101,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.WAIT, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null,864000);
         queueRepository.save(queue);
 
         Thread.sleep(2_000);
@@ -118,7 +118,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null, 864000);
         queueRepository.save(queue);
 
         //when
@@ -134,7 +134,7 @@ public class ConcertControllerIntegrateTest {
         //given
         Concert concert = createConcertWithAvailableSeats();
         Concert saved = concertRepository.save(concert);
-        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null);
+        Queue queue = new Queue(null, "waitId", 1L, QueueStatus.EXPIRED, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now().plusMinutes(10), null, 864000);
         queueRepository.save(queue);
 
         //when

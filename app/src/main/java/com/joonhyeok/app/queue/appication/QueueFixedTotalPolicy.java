@@ -12,19 +12,17 @@ import java.util.List;
 
 import static com.joonhyeok.app.queue.domain.QueueStatus.ACTIVE;
 import static com.joonhyeok.app.queue.domain.QueueStatus.WAIT;
-import static java.lang.Math.max;
 
 @Service
 @RequiredArgsConstructor
-public class QueueFixedTotalPolicy  {
-    private final Long FIXED_TOTAL = 5L;
+public class QueueFixedTotalPolicy {
+    private final Long FIXED_TOTAL = 500L;
     private final Long ACTIVE_WILL_EXPIRE_IN_MINUTES = 10L;
     private final QueueRepository queueRepository;
 
     @Transactional
     public void activate() {
-        Long activateCount = queueRepository.countByStatus(ACTIVE);
-        int limit = (int) max(0L, FIXED_TOTAL - activateCount);
+        int limit = Math.toIntExact(FIXED_TOTAL);
         List<Queue> candidates = queueRepository.findByStatus(WAIT, Limit.of(limit));
         candidates.forEach(queue -> queue.activate(LocalDateTime.now(), LocalDateTime.now().plusMinutes(ACTIVE_WILL_EXPIRE_IN_MINUTES)));
     }

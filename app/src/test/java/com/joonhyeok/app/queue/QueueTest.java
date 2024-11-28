@@ -17,7 +17,7 @@ class QueueTest {
         //given
         LocalDateTime now = LocalDateTime.now();
         String waitId = UUID.randomUUID().toString();
-        Queue queue = new Queue(0L, waitId, 1L, WAIT, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(0L, waitId, 1L, WAIT, LocalDateTime.now(), null, null, null, 864000);
 
         //when
         queue.activate(now, now.plusMinutes(10));
@@ -32,7 +32,7 @@ class QueueTest {
     void Queue_이미_만료된_토큰을_활성화하는경우_예외() {
         //given
         String waitId = UUID.randomUUID().toString();
-        Queue queue = new Queue(0L, waitId, 1L, EXPIRED, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(0L, waitId, 1L, EXPIRED, LocalDateTime.now(), null, null, null,864000);
 
         //when
         //then
@@ -45,7 +45,7 @@ class QueueTest {
     void Queue_만료기능_만료가_불가능한시간에_만료시키는경우() {
         //given
         String waitId = UUID.randomUUID().toString();
-        Queue queue = new Queue(0L, waitId,1L, WAIT, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(0L, waitId,1L, WAIT, LocalDateTime.now(), null, null, null,864000);
 
         //when
         queue.activate(LocalDateTime.now().minusMinutes(9), LocalDateTime.now().plusMinutes(1));
@@ -60,7 +60,7 @@ class QueueTest {
     void Queue_만료기능_만료가_가능한시간에_만료시키는경우() {
         //given
         String waitId = UUID.randomUUID().toString();
-        Queue queue = new Queue(null, waitId,1L, WAIT, LocalDateTime.now(), null, null, null);
+        Queue queue = new Queue(null, waitId,1L, WAIT, LocalDateTime.now(), null, null, null,864000);
 
         //when
         queue.activate(LocalDateTime.now().minusMinutes(11), LocalDateTime.now().minusMinutes(1));

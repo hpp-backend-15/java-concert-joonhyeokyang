@@ -31,7 +31,8 @@ public class MakeReservationService {
             @CacheEvict(value = "performanceDates", key = "'concertId-'+#command.concertId()", cacheManager = "contentCacheManager"),
             @CacheEvict(value = "SeatsByDate", key = "'concertId-'+#command.concertId()+'-performanceDateId-'+#command.performanceDateId()", cacheManager = "contentCacheManager")
     })
-    @DistributedLock(type = "seat", key= "#command.seatId()", waitTime = 200, leaseTime = 5*60*1000, timeUnit = TimeUnit.MILLISECONDS)
+    @DistributedLock(type = "seat", key = "#command.seatId()", waitTime = 200, leaseTime = 5 * 60 * 1000, timeUnit = TimeUnit.MILLISECONDS)
+    @Transactional
     public MakeReservationResult reserve(MakeReservationCommand command) {
         Long seatId = command.seatId();
         Long userId = command.userId();

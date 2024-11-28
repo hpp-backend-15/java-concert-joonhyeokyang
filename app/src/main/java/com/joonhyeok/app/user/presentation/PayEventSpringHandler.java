@@ -1,4 +1,4 @@
-package com.joonhyeok.app.user.infra.domain.user;
+package com.joonhyeok.app.user.presentation;
 
 import com.joonhyeok.app.user.application.OutboxService;
 import com.joonhyeok.app.user.application.PayInfoService;
@@ -17,7 +17,7 @@ import static org.springframework.transaction.event.TransactionPhase.BEFORE_COMM
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PayEventSpringListener implements PayEventListener {
+public class PayEventSpringHandler implements PayEventListener {
     private final PayInfoService payInfoService;
     private final OutboxService outBoxService;
 

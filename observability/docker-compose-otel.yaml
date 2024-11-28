@@ -1,0 +1,259 @@
+version: '3.8'
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "1m"
+    max-file: "1"
+    tag: "{{.Name}}"
+
+x-common-labels: &default-labels
+  logging: "promtail"
+  logging_jobname: "containerlogs"
+  stackname: "docker-monitoring-stack-gpnc"
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - 1888:1888 # pprof extension
+      - 8888:8888 # Prometheus metrics exposed by the Collector
+      - 8889:8889 # Prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 55679:55679 # zpages extension
+    networks:
+      - monitoring
+  grafana:
+    image: grafana/grafana:${GRAFANA_VERSION:-11.0.0}
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_USERS_DEFAULT_THEME=light
+      - GF_LOG_MODE=console
+      - GF_LOG_LEVEL=critical
+      - GF_PANELS_ENABLE_ALPHA=true
+      - GF_FEATURE_TOGGLES_ENABLE=accessControlOnCall lokiLogsDataplane
+      - GF_INSTALL_PLUGINS=grafana-polystat-panel,https://storage.googleapis.com/integration-artifacts/grafana-lokiexplore-app/grafana-lokiexplore-app-latest.zip;grafana-lokiexplore-app
+    volumes:
+      - ./configs/grafana/provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards/provisioning-dashboards.yaml:ro
+      - ./configs/grafana/provisioning/datasources.yml:/etc/grafana/provisioning/datasources/provisioning-datasources.yaml:ro
+      - ./configs/grafana/plugins/app.yaml:/etc/grafana/provisioning/plugins/app.yaml:ro
+      - ./dashboards/node-metrics.json:/var/lib/grafana/dashboards/node-metrics.json:ro
+      - ./dashboards/container-metrics.json:/var/lib/grafana/dashboards/container-metrics.json:ro
+      - ./dashboards/log-search.json:/var/lib/grafana/dashboards/log-search.json:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  prometheus:
+    image: prom/prometheus:${PROMETHEUS_VERSION:-v2.42.0}
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--log.level=error'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.external-url=http://localhost:9090'
+      - '--enable-feature=remote-write-receiver'
+      - '--enable-feature=native-histograms'
+
+    volumes:
+      - ./configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./configs/prometheus/recording-rules.yml:/etc/prometheus/recording-rules.yml
+      - ./configs/prometheus/alerting-rules.yml:/etc/prometheus/alerting-rules.yml
+      - prometheus-data:/prometheus
+    depends_on:
+      - alertmanager
+    ports:
+      - 9090:9090
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION:-v0.46.0}
+    container_name: cadvisor
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      # https://github.com/google/cadvisor/issues/1565#issuecomment-718812180
+      - /var/run/docker.sock:/var/run/docker.sock
+      #- /dev/disk:/dev/disk:ro
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  node-exporter:
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-v1.5.0}
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points'
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  alertmanager:
+    image: prom/alertmanager:${ALERTMANAGER_VERSION:-v0.25.0}
+    container_name: alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--log.level=error'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://localhost:9093'
+    volumes:
+      - ./configs/alertmanager/alertmanager-fallback-config.yml:/etc/alertmanager/config.yml
+    ports:
+      - 9096:9093
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    depends_on:
+      - uncomplicated-alert-receiver
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  uncomplicated-alert-receiver:
+    image: ghcr.io/jamesread/uncomplicated-alert-receiver
+    container_name: uncomplicated-alert-receiver
+    ports:
+      - 9095:8080
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  redis:
+    image: redis:${REDIS_VERSION:-6}
+    container_name: redis
+    ports:
+      - 6379:6379
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: loki
+    user: root
+    ports:
+      - 3100:3100
+    command: -config.file=/etc/loki/loki.yaml
+    volumes:
+      - ./configs/loki/loki.yaml:/etc/loki/loki.yaml
+      - ./configs/loki/rules.yaml:/etc/loki/rules/fake/loki-rules.yml
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  promtail:
+    image:  grafana/promtail:3.0.0
+    container_name: promtail
+    volumes:
+      - ./configs/promtail/promtail.yaml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/docker-config.yaml
+    depends_on:
+      - loki
+    cpus: 0.5
+    mem_limit: 512m
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
+
+  init:
+    image: &tempoImage grafana/tempo:latest
+    user: root
+    entrypoint:
+      - "chown"
+      - "10001:10001"
+      - "/var/tempo"
+    volumes:
+      - ./tempo-data:/var/tempo
+    networks:
+      - monitoring
+
+  tempo:
+    image: *tempoImage
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - ./tempo-data:/var/tempo
+    ports:
+      - "14268"  # jaeger ingest
+      - "3200"   # tempo
+      - "4317"  # otlp grpc
+      - "4318"  # otlp http
+      - "9411"   # zipkin
+    networks:
+      - monitoring
+    depends_on:
+      - init
+
+
+volumes:
+  grafana-data: {}
+  prometheus-data: {}
+
+networks:
+  monitoring:
+    name: monitoring
+    external: true

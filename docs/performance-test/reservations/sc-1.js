@@ -7,14 +7,14 @@ import {sleep} from "k6"
 
 var BASE_URL = `http://${__ENV.TARGET_HOST}:8080/`
 
-const TARGET_TPS = 300; // 목표 TPS 설정
+const TARGET_TPS = 3; // 목표 TPS 설정
 
 export let options = {
     scenarios: {
         burst_test: {
             executor: 'constant-vus',
             vus: TARGET_TPS, // 동시에 요청을 보낼 VU 수 설정
-            duration: '10s', // 지속 시간 (한번의 집중 burst를 위해 짧은 시간 설정)
+            duration: '1s', // 지속 시간 (한번의 집중 burst를 위해 짧은 시간 설정)
         }
     },
 

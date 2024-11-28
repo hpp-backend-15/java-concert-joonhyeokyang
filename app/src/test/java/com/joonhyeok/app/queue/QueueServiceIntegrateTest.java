@@ -13,7 +13,9 @@ import com.joonhyeok.app.user.domain.user.UserRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -43,6 +45,14 @@ class QueueServiceIntegrateTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    RedissonClient redissonClient;
+
+    @BeforeEach
+    public void clearRedisCache() {
+        redissonClient.getKeys().flushdb();
+    }
+
     @Test
     void Queue_대기열_등록하는_경우_성공한다() {
         //given
@@ -58,7 +68,7 @@ class QueueServiceIntegrateTest {
 
         //then2
         Queue registeredQueue = optionalQueue.get();
-        assertThat(registeredQueue.getId()).isEqualTo(1L);
+        assertThat(registeredQueue.getUserId()).isEqualTo(1L);
         assertThat(registeredQueue.getStatus()).isEqualTo(WAIT);
     }
 
