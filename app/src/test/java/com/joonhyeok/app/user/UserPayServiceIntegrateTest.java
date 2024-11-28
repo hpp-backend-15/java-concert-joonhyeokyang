@@ -157,7 +157,7 @@ class UserPayServiceIntegrateTest {
         //then
         await()
                 .atMost(10, TimeUnit.SECONDS)
-                .untilAsserted(() -> then(payOutboxKafkaListener).should(atMost(1)).listen(any(PayEvent.class)));
+                .untilAsserted(() -> then(payOutboxKafkaListener).should(atLeastOnce()).listen(any(PayEvent.class)));
 
     }
 
@@ -176,7 +176,7 @@ class UserPayServiceIntegrateTest {
         //then
         await()
                 .atMost(10, TimeUnit.SECONDS)
-                .untilAsserted(() -> then(payOutboxKafkaListener).should(atMost(1)).listen(any(PayEvent.class)));
+                .untilAsserted(() -> then(payOutboxKafkaListener).should(atLeastOnce()).listen(any(PayEvent.class)));
 
         Outbox pay = outboxService.findOutboxById(new OutboxFindCommand("pay", 1L));
         assertThat(pay.getStatus()).isEqualTo(OutboxStatus.SEND_SUCCESS);

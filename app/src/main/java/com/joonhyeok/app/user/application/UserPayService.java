@@ -54,7 +54,7 @@ public class UserPayService {
         user.usePoint(seat.getPrice());
         seat.paySeat();
         reservation.confirmPay();
-        queueRepository.findByUserId(userId).ifPresent(Queue::expire);
+        queueRepository.findByUserId(userId).ifPresent(Queue::invalidate);
 
         UserPayResult userPayResult = new UserPayResult(reservation.getId());
         payEventPublisher.publish(new PayEvent(userPayResult));
